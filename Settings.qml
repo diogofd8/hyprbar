@@ -78,6 +78,8 @@ Singleton {
     readonly property var clipboardIcon: ""
     readonly property var updateNotifierIcon:
         ["󰄴", "󱤧"]
+    readonly property var updateNotifierSyncIcon: "󰓦"
+    readonly property var updateNotifierErrorIcon: "󰅤"
     readonly property var brightnessCtrlIcon:
         ["󰃞", "󰃟", "󰃠"]
     readonly property var batteryCtrlIcon:
@@ -114,6 +116,12 @@ Singleton {
         {state: "high", threshold: 70},
         {state: "max", threshold: 95}
     ]
+
+    // ────── System Update API Configuration ──────
+    readonly property int updateCheckIntervalMs: 3600 * 1000
+    readonly property int updateCheckHeartbeatMs: 60 * 1000
+    readonly property int updateCheckTimeoutS: 60
+    readonly property int updateSessionPollIntervalMs: 3000
 
     // ────── Brightness API Configuration ──────
     readonly property int brightnessStepPercentage: 1

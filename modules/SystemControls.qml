@@ -28,18 +28,29 @@ Chevron {
         }
 
         GlyphButton {
-            contentLeftPadding: 4
-            contentRightPadding: 4
+            contentLeftPadding: 6
+            contentRightPadding: 6
 
-            icon: Settings.updateNotifierIcon[1]
-            useMetrics: false
+            icon: Core.SystemUpdate.icon
+            iconColor: {
+                switch (Core.SystemUpdate.state) {
+                case "available":
+                    return Settings.colors.accentAlert
+                case "error":
+                    return Settings.colors.accentError
+                default:
+                    return Settings.colors.fgMain
+                }
+            }
+            useMetrics: true
 
-            onLeftClicked: Core.Actions.sysUpdate()
+            onLeftClicked: Core.Actions.sysUpdateCheck()
+            onRightClicked: Core.Actions.sysUpdate()
         }
 
         GlyphButton {
-            contentLeftPadding: 4
-            contentRightPadding: 4
+            contentLeftPadding: 5
+            contentRightPadding: 5
 
             icon: Core.Connectivity.bluetoothIcon
             useMetrics: true

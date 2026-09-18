@@ -52,8 +52,12 @@ Singleton {
         run(["alacritty", "--class", "clipse", "-e", "clipse"]);
     }
 
+    function sysUpdateCheck(): void {
+        SystemUpdate.check();
+    }
+
     function sysUpdate(): void {
-        run(["alacritty", "-e", Quickshell.shellPath("scripts/sys_update.sh")]);
+        SystemUpdate.update();
     }
 
     function notificationMenu(): void {

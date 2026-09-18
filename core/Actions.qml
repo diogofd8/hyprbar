@@ -3,11 +3,25 @@ pragma Singleton
 import Quickshell
 import Quickshell.Hyprland
 
+import qs
+
 Singleton {
     id: root
 
     function run(argv): void {
         Quickshell.execDetached(argv);
+    }
+
+    function toggleDarkMode(): void {
+        switch (Settings.theme) {
+            case "dark":
+                Settings.setTheme("light");
+                break;
+            case "light":
+            default:
+                Settings.setTheme("dark");
+                break;
+        }
     }
 
     function notify(summary: string, body: string, icon: string): void {

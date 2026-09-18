@@ -20,6 +20,7 @@ Row {
         hoverOpacity: 2 * Settings.colors.hoverOpacity
 
         onScrolled: steps => Core.Backlight.stepBrightness(steps)
+        onRightClicked: Core.Actions.toggleDarkMode()
 
         Glyph {
             icon: Core.Backlight.icon

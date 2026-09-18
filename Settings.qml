@@ -5,10 +5,23 @@ import QtQuick
 
 Singleton {
     // ────── Theme Selection ──────
-    property bool darkMode: true
+    PersistentProperties {
+        id: persist
+        property string theme: "dark"
+    }
 
-    readonly property QtObject colors:
-        darkMode ? Theme.dark : Theme.light
+    readonly property string theme: persist.theme
+    readonly property QtObject colors: {
+        switch (persist.theme) {
+            case "light": return Theme.light;
+            case "dark": // passthrough
+            default: return Theme.dark;
+        }
+    }
+
+    function setTheme(value: string): void {
+        persist.theme = value;
+    }
 
     // ────── Bar Dimensions ──────
     readonly property int barHeight: 28

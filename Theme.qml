@@ -28,19 +28,19 @@ Singleton {
 
     // ────── Light Theme ──────
     readonly property QtObject light: QtObject {
-        readonly property color bgMain: "#F5F6F8"
-        readonly property color bgTint1: "#ECEEF2"
-        readonly property color bgTint2: "#E2E5EA"
-        readonly property color bgTint3: "#D7DBE2"
-        readonly property color bgTint4: "#CBD0D9"
-        readonly property real hoverOpacity: 0.10
+        readonly property color bgMain: "#F4F5F7"
+        readonly property color bgTint1: "#E8EBEF"
+        readonly property color bgTint2: "#DCE0E6"
+        readonly property color bgTint3: "#D0D5DD"
+        readonly property color bgTint4: "#C3C9D3"
+        readonly property real hoverOpacity: 0.1
 
-        readonly property color fgMain: "#555C82"
+        readonly property color fgMain: "#555D8A"
         readonly property color fgDark: bgMain
         readonly property color accentMain: "#8F3030"
-        readonly property color accentCharging: "#4F8A48"
-        readonly property color accentAlert: "#8A8145"
-        readonly property color accentError: "#A82D3A"
+        readonly property color accentCharging: "#5F8F58"
+        readonly property color accentAlert: "#918A4F"
+        readonly property color accentError: "#A62D38"
 
         readonly property color internalBatteryColor: "#DAA250"
         readonly property color externalBatteryColor: "#5088DA"

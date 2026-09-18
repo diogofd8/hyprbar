@@ -1,0 +1,1 @@
+../../../rofi/powermenu/powermenu.sh

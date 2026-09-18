@@ -1,0 +1,78 @@
+pragma Singleton
+
+import Quickshell
+import Quickshell.Hyprland
+
+Singleton {
+    id: root
+
+    function run(argv): void {
+        Quickshell.execDetached(argv);
+    }
+
+    function notify(summary: string, body: string, icon: string): void {
+        const argv = ["notify-send", "-a", "quickshell"];
+        if (icon)
+            argv.push("-i", icon);
+        argv.push(summary, body ?? "");
+        run(argv);
+    }
+
+    function focusWorkspace(target: string): void {
+        Hyprland.dispatch('hl.dsp.focus({ workspace = "' + target + '" })');
+    }
+
+    function launcher(): void {
+        run(["rofi", "-show", "drun"]);
+    }
+
+    function powerMenu(): void {
+        run([Quickshell.shellPath("scripts/powermenu.sh")]);
+    }
+
+    function terminal(title: string, command: string): void {
+        run(["alacritty", "--title", title, "-e", "sh", "-c", command]);
+    }
+
+    function clipse(): void {
+        run(["alacritty", "--class", "clipse", "-e", "clipse"]);
+    }
+
+    function sysUpdate(): void {
+        run(["alacritty", "-e", Quickshell.shellPath("scripts/sys_update.sh")]);
+    }
+
+    function notificationMenu(): void {
+        run(["swaync-client", "-t"]);
+    }
+
+    function networkManager(): void {
+        run(["nm-connection-editor"]);
+    }
+
+    function bluetoothManager(): void {
+        run(["blueman-manager"]);
+    }
+
+    function vitalsPopUp(): void {
+        run([Quickshell.shellPath("scripts/float_term.sh"), "waybar-vitals", "btop"]);
+    }
+
+    function weatherPopUp(): void {
+        run([Quickshell.shellPath("scripts/float_term.sh"),
+            "waybar-weather", "curl", "-s", "wttr.in", "--keep-alive"
+        ]);
+    }
+
+    function calendarPopUp(): void {
+        run([Quickshell.shellPath("scripts/float_term.sh"),
+            "waybar-calendar", "cal", "--keep-alive"
+        ]);
+    }
+
+    function calendarFullPopUp(): void {
+        run([Quickshell.shellPath("scripts/float_term.sh"),
+            "waybar-calendar-full", "cal", "-Y", "--columns", "4", "--keep-alive"
+        ]);
+    }
+}

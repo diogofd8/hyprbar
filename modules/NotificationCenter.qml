@@ -5,7 +5,8 @@ import qs.components
 import qs.core as Core
 
 ChevronButton {
-    height: root.height
+    id: root
+
     contentLeftPadding: 5
     contentRightPadding: 3
 

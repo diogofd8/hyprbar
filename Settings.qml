@@ -23,6 +23,9 @@ Singleton {
         persist.theme = value;
     }
 
+    // ────── Wlr Layer Shell ──────
+    readonly property string wlrLayerShellNamespace: "hyprbar"
+
     // ────── Bar Dimensions ──────
     readonly property int barHeight: 28
 
@@ -48,9 +51,6 @@ Singleton {
     readonly property int buttonFontSize: 20
 
     // ────── Workspace pips ──────
-    // Pips always shown, even when the compositor has no workspace for them.
-    // Matches the persistent workspaces declared in hyprland.lua; anything
-    // Hyprland creates beyond this appears on its own.
     readonly property int minWorkspaceCount: 5  // from Hyprland Lua Config
     readonly property int workspaceSpacing: 8
     readonly property int workspaceIconSize: 14
@@ -143,8 +143,6 @@ Singleton {
     ]
 
     // ────── Connectivity API Configuration ──────
-    // One bucket per signal glyph after the disconnected one, so the icon
-    // array and these thresholds stay in step.
     readonly property var wifiSignalThresholds: [
         {state: "weak", threshold: 0},
         {state: "fair", threshold: 25},

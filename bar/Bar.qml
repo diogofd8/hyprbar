@@ -7,6 +7,7 @@ import qs.core as Core
 
 PanelWindow {
     id: root
+    WlrLayershell.namespace: Settings.wlrLayerShellNamespace
 
     anchors {
         top: true

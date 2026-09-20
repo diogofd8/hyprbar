@@ -10,7 +10,7 @@ Row {
 
     ChevronButton {
         height: root.height
-        contentLeftPadding: 6
+        contentLeftPadding: 5
         contentRightPadding: 2
 
         leftCap: Core.ChevronGeometry.Cap.Notch
@@ -22,7 +22,7 @@ Row {
         onLeftClicked: Core.Actions.weatherPopUp()
 
         Row {
-            spacing: 8
+            spacing: 7
 
             Glyph {
                 text: Core.WeatherParse.icon

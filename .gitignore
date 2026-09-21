@@ -1,2 +1,5 @@
 # IDE
 .vscode/
+
+# Ignore personal documentation
+/docs

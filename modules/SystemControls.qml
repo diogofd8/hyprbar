@@ -18,8 +18,8 @@ Chevron {
         spacing: 3
 
         GlyphButton {
-            contentLeftPadding: 4
-            contentRightPadding: 4
+            contentLeftPadding: 5
+            contentRightPadding: 5
 
             icon: Settings.clipboardIcon
             useMetrics: false
@@ -52,19 +52,21 @@ Chevron {
             contentLeftPadding: 5
             contentRightPadding: 5
 
-            icon: Core.Connectivity.bluetoothIcon
+            icon: Core.Bluetooth.bluetoothIcon
             useMetrics: true
 
-            onLeftClicked: Core.Connectivity.toggleBluetooth()
+            onLeftClicked: Core.Bluetooth.toggleBluetooth()
             onRightClicked: Core.Actions.bluetoothManager()
         }
 
         GlyphButton {
-            contentLeftPadding: 4
-            contentRightPadding: 4
+            id: network
 
-            icon: Core.Connectivity.wifiIcon
-            useMetrics: false
+            contentLeftPadding: 5
+            contentRightPadding: 5
+
+            icon: Core.Network.icon
+            useMetrics: true
 
             onLeftClicked: Core.Connectivity.toggleWifi()
             onRightClicked: Core.Actions.networkManager()

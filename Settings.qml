@@ -76,6 +76,9 @@ Singleton {
     readonly property var networkWifiOffIcon: "󰤮"
     readonly property var networkWiFiOnIcon:
         ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"]
+    readonly property var networkWifiOpenIcon: "󰤨"
+    readonly property var networkWifiProtectedIcon: "󰤪"
+    readonly property var networkEthIcon: "󰈁"
     readonly property var clipboardIcon: ""
     readonly property var updateNotifierIcon:
         ["󰄴", "󱤧"]
@@ -144,6 +147,8 @@ Singleton {
     ]
 
     // ────── Connectivity API Configuration ──────
+    readonly property string networkEthInterface: "enp0s31f6"
+    readonly property string networkWifiInterface: "wlp3s0"
     readonly property var wifiSignalThresholds: [
         {state: "weak", threshold: 0},
         {state: "fair", threshold: 25},

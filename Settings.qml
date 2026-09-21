@@ -41,6 +41,7 @@ Singleton {
 
     // ────── Input Rules ──────
     readonly property int actionScrollDelta: 25
+    readonly property var popupCloseKeys: [Qt.Key_Escape, Qt.Key_Q]
 
     // ────── Typography ──────
     readonly property string labelFontFamily: "JetBrains Mono"

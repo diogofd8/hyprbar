@@ -10,6 +10,8 @@ Item {
     required property int leftCap
     required property int rightCap
     required property color bgFill
+    property color outlineColor: "transparent"
+    property real outlineWidth: -1
 
     property real contentLeftPadding: 0
     property real contentRightPadding: 0
@@ -48,7 +50,9 @@ Item {
 
         ShapePath {
             fillColor: root.bgFill
-            strokeWidth: -1 // -1 disables stroking entirely
+            strokeColor: root.outlineColor
+            strokeWidth: root.outlineWidth // -1 disables stroking entirely
+            joinStyle: ShapePath.MiterJoin
 
             PathPolyline {
                 path: Core.ChevronGeometry.polygon(

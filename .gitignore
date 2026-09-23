@@ -1,5 +1,9 @@
 # IDE
 .vscode/
 
-# Ignore personal documentation
+# Personal documentation
 /docs
+
+# Local development entry points and scratch shells
+/debug
+/debug-shell.qml

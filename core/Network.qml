@@ -75,17 +75,21 @@ Singleton {
 
     readonly property bool ethernetConnected: root.ethernetDevice !== null
         && root.ethernetDevice.connected
+    function wifiSignalLevel(strength) {
+        let level = 0
+        for (let i = 0; i < Settings.wifiSignalThresholds.length; ++i) {
+            if (strength >= Settings.wifiSignalThresholds[i].threshold)
+                level = i
+        }
+        return level
+    }
     readonly property string icon: {
         if (root.ethernetConnected) return Settings.networkEthIcon
         if (!root.wifiAvailable || !root.wifiEnabled)
             return Settings.networkWifiOffIcon
         if (!root.wifiConnected) return Settings.networkWiFiOnIcon[0]
 
-        let level = 0
-        for (let i = 0; i < Settings.wifiSignalThresholds.length; ++i) {
-            if (root.wifiStrength >= Settings.wifiSignalThresholds[i].threshold)
-                level = i
-        }
+        const level = root.wifiSignalLevel(root.wifiStrength)
         return Settings.networkWiFiOnIcon[
             Math.min(level + 1, Settings.networkWiFiOnIcon.length - 1)]
     }
@@ -118,7 +122,9 @@ Singleton {
                     && priv.visibleSsids.indexOf(network.name) !== -1
                 if (!network.connected && !visible && priv.operationId !== entryId)
                     continue
-                const profiles = network.nmSettings.slice().sort((a, b) => a.uuid.localeCompare(b.uuid))
+                const profiles = network.nmSettings.slice()
+                    .filter(profile => profile !== null)
+                    .sort((a, b) => a.uuid.localeCompare(b.uuid))
                 const activeUuid = priv.activeProfiles[device.name] || ""
                 const profile = profiles.find(p => p.uuid === activeUuid) || profiles[0] || null
                 const security = securityName(network.security)
@@ -132,7 +138,9 @@ Singleton {
         const wired = root.ethernetDevice
         if (wired && wired.hasLink && wired.network) {
             const network = wired.network
-            const profiles = network.nmSettings.slice().sort((a, b) => a.uuid.localeCompare(b.uuid))
+            const profiles = network.nmSettings.slice()
+                .filter(profile => profile !== null)
+                .sort((a, b) => a.uuid.localeCompare(b.uuid))
             const activeUuid = priv.activeProfiles[wired.name] || ""
             let foundActive = false
             for (const profile of profiles) {
@@ -210,9 +218,6 @@ Singleton {
             name: name,
             interfaceName: iface,
             profileUuid: uuid,
-            icon: kind === "ethernet" ? Settings.networkEthIcon
-                : security === "open" ? Settings.networkWifiOpenIcon
-                : Settings.networkWifiProtectedIcon,
             security: security,
             signalStrength: strength,
             state: state,
@@ -251,6 +256,7 @@ Singleton {
     property bool discoveryActive: false
     readonly property bool scanning: root.wifiDevice !== null
         && root.wifiDevice.scannerEnabled
+    readonly property bool refreshing: visibleQuery.running
     readonly property string scanErrorMessage: priv.scanError
     Binding {
         target: root.wifiDevice
@@ -262,13 +268,6 @@ Singleton {
         if (root.discoveryActive) refreshVisibleNetworks()
         else priv.visibleSsids = null
     }
-    Timer {
-        interval: 30000
-        running: root.discoveryActive && root.wifiAvailable && root.wifiEnabled
-        repeat: true
-        onTriggered: root.refreshVisibleNetworks()
-    }
-
     function escapedFields(line) {
         const fields = []
         let field = ""
@@ -282,20 +281,34 @@ Singleton {
         fields.push(field)
         return fields
     }
-    function refreshVisibleNetworks() {
+    function refreshVisibleNetworks(forceScan = false) {
         if (!root.discoveryActive || !root.wifiAvailable || !root.wifiEnabled)
             return
-        if (visibleQuery.running) { priv.visibleQueryAgain = true; return }
+        if (visibleQuery.running) {
+            priv.visibleQueryAgain = true
+            priv.forceVisibleQueryAgain = priv.forceVisibleQueryAgain || forceScan
+            return
+        }
         visibleQuery.command = ["nmcli", "--colors", "no", "--terse", "--escape", "yes",
             "--fields", "SSID", "device", "wifi", "list", "ifname",
-            root.wifiInterface, "--rescan", "no"]
+            root.wifiInterface, "--rescan", forceScan ? "yes" : "no"]
         visibleQuery.running = true
+    }
+    function forceWifiScan() {
+        if (!root.discoveryActive || !root.wifiAvailable || !root.wifiEnabled)
+            return
+        priv.scanError = ""
+        root.refreshVisibleNetworks(true)
     }
     Process {
         id: visibleQuery
         stdout: StdioCollector { id: visibleOutput }
         onExited: (code, status) => {
-            if (!root.discoveryActive) return
+            if (!root.discoveryActive) {
+                priv.visibleQueryAgain = false
+                priv.forceVisibleQueryAgain = false
+                return
+            }
             if (code !== 0 || status !== 0) {
                 priv.scanError = "Could not list nearby Wi-Fi networks."
             } else {
@@ -309,8 +322,10 @@ Singleton {
                 priv.visibleSsids = names
             }
             if (priv.visibleQueryAgain) {
+                const forceScan = priv.forceVisibleQueryAgain
                 priv.visibleQueryAgain = false
-                Qt.callLater(root.refreshVisibleNetworks)
+                priv.forceVisibleQueryAgain = false
+                Qt.callLater(() => root.refreshVisibleNetworks(forceScan))
             }
         }
     }
@@ -427,7 +442,8 @@ Singleton {
         operationTimeout.interval = 90000
         operationTimeout.restart()
         if (entry.profileUuid) {
-            const profile = network.nmSettings.find(p => p.uuid === entry.profileUuid)
+            const profile = network.nmSettings.find(p => p !== null
+                && p.uuid === entry.profileUuid)
             if (!profile) {
                 finishOperation("The saved connection is no longer available.")
                 return
@@ -511,6 +527,7 @@ Singleton {
         property bool activeQueryAgain: false
         property var visibleSsids: null
         property bool visibleQueryAgain: false
+        property bool forceVisibleQueryAgain: false
         property string scanError: ""
         property string operationId: ""
         property string operationMode: ""

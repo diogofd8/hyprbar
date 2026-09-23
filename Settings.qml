@@ -33,6 +33,9 @@ Singleton {
     readonly property int barPaddingBottom: 2
     readonly property int barPaddingRight: 10
     readonly property int barPaddingLeft: 10
+    readonly property int dropDownPadding: 4
+    readonly property int dropDownTransitionMs: 120
+    readonly property real dropDownTransitionOffset: 10
 
     readonly property real chevronAngle: 105
     readonly property int moduleSpacing: 6
@@ -151,9 +154,10 @@ Singleton {
     readonly property string networkWifiInterface: "wlp3s0"
     readonly property var wifiSignalThresholds: [
         {state: "weak", threshold: 0},
-        {state: "fair", threshold: 25},
-        {state: "good", threshold: 50},
-        {state: "excellent", threshold: 75}
+        {state: "poor", threshold: 17},
+        {state: "fair", threshold: 50},
+        {state: "good", threshold: 71},
+        {state: "excellent", threshold: 90}
     ]
 
     // ────── Volume API Configuration ──────

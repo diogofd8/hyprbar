@@ -3,11 +3,12 @@ import QtQuick
 import qs
 import qs.components
 import qs.core as Core
+import qs.widgets
 
 Chevron {
     height: root.height
     contentLeftPadding: 0
-    contentRightPadding: 0
+    contentRightPadding: 1
 
     leftCap: Core.ChevronGeometry.Cap.Notch
     rightCap: Core.ChevronGeometry.Cap.Point
@@ -68,8 +69,29 @@ Chevron {
             icon: Core.Network.icon
             useMetrics: true
 
-            onLeftClicked: Core.Connectivity.toggleWifi()
+            onLeftClicked: dropdown.toggle()
             onRightClicked: Core.Actions.networkManager()
+
+            // The DropDown content is lazy, so its persistent parent owns scan
+            // demand. Closing the menu immediately releases the Wi-Fi scanner.
+            Binding {
+                target: Core.Network
+                property: "discoveryActive"
+                value: dropdown.isOpen
+            }
+
+            DropDown {
+                id: dropdown
+
+                // ChevronButton hands its children to the Chevron's content row, so
+                // the popup has to be pointed back at the button itself.
+                anchorItem: network
+
+                NetworkManager {
+                    id: networkManager
+                    anchors.fill: parent
+                }
+            }
         }
     }
 }

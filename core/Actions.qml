@@ -64,8 +64,11 @@ Singleton {
         run(["swaync-client", "-t"]);
     }
 
-    function networkManager(): void {
-        run(["nm-connection-editor"]);
+    function networkManager(uuid): void {
+        const argv = ["nm-connection-editor"];
+        if (uuid)
+            argv.push("--edit=" + uuid);
+        run(argv);
     }
 
     function bluetoothManager(): void {

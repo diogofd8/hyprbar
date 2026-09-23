@@ -16,12 +16,23 @@ Item {
     property Item anchorItem: root.parent
     property int edges: Edges.Bottom
     property int gravity: Edges.Bottom
-    property real spacing: Settings.barPaddingBottom
+    property real spacing: Settings.dropDownPadding
     property color backgroundColor: "transparent"
+    property int transitionDuration: Settings.dropDownTransitionMs
+    property real transitionOffset: Settings.dropDownTransitionOffset
 
     property var closeKeys: Settings.popupCloseKeys
 
     readonly property bool isOpen: priv.isRequested
+    property real transitionProgress: priv.isRequested ? 1 : 0
+
+    Behavior on transitionProgress {
+        SmoothedAnimation {
+            duration: root.transitionDuration
+            velocity: -1
+            reversingMode: SmoothedAnimation.Eased
+        }
+    }
 
     function open() { priv.isRequested = true }
     function close() { priv.isRequested = false }
@@ -33,7 +44,7 @@ Item {
     }
 
     HyprlandFocusGrab {
-        active: popup.backingWindowVisible
+        active: priv.isRequested && popup.backingWindowVisible
         windows: [popup]
 
         onCleared: root.close()
@@ -68,9 +79,32 @@ Item {
             id: contentLoader
             anchors.fill: parent
 
-            active: priv.isRequested
+            active: priv.isRequested || root.transitionProgress > 0
             sourceComponent: root.menuContent
-            focus: true
+            focus: priv.isRequested
+            enabled: priv.isRequested
+            opacity: root.transitionProgress
+
+            transform: Translate {
+                x: {
+                    if (root.gravity & Edges.Right)
+                        return -root.transitionOffset
+                            * (1 - root.transitionProgress)
+                    if (root.gravity & Edges.Left)
+                        return root.transitionOffset
+                            * (1 - root.transitionProgress)
+                    return 0
+                }
+                y: {
+                    if (root.gravity & Edges.Bottom)
+                        return -root.transitionOffset
+                            * (1 - root.transitionProgress)
+                    if (root.gravity & Edges.Top)
+                        return root.transitionOffset
+                            * (1 - root.transitionProgress)
+                    return 0
+                }
+            }
 
             Keys.onPressed: event => {
                 if (root.closeKeys.includes(event.key)) {

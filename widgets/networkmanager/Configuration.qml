@@ -38,9 +38,9 @@ Singleton {
     readonly property string nwConnectIcon: ""
     readonly property string nwDisconnectIcon: ""
     readonly property string nwExpandIcon: ""
+    readonly property string nwSendIcon: "󰒊"
+    readonly property string nwDismissIcon: "󰅖"
 
-
-
-    readonly property int contentWidth: 368
+    readonly property int contentWidth: 250
     readonly property int listMaxHeight: 440
 }

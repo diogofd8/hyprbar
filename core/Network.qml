@@ -161,7 +161,7 @@ Singleton {
         if (priv.operationId && priv.operationRow
                 && !active.concat(available).some(row => row.entryId === priv.operationId)) {
             const previous = priv.operationRow
-            const state = priv.operationMode === "disconnect" ? "Disconnecting" : "Connecting"
+            const state = entryState(previous.entryId, null)
             const row = makeEntry(previous.entryId, previous.kind, previous.name,
                 previous.interfaceName, previous.profileUuid, previous.security,
                 previous.signalStrength, state)
@@ -196,6 +196,8 @@ Singleton {
     }
     function entryState(entryId, network) {
         if (priv.operationId === entryId) {
+            // A waiting password prompt is local: nothing is in flight yet.
+            if (priv.operationStatus === "PasswordRequired") return "Available"
             if (priv.operationMode === "disconnect") return "Disconnecting"
             return "Connecting"
         }
@@ -208,9 +210,12 @@ Singleton {
         }
     }
     function makeEntry(entryId, kind, name, iface, uuid, security, strength, state) {
-        const busy = priv.operationId !== ""
         const prompt = priv.operationId === entryId
             && priv.operationStatus === "PasswordRequired"
+        // A prompt waits on the user, not on NetworkManager, so it must not
+        // hold every other entry hostage.
+        const busy = priv.operationId !== ""
+            && priv.operationStatus !== "PasswordRequired"
         const error = priv.entryErrors[entryId] || ""
         return {
             entryId: entryId,
@@ -223,7 +228,7 @@ Singleton {
             state: state,
             status: prompt ? "PasswordRequired" : "",
             errorMessage: error,
-            canConnect: state === "Available" && !busy
+            canConnect: state === "Available" && !busy && !prompt
                 && (kind === "ethernet" || security === "open"
                     || security === "personal" || uuid !== ""),
             canDisconnect: state === "Connected" && !busy,
@@ -413,6 +418,7 @@ Singleton {
         priv.operationMode = mode
         priv.operationStatus = ""
         priv.passwordSubmitted = false
+        priv.operationWasKnown = network !== null && network.known
         return true
     }
     function finishOperation(error = "") {
@@ -424,13 +430,18 @@ Singleton {
         priv.operationNetwork = null
         priv.operationRow = null
         priv.passwordSubmitted = false
+        priv.operationWasKnown = false
         if (entryId && error) setEntryError(entryId, error)
         root.refreshActiveProfiles()
         if (root.discoveryActive) root.refreshVisibleNetworks()
     }
     function connectEntry(entryId) {
         const entry = findEntry(entryId)
-        if (!entry || !entry.canConnect || priv.operationId) return
+        if (!entry) return
+        // A waiting prompt is local state, so starting a connection abandons
+        // it rather than being blocked by it.
+        if (priv.operationStatus === "PasswordRequired") finishOperation()
+        if (priv.operationId || !entry.canConnect) return
         const network = nativeNetwork(entry)
         if (!network || network.connected) return
         if (!beginOperation(entryId, network, "connect")) return
@@ -459,6 +470,7 @@ Singleton {
             finishOperation("The network is no longer available.")
             return
         }
+        setEntryError(entryId, "")
         priv.passwordSubmitted = true
         priv.operationStatus = ""
         operationTimeout.interval = 90000
@@ -468,7 +480,9 @@ Singleton {
     }
     function disconnectEntry(entryId) {
         const entry = findEntry(entryId)
-        if (!entry || !entry.canDisconnect || priv.operationId) return
+        if (!entry) return
+        if (priv.operationStatus === "PasswordRequired") finishOperation()
+        if (priv.operationId || !entry.canDisconnect) return
         const network = nativeNetwork(entry)
         if (!network || !network.connected) return
         if (!beginOperation(entryId, network, "disconnect")) return
@@ -481,7 +495,10 @@ Singleton {
         // would require deactivating a specific NM ActiveConnection, unavailable
         // through this API; the UI therefore cannot claim to cancel that work.
         if (priv.operationId === entryId
-                && priv.operationStatus === "PasswordRequired") finishOperation()
+                && priv.operationStatus === "PasswordRequired") {
+            finishOperation()
+            clearEntryError(entryId)
+        }
     }
     function editConnection(entryId) {
         const entry = findEntry(entryId)
@@ -501,13 +518,25 @@ Singleton {
     }
     function failOperation(reason) {
         if (!priv.operationId || priv.operationMode !== "connect") return
-        if (reason === ConnectionFailReason.NoSecrets && !priv.passwordSubmitted
-                && securityName(priv.operationNetwork.security) === "personal") {
-            operationTimeout.stop()
-            priv.operationStatus = "PasswordRequired"
+        const network = priv.operationNetwork
+        const personal = network !== null
+            && securityName(network.security) === "personal"
+        if (reason !== ConnectionFailReason.NoSecrets || !personal) {
+            finishOperation("Connection failed: "
+                + ConnectionFailReason.toString(reason))
             return
         }
-        finishOperation("Connection failed: " + ConnectionFailReason.toString(reason))
+        // NetworkManager writes the PSK it is handed into a saved profile
+        // before the access point has accepted it, so a rejected password is
+        // kept and every later attempt reuses it without asking again. Drop a
+        // profile that only exists because of this attempt, then re-open the
+        // prompt so the next try starts from a clean slate.
+        const rejected = priv.passwordSubmitted
+        if (rejected && !priv.operationWasKnown && network.known) network.forget()
+        operationTimeout.stop()
+        priv.passwordSubmitted = false
+        priv.operationStatus = "PasswordRequired"
+        setEntryError(priv.operationId, rejected ? "Incorrect password." : "")
     }
     Connections {
         target: priv.operationNetwork
@@ -535,6 +564,7 @@ Singleton {
         property var operationNetwork: null
         property var operationRow: null
         property bool passwordSubmitted: false
+        property bool operationWasKnown: false
         property var entryErrors: ({})
         property bool wifiRequested: false
         property bool expectedWifi: false

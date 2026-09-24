@@ -14,37 +14,25 @@ Controls.Pane {
     signal dismissRequested()
 
     property bool expanded: false
-
+    readonly property bool hasError: root.model.errorMessage.length > 0
+    readonly property bool askingPassword: root.model.status === "PasswordRequired"
+    readonly property bool forcedOpen: root.hasTransientStatus || root.hasError || root.askingPassword
     readonly property bool isActionable: root.model.canConnect || root.model.canDisconnect
-    readonly property bool hasTransientStatus:
-        root.model.state === "Connecting"
-        || root.model.state === "Disconnecting"
-    readonly property bool bottomShown: root.expanded
-        || root.hasTransientStatus
-        || root.model.errorMessage.length > 0
-    readonly property var wifiIcons: root.model.security === "open"
-        ? Configuration.nwWifiOpenIcon
-        : Configuration.nwWifiProtectedIcon
-    readonly property int signalLevel: root.model.kind === "wifi"
-        ? Math.min(Core.Network.wifiSignalLevel(root.model.signalStrength),
-            root.wifiIcons.length - 1)
-        : 0
-    readonly property string entryIcon: root.model.kind === "ethernet"
-        ? Configuration.nwEthernetIcon
-        : root.wifiIcons[root.signalLevel]
-    readonly property real targetImplicitHeight: mainContent.implicitHeight
-        + root.topPadding + root.bottomPadding
-    property real animatedHeight: root.targetImplicitHeight
+    readonly property bool hasTransientStatus: root.model.state === "Connecting" || root.model.state === "Disconnecting"
+    readonly property bool bottomShown: root.expanded || root.forcedOpen
 
+    readonly property string entryIcon: NetworkActions.entryIcon(root.model)
+    readonly property bool needsExternalSetup:
+        NetworkActions.needsExternalSetup(root.model)
+    readonly property string statusText: makeStatusText()
+
+    // ────── Dimensioning ──────
     padding: Configuration.nwEntryPadding
-    implicitHeight: root.animatedHeight
-    Layout.preferredHeight: root.animatedHeight
+    implicitHeight: mainContent.implicitHeight + root.topPadding + root.bottomPadding
     clip: true
 
-    // Publish one animated size to every parent layout. SmoothedAnimation
-    // preserves velocity if the layout target changes or the user reverses the
-    // transition before it has finished.
-    Behavior on animatedHeight {
+    // ────── Animations ──────
+    Behavior on implicitHeight {
         SmoothedAnimation {
             duration: Configuration.transitionMs
             velocity: -1
@@ -64,17 +52,14 @@ Controls.Pane {
         // ────── Main Row ──────
         RowLayout {
             id: mainRow
-
             Layout.fillWidth: true
-            Layout.leftMargin: 4
-            Layout.rightMargin: Layout.leftMargin
             spacing: Configuration.nwEntryPadding
 
             Glyph {
                 id: entryGlyph
-
                 Layout.alignment: Qt.AlignVCenter
-                Layout.rightMargin: Configuration.nwEntryPadding
+                Layout.leftMargin: 6
+                Layout.rightMargin: 6
 
                 icon: root.entryIcon
                 iconSize: Configuration.mainButtonSize
@@ -83,8 +68,8 @@ Controls.Pane {
 
             Text {
                 id: networkName
-
                 Layout.fillWidth: true
+
                 text: root.model.name
                 elide: Text.ElideRight
                 color: Settings.colors.fgMain
@@ -92,12 +77,10 @@ Controls.Pane {
                 font.pixelSize: Configuration.nwNameFontSize
             }
 
-            // Compact action: preserve the contracted view exactly as an
-            // icon button.
             SquaredButton {
                 id: compactConnectionBtn
 
-                visible: !root.expanded && root.isActionable
+                visible: root.isActionable
                 enabled: root.isActionable
 
                 glyph: root.model.state === "Connected"
@@ -127,12 +110,16 @@ Controls.Pane {
             SquaredButton {
                 id: expandBtn
 
-                rotation: root.expanded ? 180 : 0
+                rotation: root.bottomShown ? 180 : 0
                 glyph: Configuration.nwExpandIcon
                 glyphSize: Configuration.secondaryButtonSize
                 color: Settings.colors.fgMain
 
-                onLeftClicked: root.expanded = !root.expanded
+                onLeftClicked: {
+                    const wasOpen = root.bottomShown
+                    root.dismissRow()
+                    root.expanded = !wasOpen
+                }
 
                 Behavior on rotation {
                     NumberAnimation {
@@ -150,147 +137,136 @@ Controls.Pane {
             clip: true
 
             Layout.fillWidth: true
-            Layout.leftMargin: 4
-            Layout.rightMargin: Layout.leftMargin
             Layout.topMargin: visible ? Configuration.nwEntryExpandedRowSpacing : 0
             Layout.bottomMargin: visible ? Configuration.nwEntryExpandedRowSpacing : 0
 
             spacing: Configuration.nwEntryPadding
 
-            // Reserved spacing below entryGlyph
+            // Fake padding the size of entryGlyph (copied its margins too)
             Rectangle {
                 Layout.fillHeight: true
-                Layout.rightMargin: Configuration.nwEntryPadding
+                Layout.leftMargin: 6
+                Layout.rightMargin: 6
                 implicitWidth: entryGlyph.implicitWidth
                 color: "transparent"
             }
 
-            Text {
+            // ────── Network Details ──────
+            Row {
                 Layout.fillWidth: true
-                Layout.alignment: Qt.AlignTop
-                text: root.detailText()
-                elide: Text.ElideRight
-                color: Settings.colors.fgMain
                 opacity: 0.7
-                font.family: Settings.labelFontFamily
-                font.pixelSize: Settings.smallCapsFontSize
+                spacing: 4
+                visible: !root.askingPassword
+
+                Text {
+                    text: NetworkActions.connectionTypeText(root.model)
+
+                    color: Settings.colors.fgMain
+                    font.family: Settings.labelFontFamily
+                    font.pixelSize: Settings.smallCapsFontSize
+                }
+
+                Circle {
+                    diameter: 2
+                    color: Settings.colors.fgMain
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Text {
+                    text: root.model.signalStrength + "%"
+
+                    color: Settings.colors.fgMain
+                    font.family: Settings.labelFontFamily
+                    font.pixelSize: Settings.smallCapsFontSize
+                }
             }
 
             Controls.TextField {
                 id: passwordField
+                Layout.fillWidth: true
 
-                Layout.preferredWidth: 140
-                visible: root.model.status === "PasswordRequired"
-                placeholderText: "Wi-Fi password"
+                visible: root.askingPassword
+
+                placeholderText: "password"
                 echoMode: TextInput.Password
                 color: Settings.colors.fgMain
                 font.family: Settings.labelFontFamily
                 font.pixelSize: Settings.smallCapsFontSize
 
                 background: Rectangle {
-                    color: Settings.colors.bgMain
+                    color: Settings.colors.bgTint1
                     border.color: Settings.colors.bgTint4
                     border.width: 1
                 }
 
-                onAccepted: if (joinBtn.enabled) joinBtn.leftClicked()
+                onAccepted: root.joinNetwork()
                 onVisibleChanged: if (visible) forceActiveFocus()
             }
 
-            TextButton {
-                id: joinBtn
-                paddingX: 12
-                paddingY: 8
+            SquaredButton {
+                id: connectBtn
+                Layout.fillHeight: true
+                borderWidth: 1
+                borderColor: Settings.colors.bgTint4
 
-                visible: root.model.status === "PasswordRequired"
+                visible: root.askingPassword
                 enabled: root.model.canSubmitPassword && passwordField.text.length > 0
 
-                text: "Join"
-
-                onLeftClicked: {
-                    Core.Network.submitPassword(root.model.entryId, passwordField.text)
-                    passwordField.clear()
-                }
-            }
-
-            TextButton {
-                id: cancelBtn
-                paddingX: 12
-                paddingY: 8
-
-                visible: root.model.status === "PasswordRequired"
-                enabled: root.model.canCancel
-
-                text: "Cancel"
-
-                onLeftClicked: {
-                    Core.Network.cancelConnection(root.model.entryId)
-                    passwordField.clear()
-                }
-            }
-
-            TextButton {
-                id: connectionBtn
-                paddingX: 12
-                paddingY: 8
-
-                visible: root.expanded && root.isActionable
-                enabled: root.isActionable
-
-                text: root.model.state === "Connected" ? "Disconnect" : "Connect"
-
-                onLeftClicked: root.runConnectionAction()
-            }
-        }
-
-        // ────── Connection Diagnosis Row ──────
-        RowLayout {
-            Layout.fillWidth: true
-            visible: root.model.errorMessage.length > 0
-            spacing: Configuration.nwEntryExpandedRowSpacing
-
-            Text {
-                Layout.fillWidth: true
-                text: root.model.errorMessage
-                color: Settings.colors.accentError
-                wrapMode: Text.Wrap
-                font.family: Settings.labelFontFamily
-                font.pixelSize: Settings.smallCapsFontSize
-            }
-
-            TextButton {
-                paddingX: 12
-                paddingY: 8
-                text: "Retry"
-                visible: root.model.canConnect
-                enabled: root.model.canConnect
-                onLeftClicked: Core.Network.connectEntry(root.model.entryId)
-            }
-
-            TextButton {
-                paddingX: 12
-                paddingY: 8
-                text: "Dismiss"
-                visible: root.model.canConnect
-                enabled: root.model.canConnect
-                onLeftClicked: Core.Network.clearEntryError(root.model.entryId)
-            }
-
-            Text {
-                Layout.fillWidth: true
-                visible: root.expanded
-                    && root.model.kind === "wifi"
-                    && (root.model.security === "enterprise"
-                        || root.model.security === "unsupported")
-                    && !root.model.canConnect && !root.model.canEdit
-                text: "Configure this network in NetworkManager to connect."
+                glyph: Configuration.nwSendIcon
+                glyphSize: Configuration.secondaryButtonSize
                 color: Settings.colors.fgMain
-                opacity: 0.7
-                wrapMode: Text.Wrap
-                font.family: Settings.labelFontFamily
-                font.pixelSize: Settings.smallCapsFontSize
+                opacity: connectBtn.enabled ? 1 : 0.7
+
+                onLeftClicked: root.joinNetwork()
+            }
+
+            // dismissBtn doubles as empty padding aligned with expandBtn
+            SquaredButton {
+                id: dismissBtn
+                Layout.fillHeight: true
+                Layout.preferredWidth: expandBtn.implicitWidth
+
+                enabled: root.hasError
+                opacity: root.hasError ? 1 : 0
+
+                glyph: Configuration.nwDismissIcon
+                glyphSize: Configuration.secondaryButtonSize
+                color: Settings.colors.fgMain
+
+                onLeftClicked: Core.Network.clearEntryError(root.model.entryId)
+
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: Configuration.transitionMs
+                        easing.type: Easing.InOutCubic
+                    }
+                }
             }
         }
+
+        // ────── Status Row ──────
+        Text {
+            Layout.fillWidth: true
+            horizontalAlignment: Text.AlignRight
+            visible: root.statusText.length > 0
+
+            text: root.statusText
+            wrapMode: Text.Wrap
+            color: root.hasError
+                ? Settings.colors.accentError : Settings.colors.fgMain
+            opacity: root.hasError ? 1 : 0.7
+            font.family: Settings.labelFontFamily
+            font.pixelSize: Settings.smallCapsFontSize
+        }
+    }
+
+    // ────── Row logic ──────
+    function dismissRow() {
+        if (root.model.canCancel) {
+            Core.Network.cancelConnection(root.model.entryId)
+            passwordField.clear()
+        }
+        Core.Network.clearEntryError(root.model.entryId)
     }
 
     function runConnectionAction() {
@@ -300,20 +276,21 @@ Controls.Pane {
             Core.Network.connectEntry(root.model.entryId)
     }
 
-    function detailText() {
-        if (root.model.state === "Connecting")
-            return root.model.status === "PasswordRequired"
-                ? "Password" : "Connecting…"
-        if (root.model.state === "Disconnecting")
-            return "Disconnecting…"
-        if (root.model.kind === "ethernet")
-            return root.model.interfaceName
-        if (root.model.security === "open")
-            return "Open · " + root.model.signalStrength + "%"
-        if (root.model.security === "enterprise")
-            return "Enterprise · " + root.model.signalStrength + "%"
-        if (root.model.security === "unsupported")
-            return "Other · " + root.model.signalStrength + "%"
-        return "Secured · " + root.model.signalStrength + "%"
+    function joinNetwork() {
+        if (root.model.canSubmitPassword && passwordField.text.length > 0) {
+            Core.Network.submitPassword(root.model.entryId, passwordField.text)
+            passwordField.clear()
+        }
+    }
+
+    // The single line under the row. First matching case wins.
+    function makeStatusText() {
+        if (root.hasError) return root.model.errorMessage
+        if (root.askingPassword) return ""            // the field says it all
+        if (root.model.state === "Connecting") return "Connecting…"
+        if (root.model.state === "Disconnecting") return "Disconnecting…"
+        if (root.expanded && root.needsExternalSetup)
+            return "Configure this network in NetworkManager to connect."
+        return ""
     }
 }

@@ -33,7 +33,7 @@ Singleton {
     readonly property int barPaddingBottom: 2
     readonly property int barPaddingRight: 10
     readonly property int barPaddingLeft: 10
-    readonly property int dropDownPadding: 4
+    readonly property int dropDownPadding: barPaddingBottom + 1
     readonly property int dropDownTransitionMs: 120
     readonly property real dropDownTransitionOffset: 10
 

@@ -34,7 +34,7 @@ Singleton {
         readonly property color bgTint2: "#DCE0E6"
         readonly property color bgTint3: "#D0D5DD"
         readonly property color bgTint4: "#C3C9D3"
-        readonly property real hoverOpacity: 0.1
+        readonly property real hoverOpacity: 0.10
         readonly property real bgOpacity: 0.95
 
         readonly property color fgMain: "#555D8A"

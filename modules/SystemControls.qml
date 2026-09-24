@@ -90,6 +90,8 @@ Chevron {
                 NetworkManager {
                     id: networkManager
                     anchors.fill: parent
+
+                    onDismissRequested: dropdown.close()
                 }
             }
         }

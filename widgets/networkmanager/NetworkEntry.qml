@@ -8,8 +8,11 @@ import qs.core as Core
 
 Controls.Pane {
     id: root
-
     required property var model
+    // Raised when an action hands the user off to another window, so the host
+    // popup can get out of the way instead of lingering behind it.
+    signal dismissRequested()
+
     property bool expanded: false
 
     readonly property bool isActionable: root.model.canConnect || root.model.canDisconnect
@@ -115,7 +118,10 @@ Controls.Pane {
                 glyphSize: Configuration.secondaryButtonSize
                 color: Settings.colors.fgMain
 
-                onLeftClicked: Core.Network.editConnection(root.model.entryId)
+                onLeftClicked: {
+                    Core.Network.editConnection(root.model.entryId)
+                    root.dismissRequested()
+                }
             }
 
             SquaredButton {

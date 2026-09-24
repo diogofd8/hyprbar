@@ -105,7 +105,10 @@ Pane {
                 useMetrics: true
                 color: Settings.colors.fgMain
 
-                onLeftClicked: Network.openSettings()
+                onLeftClicked: {
+                    Network.openSettings()
+                    root.dismissRequested()
+                }
             }
         }
 
@@ -156,6 +159,8 @@ Pane {
                         model: Network.activeConnections
                         delegate: NetworkUI.NetworkEntry {
                             Layout.fillWidth: true
+
+                            onDismissRequested: root.dismissRequested()
                         }
                     }
                 }
@@ -180,6 +185,8 @@ Pane {
                         model: Network.availableConnections
                         delegate: NetworkUI.NetworkEntry {
                             Layout.fillWidth: true
+
+                            onDismissRequested: root.dismissRequested()
                         }
                     }
 

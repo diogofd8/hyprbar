@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
-import QtQuick.Controls as Controls
+import QtQuick.Controls
 
 import qs
 import qs.components
@@ -8,10 +8,14 @@ import qs.core
 
 import "networkmanager" as NetworkUI
 
-Controls.Pane {
+Pane {
     id: root
 
-    readonly property string panelBackgroundColor: Settings.colors.bgTint1
+    // Raised when an action hands the user off to another window, so the host
+    // popup can get out of the way instead of lingering behind it.
+    signal dismissRequested()
+
+    readonly property string panelBackgroundColor: Settings.colors.bgMain
     readonly property real targetImplicitHeight: panelContent.implicitHeight
         + root.topPadding + root.bottomPadding
 
@@ -62,18 +66,18 @@ Controls.Pane {
                 }
             }
 
-            Text {
-                Layout.fillWidth: true
-                visible: !Network.wifiAvailable || Network.wifiErrorMessage.length > 0
-                text: Network.wifiErrorMessage.length > 0
-                    ? Network.wifiErrorMessage
-                    : Network.wifiPresent
-                        ? "Wi-Fi hardware locked" : "Wi-Fi adapter unavailable"
-                wrapMode: Text.Wrap
-                color: Settings.colors.accentAlert
-                font.family: Settings.labelFontFamily
-                font.pixelSize: NetworkUI.Configuration.subTextFontSize
-            }
+            // Text {
+            //     Layout.fillWidth: true
+            //     visible: !Network.wifiAvailable || Network.wifiErrorMessage.length > 0
+            //     text: Network.wifiErrorMessage.length > 0
+            //         ? Network.wifiErrorMessage
+            //         : Network.wifiPresent
+            //             ? "Wi-Fi hardware locked" : "Wi-Fi adapter unavailable"
+            //     wrapMode: Text.Wrap
+            //     color: Settings.colors.accentAlert
+            //     font.family: Settings.labelFontFamily
+            //     font.pixelSize: NetworkUI.Configuration.subTextFontSize
+            // }
 
             Rectangle {
                 Layout.fillWidth: true
@@ -82,8 +86,7 @@ Controls.Pane {
             }
 
             NetworkUI.SquaredButton {
-                enabled: Network.discoveryActive
-                    && Network.wifiAvailable && Network.wifiEnabled
+                enabled: Network.discoveryActive && Network.wifiAvailable && Network.wifiEnabled
 
                 glyph: NetworkUI.Configuration.nmConnectionRefreshIcon
                 glyphSize: NetworkUI.Configuration.mainButtonSize
@@ -121,8 +124,7 @@ Controls.Pane {
             Layout.fillWidth: true
             Layout.preferredHeight: implicitHeight
             implicitWidth: NetworkUI.Configuration.contentWidth
-            implicitHeight: Math.min(contents.implicitHeight,
-                NetworkUI.Configuration.listMaxHeight)
+            implicitHeight: Math.min(contents.implicitHeight, NetworkUI.Configuration.listMaxHeight)
             contentWidth: width
             contentHeight: contents.implicitHeight
             clip: true

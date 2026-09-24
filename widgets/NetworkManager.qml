@@ -22,9 +22,20 @@ Controls.Pane {
     clip: true
 
     background: Rectangle {
-        color: root.panelBackgroundColor
+        color: Qt.alpha(root.panelBackgroundColor, Settings.transparentBgPercent)
+
         border.width: 1
-        border.color: Settings.colors.bgTint4
+        border.color: Qt.alpha(Settings.colors.fgMain, Settings.colors.hoverOpacity)
+
+        // Hide the top border
+        Rectangle {
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.right: parent.right
+
+            height: parent.border.width
+            color: root.panelBackgroundColor
+        }
     }
 
     contentItem: ColumnLayout {

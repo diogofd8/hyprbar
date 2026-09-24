@@ -61,7 +61,11 @@ Pane {
                     iconColor: Settings.colors.fgMain
                 }
 
-                NetworkUI.WifiSwitch {
+                HexagonSwitch {
+                    actionable: Network.wifiAvailable && !Network.wifiToggleBusy
+                    checked: Network.wifiEnabled
+                    onClicked: Network.toggleWifi()
+
                     backgroundColor: root.panelBackgroundColor
                 }
             }
@@ -85,7 +89,7 @@ Pane {
                 color: "transparent"
             }
 
-            NetworkUI.SquaredButton {
+            SquaredButton {
                 enabled: Network.discoveryActive && Network.wifiAvailable && Network.wifiEnabled
 
                 glyph: NetworkUI.Configuration.nmConnectionRefreshIcon
@@ -97,7 +101,7 @@ Pane {
                 rotateOnClick: true
             }
 
-            NetworkUI.SquaredButton {
+            SquaredButton {
                 Layout.rightMargin: NetworkUI.Configuration.topBarPadding
 
                 glyph: NetworkUI.Configuration.nmConnectionEditorIcon

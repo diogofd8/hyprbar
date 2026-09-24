@@ -9,7 +9,7 @@ Item {
     // ────── Appearance ──────
     property string glyph: ""
     property string fontFamily: Settings.iconFontFamily
-    property real glyphSize: Configuration.editButtonSize
+    required property real glyphSize
     property color color: Settings.colors.fgMain
 
     property color backgroundColor: "transparent"

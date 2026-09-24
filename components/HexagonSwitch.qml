@@ -1,6 +1,7 @@
 import QtQuick
 
 import qs
+import qs.components
 import qs.core as Core
 
 Item {
@@ -23,15 +24,13 @@ Item {
     readonly property real thumbWidth: root.thumbHeight * 2 / Math.sqrt(3)
     readonly property real centerY: root.height / 2
     readonly property real leftThumbCenterX: root.thumbWidth / 2
-    readonly property real rightThumbCenterX: root.leftThumbCenterX
-        + root.trackWidth
+    readonly property real rightThumbCenterX: root.leftThumbCenterX + root.trackWidth
+    readonly property color switchColor: root.checked ? root.activeColor : root.inactiveColor
 
-    readonly property bool actionable: Core.Network.wifiAvailable
-        && !Core.Network.wifiToggleBusy
-    readonly property bool checked: Core.Network.wifiEnabled
-        && Core.Network.wifiAvailable
-    readonly property color switchColor: root.checked
-        ? root.activeColor : root.inactiveColor
+    // ────── Component Input ──────
+    required property bool actionable
+    required property bool checked
+    signal clicked()
 
     // The track spans between the two possible thumb centres. The component
     // bounds add half a thumb on each end and use the taller thumb for height.
@@ -110,7 +109,7 @@ Item {
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
 
-            onClicked: Core.Network.toggleWifi()
+            onClicked: root.clicked()
         }
 
         MouseArea {
@@ -125,7 +124,7 @@ Item {
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
 
-            onClicked: Core.Network.toggleWifi()
+            onClicked: root.clicked()
         }
     }
 }

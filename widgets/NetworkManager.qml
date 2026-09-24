@@ -26,7 +26,7 @@ Pane {
     clip: true
 
     background: Rectangle {
-        color: Qt.alpha(root.panelBackgroundColor, Settings.transparentBgPercent)
+        color: Qt.alpha(root.panelBackgroundColor, Settings.colors.bgOpacity)
 
         border.width: 1
         border.color: Qt.alpha(Settings.colors.fgMain, Settings.colors.hoverOpacity)

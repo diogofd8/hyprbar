@@ -9,6 +9,9 @@ Item {
     property int padding: 0
     property real verticalOffset: Settings.inducedVerticalOffset
 
+    property string fontFamily: Settings.labelFontFamily
+    property real fontSize: Settings.labelFontSize
+
     width: 4 * fontMetrics.averageCharacterWidth + padding
     height: parent.height
 
@@ -24,22 +27,22 @@ Item {
         Text {
             text: root.value
             color: Settings.colors.fgMain
-            font.family: Settings.labelFontFamily
-            font.pixelSize: Settings.labelFontSize
+            font.family: root.fontFamily
+            font.pixelSize: root.fontSize
         }
 
         Text {
             text: "%"
             color: Settings.colors.fgMain
-            font.family: Settings.labelFontFamily
-            font.pixelSize: Settings.labelFontSize
+            font.family: root.fontFamily
+            font.pixelSize: root.fontSize
         }
     }
 
     FontMetrics {
         id: fontMetrics
 
-        font.family: Settings.labelFontFamily
-        font.pixelSize: Settings.labelFontSize
+        font.family: root.fontFamily
+        font.pixelSize: root.fontSize
     }
 }

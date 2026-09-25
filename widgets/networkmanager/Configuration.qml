@@ -12,7 +12,6 @@ Singleton {
 
     readonly property real mainButtonSize: 18
     readonly property real secondaryButtonSize: 16
-    readonly property real textButtonFontSize: 12
     readonly property real columnLabelFontSize: 11
     readonly property real subTextFontSize: 11
     readonly property real nwNameFontSize: 12

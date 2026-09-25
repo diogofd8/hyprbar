@@ -69,7 +69,7 @@ Chevron {
             icon: Core.Network.icon
             useMetrics: true
 
-            onLeftClicked: dropdown.toggle()
+            onLeftClicked: nwManager.toggle()
             onRightClicked: Core.Actions.networkManager()
 
             // The DropDown content is lazy, so its persistent parent owns scan
@@ -77,11 +77,11 @@ Chevron {
             Binding {
                 target: Core.Network
                 property: "discoveryActive"
-                value: dropdown.isOpen
+                value: nwManager.isOpen
             }
 
             DropDown {
-                id: dropdown
+                id: nwManager
 
                 // ChevronButton hands its children to the Chevron's content row, so
                 // the popup has to be pointed back at the button itself.
@@ -91,7 +91,7 @@ Chevron {
                     id: networkManager
                     anchors.fill: parent
 
-                    onDismissRequested: dropdown.close()
+                    onDismissRequested: nwManager.close()
                 }
             }
         }

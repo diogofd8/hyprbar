@@ -23,6 +23,12 @@ Item {
 
     property var closeKeys: Settings.popupCloseKeys
 
+    // Set while something the popup started has handed a prompt to another
+    // window. The grab is released so that window can take focus freely, and a
+    // cleared grab stops meaning "the user dismissed us". Guarding only
+    // onCleared would leave the grab armed to fight the other window for focus.
+    property bool holdOpen: false
+
     readonly property bool isOpen: priv.isRequested
     property real transitionProgress: priv.isRequested ? 1 : 0
 
@@ -44,10 +50,10 @@ Item {
     }
 
     HyprlandFocusGrab {
-        active: priv.isRequested && popup.backingWindowVisible
+        active: priv.isRequested && popup.backingWindowVisible && !root.holdOpen
         windows: [popup]
 
-        onCleared: root.close()
+        onCleared: if (!root.holdOpen) root.close()
     }
 
     PopupWindow {

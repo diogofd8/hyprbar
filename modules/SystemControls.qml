@@ -50,14 +50,39 @@ Chevron {
         }
 
         GlyphButton {
+            id: bluetooth
+
             contentLeftPadding: 5
             contentRightPadding: 5
 
             icon: Core.Bluetooth.bluetoothIcon
             useMetrics: true
 
-            onLeftClicked: Core.Bluetooth.toggleBluetooth()
+            onLeftClicked: btManager.toggle()
             onRightClicked: Core.Actions.bluetoothManager()
+
+            Binding {
+                target: Core.Bluetooth
+                property: "discoveryActive"
+                value: btManager.isOpen
+            }
+
+            DropDown {
+                id: btManager
+                anchorItem: bluetooth
+
+                // The system Bluetooth agent owns the pairing prompt, and its
+                // window takes focus. Stay open so the row being paired does
+                // not vanish out from under the user mid-handshake.
+                holdOpen: Core.Bluetooth.pairingInFlight
+
+                BluetoothManager {
+                    id: bluetoothManager
+                    anchors.fill: parent
+
+                    onDismissRequested: btManager.close()
+                }
+            }
         }
 
         GlyphButton {

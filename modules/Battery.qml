@@ -52,7 +52,7 @@ Chevron {
                     text: Core.PowerSupply.internal.icon
                     color: root.levelColor(Core.PowerSupply.internal)
 
-                    BatterySelector {
+                    NotificationDot {
                         visible: Core.PowerSupply.internal.active
                         dotColor: Settings.colors.internalBatteryColor
                         dotBgColor: Settings.colors.bgTint2
@@ -76,7 +76,7 @@ Chevron {
                     text: Core.PowerSupply.external.icon
                     color: root.levelColor(Core.PowerSupply.external)
 
-                    BatterySelector {
+                    NotificationDot {
                         visible: Core.PowerSupply.external.active
                         dotColor: Settings.colors.externalBatteryColor
                         dotBgColor: Settings.colors.bgTint3

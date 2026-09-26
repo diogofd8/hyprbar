@@ -7,3 +7,6 @@
 # Local development entry points and scratch shells
 /debug
 /debug-shell.qml
+
+# Test Scripts
+/scripts/tests

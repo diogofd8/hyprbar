@@ -16,7 +16,7 @@ RowLayout {
             Layout.fillHeight: true
         }
 
-        CaffeineMode {
+        NotificationCenter {
             Layout.leftMargin: -Core.ChevronGeometry.calcCapWidth(height)
             Layout.fillHeight: true
         }
@@ -29,7 +29,7 @@ RowLayout {
             Layout.fillHeight: true
         }
 
-        NotificationCenter {
+        Tray {
             Layout.leftMargin: -Core.ChevronGeometry.calcCapWidth(height)
             Layout.fillHeight: true
         }

@@ -5,21 +5,20 @@ import qs.components
 import qs.core as Core
 
 ChevronButton {
-    height: root.height
+    id: root
+
     contentLeftPadding: 5
-    contentRightPadding: 1
+    contentRightPadding: 2
 
     leftCap: Core.ChevronGeometry.Cap.Notch
     rightCap: Core.ChevronGeometry.Cap.Point
 
-    bgFill: Settings.colors.bgTint3
+    bgFill: Settings.colors.bgTint1
     hoverOpacity: 2 * Settings.colors.hoverOpacity
 
-    onLeftClicked: Core.Caffeine.toggle()
+    onLeftClicked: console.log(true);
 
     Glyph {
-        icon: Core.Caffeine.enabled
-            ? Settings.caffeineModeOnIcon
-            : Settings.caffeineModeOffIcon
+        icon: Settings.systemTrayIcon
     }
 }

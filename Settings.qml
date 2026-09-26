@@ -100,8 +100,7 @@ Singleton {
     readonly property var volumeHeadphoneMutedIcon: "󰟎"
     readonly property var volumeInputMicOnIcon: ""
     readonly property var volumeInputMicOffIcon: ""
-    readonly property var caffeineModeOnIcon: "󰈈"
-    readonly property var caffeineModeOffIcon: "󰈉"
+    readonly property var systemTrayIcon: "󰬦"
 
     // ────── System Statistics API Configuration ──────
     readonly property int systemStatsPollingIntervalMs: 2000

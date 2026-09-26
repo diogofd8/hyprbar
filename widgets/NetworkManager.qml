@@ -117,11 +117,10 @@ Pane {
         }
 
         // ────── Separator ──────
-        Rectangle {
+        Separator {
             Layout.fillWidth: true
             Layout.topMargin: 1
             Layout.bottomMargin: NetworkUI.Configuration.mainColumnGap
-            implicitHeight: 1
             color: Settings.colors.bgTint4
         }
 

@@ -79,9 +79,8 @@ Item {
         }
 
         ShapePath {
-            fillColor: "transparent"
-            strokeColor: root.hoverOverlayColor
-            strokeWidth: root.outlineWidth
+            fillColor: root.hoverOverlayColor
+            strokeColor: "transparent"
             joinStyle: ShapePath.MiterJoin
 
             PathPolyline {

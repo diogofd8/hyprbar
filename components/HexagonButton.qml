@@ -20,7 +20,7 @@ Item {
 
     property color hoverColor: Settings.colors.fgMain
     property real hoverOpacity: Settings.colors.hoverOpacity
-    property real padding: 8
+    property real padding: 12
 
     // Most glyphs need no correction because positioning uses their actual
     // painted bounds. These remain available for intentionally asymmetric

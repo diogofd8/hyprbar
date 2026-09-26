@@ -116,6 +116,7 @@ Pane {
                         glyph: PowerUI.Configuration.powerMode[1].icon
                         glyphSize: PowerUI.Configuration.secondaryButtonSize
                         glyphColor: Settings.colors.fgMain
+                        glyphHorizontalOffset: -1
 
                         onLeftClicked: root.setPowerMode("balanced")
                     }
@@ -129,7 +130,7 @@ Pane {
                         bgFill: root.activePowerMode === "performance"
                             ? Settings.colors.accentMain : Settings.colors.bgTint2
                         glyph: PowerUI.Configuration.powerMode[2].icon
-                        glyphSize: PowerUI.Configuration.secondaryButtonSize
+                        glyphSize: PowerUI.Configuration.secondaryButtonSize -1
                         glyphColor: Settings.colors.fgMain
 
                         onLeftClicked: root.setPowerMode("performance")

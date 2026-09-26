@@ -46,6 +46,6 @@ Singleton {
         { icon: "", mode: "performance" },
     ]
 
-    readonly property int contentWidth: 250
+    readonly property int contentWidth: 270
     readonly property int listMaxHeight: 440
 }

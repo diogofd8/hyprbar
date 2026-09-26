@@ -19,7 +19,7 @@ Singleton {
 
     // ------- Network Entries -------
     readonly property int nwEntryRowSpacing: 3
-    readonly property int nwEntryExpandedRowSpacing: 2
+    readonly property int nwEntryExpandedRowSpacing: 0
     readonly property int nwEntryPadding: 3
 
     // ────── Icons ──────

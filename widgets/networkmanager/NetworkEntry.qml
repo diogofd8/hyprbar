@@ -44,219 +44,211 @@ Controls.Pane {
         color: Settings.colors.bgTint2
     }
 
-    contentItem: ColumnLayout {
+    contentItem: RowLayout {
         id: mainContent
+        spacing: Configuration.nwEntryPadding
 
-        spacing: 0
+        Glyph {
+            id: entryGlyph
+            Layout.alignment: Qt.AlignVCenter
+            Layout.leftMargin: 6
+            Layout.rightMargin: 6
 
-        // ────── Main Row ──────
-        RowLayout {
-            id: mainRow
-            Layout.fillWidth: true
-            spacing: Configuration.nwEntryPadding
+            icon: root.entryIcon
+            iconSize: Configuration.mainButtonSize
+            useMetrics: false
+        }
 
-            Glyph {
-                id: entryGlyph
-                Layout.alignment: Qt.AlignVCenter
-                Layout.leftMargin: 6
-                Layout.rightMargin: 6
+        ColumnLayout {
+            spacing: Configuration.nwEntryExpandedRowSpacing
 
-                icon: root.entryIcon
-                iconSize: Configuration.mainButtonSize
-                useMetrics: false
-            }
-
-            Text {
-                id: networkName
+            // ────── Main Row ──────
+            RowLayout {
+                id: mainRow
                 Layout.fillWidth: true
+                spacing: Configuration.nwEntryPadding
 
-                text: root.model.name
-                elide: Text.ElideRight
-                color: Settings.colors.fgMain
-                font.family: Settings.labelFontFamily
-                font.pixelSize: Configuration.nwNameFontSize
-            }
 
-            SquaredButton {
-                id: compactConnectionBtn
+                Text {
+                    id: networkName
+                    Layout.fillWidth: true
 
-                visible: root.isActionable
-                enabled: root.isActionable
-
-                glyph: root.model.state === "Connected"
-                    ? Configuration.nwDisconnectIcon
-                    : Configuration.nwConnectIcon
-                glyphSize: Configuration.secondaryButtonSize
-                color: Settings.colors.fgMain
-
-                onLeftClicked: root.runConnectionAction()
-            }
-
-            SquaredButton {
-                id: settingsBtn
-
-                visible: root.model.canEdit
-                enabled: root.model.canEdit
-                glyph: Configuration.nwEditConnectionIcon
-                glyphSize: Configuration.secondaryButtonSize
-                color: Settings.colors.fgMain
-
-                onLeftClicked: {
-                    Core.Network.editConnection(root.model.entryId)
-                    root.dismissRequested()
-                }
-            }
-
-            SquaredButton {
-                id: expandBtn
-
-                rotation: root.bottomShown ? 180 : 0
-                glyph: Configuration.nwExpandIcon
-                glyphSize: Configuration.secondaryButtonSize
-                color: Settings.colors.fgMain
-
-                onLeftClicked: {
-                    const wasOpen = root.bottomShown
-                    root.dismissRow()
-                    root.expanded = !wasOpen
+                    text: root.model.name
+                    elide: Text.ElideRight
+                    color: Settings.colors.fgMain
+                    font.family: Settings.labelFontFamily
+                    font.pixelSize: Configuration.nwNameFontSize
                 }
 
-                Behavior on rotation {
-                    NumberAnimation {
-                        duration: Configuration.transitionMs
-                        easing.type: Easing.InOutCubic
+                SquaredButton {
+                    id: compactConnectionBtn
+
+                    visible: root.isActionable
+                    enabled: root.isActionable
+
+                    glyph: root.model.state === "Connected"
+                        ? Configuration.nwDisconnectIcon
+                        : Configuration.nwConnectIcon
+                    glyphSize: Configuration.secondaryButtonSize
+                    color: Settings.colors.fgMain
+
+                    onLeftClicked: root.runConnectionAction()
+                }
+
+                SquaredButton {
+                    id: settingsBtn
+
+                    visible: root.model.canEdit
+                    enabled: root.model.canEdit
+                    glyph: Configuration.nwEditConnectionIcon
+                    glyphSize: Configuration.secondaryButtonSize
+                    color: Settings.colors.fgMain
+
+                    onLeftClicked: {
+                        Core.Network.editConnection(root.model.entryId)
+                        root.dismissRequested()
+                    }
+                }
+
+                SquaredButton {
+                    id: expandBtn
+
+                    rotation: root.bottomShown ? 180 : 0
+                    glyph: Configuration.nwExpandIcon
+                    glyphSize: Configuration.secondaryButtonSize
+                    color: Settings.colors.fgMain
+
+                    onLeftClicked: {
+                        const wasOpen = root.bottomShown
+                        root.dismissRow()
+                        root.expanded = !wasOpen
+                    }
+
+                    Behavior on rotation {
+                        NumberAnimation {
+                            duration: Configuration.transitionMs
+                            easing.type: Easing.InOutCubic
+                        }
                     }
                 }
             }
-        }
 
-        // ────── Extended Row ──────
-        RowLayout {
-            id: bottom
-            visible: root.bottomShown
-            clip: true
+            // ────── Extended Row ──────
+            RowLayout {
+                id: bottom
+                visible: root.bottomShown
+                clip: true
 
-            Layout.fillWidth: true
-            Layout.topMargin: visible ? Configuration.nwEntryExpandedRowSpacing : 0
-            Layout.bottomMargin: visible ? Configuration.nwEntryExpandedRowSpacing : 0
-
-            spacing: Configuration.nwEntryPadding
-
-            // Fake padding the size of entryGlyph (copied its margins too)
-            Rectangle {
-                Layout.fillHeight: true
-                Layout.leftMargin: 6
-                Layout.rightMargin: 6
-                implicitWidth: entryGlyph.implicitWidth
-                color: "transparent"
-            }
-
-            // ────── Network Details ──────
-            Row {
                 Layout.fillWidth: true
-                opacity: 0.7
-                spacing: 4
-                visible: !root.askingPassword
+                spacing: Configuration.nwEntryPadding
 
-                Text {
-                    text: NetworkActions.connectionTypeText(root.model)
+                // ────── Network Details ──────
+                Row {
+                    Layout.fillWidth: true
+                    opacity: 0.7
+                    spacing: 4
+                    visible: !root.askingPassword
 
+                    Text {
+                        text: NetworkActions.connectionTypeText(root.model)
+
+                        color: Settings.colors.fgMain
+                        font.family: Settings.labelFontFamily
+                        font.pixelSize: Settings.smallCapsFontSize
+                    }
+
+                    Circle {
+                        diameter: 2
+                        color: Settings.colors.fgMain
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+
+                    Text {
+                        text: root.model.signalStrength + "%"
+
+                        color: Settings.colors.fgMain
+                        font.family: Settings.labelFontFamily
+                        font.pixelSize: Settings.smallCapsFontSize
+                    }
+                }
+
+                Controls.TextField {
+                    id: passwordField
+                    Layout.fillWidth: true
+
+                    visible: root.askingPassword
+
+                    placeholderText: "password"
+                    echoMode: TextInput.Password
                     color: Settings.colors.fgMain
                     font.family: Settings.labelFontFamily
                     font.pixelSize: Settings.smallCapsFontSize
+
+                    background: Rectangle {
+                        color: Settings.colors.bgTint1
+                        border.color: Settings.colors.bgTint4
+                        border.width: 1
+                    }
+
+                    onAccepted: root.joinNetwork()
+                    onVisibleChanged: if (visible) forceActiveFocus()
                 }
 
-                Circle {
-                    diameter: 2
+                SquaredButton {
+                    id: connectBtn
+                    Layout.fillHeight: true
+                    borderWidth: 1
+                    borderColor: Settings.colors.bgTint4
+
+                    visible: root.askingPassword
+                    enabled: root.model.canSubmitPassword && passwordField.text.length > 0
+
+                    glyph: Configuration.nwSendIcon
+                    glyphSize: Configuration.secondaryButtonSize
                     color: Settings.colors.fgMain
-                    anchors.verticalCenter: parent.verticalCenter
+                    opacity: connectBtn.enabled ? 1 : 0.7
+
+                    onLeftClicked: root.joinNetwork()
                 }
 
-                Text {
-                    text: root.model.signalStrength + "%"
+                // dismissBtn doubles as empty padding aligned with expandBtn
+                SquaredButton {
+                    id: dismissBtn
+                    Layout.fillHeight: true
+                    Layout.preferredWidth: expandBtn.implicitWidth
 
+                    enabled: root.hasError
+                    opacity: root.hasError ? 1 : 0
+
+                    glyph: Configuration.nwDismissIcon
+                    glyphSize: Configuration.secondaryButtonSize
                     color: Settings.colors.fgMain
-                    font.family: Settings.labelFontFamily
-                    font.pixelSize: Settings.smallCapsFontSize
+
+                    onLeftClicked: Core.Network.clearEntryError(root.model.entryId)
+
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: Configuration.transitionMs
+                            easing.type: Easing.InOutCubic
+                        }
+                    }
                 }
             }
 
-            Controls.TextField {
-                id: passwordField
+            // ────── Status Row ──────
+            Text {
                 Layout.fillWidth: true
+                horizontalAlignment: Text.AlignRight
+                visible: root.statusText.length > 0
 
-                visible: root.askingPassword
-
-                placeholderText: "password"
-                echoMode: TextInput.Password
-                color: Settings.colors.fgMain
+                text: root.statusText
+                wrapMode: Text.Wrap
+                color: root.hasError
+                    ? Settings.colors.accentError : Settings.colors.fgMain
+                opacity: root.hasError ? 1 : 0.7
                 font.family: Settings.labelFontFamily
                 font.pixelSize: Settings.smallCapsFontSize
-
-                background: Rectangle {
-                    color: Settings.colors.bgTint1
-                    border.color: Settings.colors.bgTint4
-                    border.width: 1
-                }
-
-                onAccepted: root.joinNetwork()
-                onVisibleChanged: if (visible) forceActiveFocus()
             }
-
-            SquaredButton {
-                id: connectBtn
-                Layout.fillHeight: true
-                borderWidth: 1
-                borderColor: Settings.colors.bgTint4
-
-                visible: root.askingPassword
-                enabled: root.model.canSubmitPassword && passwordField.text.length > 0
-
-                glyph: Configuration.nwSendIcon
-                glyphSize: Configuration.secondaryButtonSize
-                color: Settings.colors.fgMain
-                opacity: connectBtn.enabled ? 1 : 0.7
-
-                onLeftClicked: root.joinNetwork()
-            }
-
-            // dismissBtn doubles as empty padding aligned with expandBtn
-            SquaredButton {
-                id: dismissBtn
-                Layout.fillHeight: true
-                Layout.preferredWidth: expandBtn.implicitWidth
-
-                enabled: root.hasError
-                opacity: root.hasError ? 1 : 0
-
-                glyph: Configuration.nwDismissIcon
-                glyphSize: Configuration.secondaryButtonSize
-                color: Settings.colors.fgMain
-
-                onLeftClicked: Core.Network.clearEntryError(root.model.entryId)
-
-                Behavior on opacity {
-                    NumberAnimation {
-                        duration: Configuration.transitionMs
-                        easing.type: Easing.InOutCubic
-                    }
-                }
-            }
-        }
-
-        // ────── Status Row ──────
-        Text {
-            Layout.fillWidth: true
-            horizontalAlignment: Text.AlignRight
-            visible: root.statusText.length > 0
-
-            text: root.statusText
-            wrapMode: Text.Wrap
-            color: root.hasError
-                ? Settings.colors.accentError : Settings.colors.fgMain
-            opacity: root.hasError ? 1 : 0.7
-            font.family: Settings.labelFontFamily
-            font.pixelSize: Settings.smallCapsFontSize
         }
     }
 

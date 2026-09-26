@@ -19,7 +19,7 @@ Singleton {
 
     // ------- Blueman Entries -------
     readonly property int btEntryRowSpacing: 3
-    readonly property int btEntryExpandedRowSpacing: 2
+    readonly property int btEntryExpandedRowSpacing: 0
     readonly property int btEntryPadding: 3
     readonly property int btScanningIconSpacing: 2
 

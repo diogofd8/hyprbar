@@ -2,6 +2,7 @@ import QtQuick
 
 import qs
 import qs.components
+import qs.widgets
 import qs.core as Core
 
 Chevron {
@@ -35,7 +36,7 @@ Chevron {
         Row {
             spacing: -Core.ChevronGeometry.calcCapWidth(height)
 
-            Chevron {
+            ChevronButton {
                 height: root.height
                 contentLeftPadding: 2
                 contentRightPadding: 2
@@ -44,6 +45,8 @@ Chevron {
                 rightCap: Core.ChevronGeometry.Cap.Point
 
                 bgFill: Settings.colors.bgTint2
+
+                onLeftClicked: powerManager.toggle()
 
                 Glyph {
                     text: Core.PowerSupply.internal.icon
@@ -57,7 +60,7 @@ Chevron {
                 }
             }
 
-            Chevron {
+            ChevronButton {
                 height: root.height
                 contentLeftPadding: 4
                 contentRightPadding: 2
@@ -66,6 +69,8 @@ Chevron {
                 rightCap: Core.ChevronGeometry.Cap.Point
 
                 bgFill: Settings.colors.bgTint3
+
+                onLeftClicked: powerManager.toggle()
 
                 Glyph {
                     text: Core.PowerSupply.external.icon
@@ -94,6 +99,23 @@ Chevron {
                 height: root.height
                 value: Core.PowerSupply.active.value
             }
+        }
+    }
+
+    Binding {
+        target: Core.PowerSupply
+        property: "discoveryActive"
+        value: powerManager.isOpen
+    }
+
+    DropDown {
+        id: powerManager
+        anchorItem: root
+
+        PowerManager {
+            anchors.fill: parent
+
+            onDismissRequested: powerManager.close()
         }
     }
 }

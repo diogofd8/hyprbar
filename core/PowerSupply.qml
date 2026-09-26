@@ -83,7 +83,7 @@ Singleton {
         const found = []
 
         for (const device of UPower.devices.values) {
-            if (!device.ready || !device.isPresent || !device.powerSupply)
+            if (!device.ready || !device.isPresent)
                 continue
             if (device.isLaptopBattery || device === UPower.displayDevice)
                 continue

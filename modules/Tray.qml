@@ -18,7 +18,8 @@ ChevronButton {
     rightCap: Core.ChevronGeometry.Cap.Point
 
     bgFill: Settings.colors.bgTint1
-    hoverOpacity: 2 * Settings.colors.hoverOpacity
+    hoverOpacity: root.trayHasContent ? 2 * Settings.colors.hoverOpacity : 0
+    enabled: root.trayHasContent
 
     readonly property bool trayHasContent: TrayService.SystemTray.items.values.some(
         item => SysTrayUI.Configuration.isVisible(item)
@@ -30,6 +31,7 @@ ChevronButton {
         id: togglerIcon
 
         icon: Settings.systemTrayIcon
+        opacity: root.trayHasContent ? 1 : 0.3
         useMetrics: true
         rotation: sysTray.isOpen ? 180 : 0
 

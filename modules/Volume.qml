@@ -2,6 +2,7 @@ import QtQuick
 
 import qs
 import qs.components
+import qs.widgets
 import qs.core as Core
 
 Chevron {
@@ -39,7 +40,8 @@ Chevron {
             bgFill: Settings.colors.bgTint4
             hoverOpacity: 2 * Settings.colors.hoverOpacity
 
-            onLeftClicked: Core.Audio.toggleSourceMute()
+            onLeftClicked: volumeManager.toggle()
+            onMiddleClicked: Core.Audio.toggleSourceMute()
             onRightClicked: root.showingInput = !root.showingInput
             onScrolled: steps => Core.Audio.stepSourceVolume(steps)
 
@@ -95,7 +97,8 @@ Chevron {
             bgFill: Settings.colors.bgTint4
             hoverOpacity: 2 * Settings.colors.hoverOpacity
 
-            onLeftClicked: Core.Audio.toggleMute()
+            onLeftClicked: volumeManager.toggle()
+            onMiddleClicked: Core.Audio.toggleMute()
             onRightClicked: root.showingInput = !root.showingInput
             onScrolled: steps => Core.Audio.stepVolume(steps)
 
@@ -133,6 +136,23 @@ Chevron {
                 font.pixelSize: Settings.smallCapsFontSize
                 font.weight: Font.Bold
             }
+        }
+    }
+
+    Binding {
+        target: Core.Audio
+        property: "discoveryActive"
+        value: volumeManager.isOpen
+    }
+
+    DropDown {
+        id: volumeManager
+        anchorItem: root
+
+        VolumeManager {
+            anchors.fill: parent
+
+            onDismissRequested: volumeManager.close()
         }
     }
 }

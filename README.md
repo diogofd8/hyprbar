@@ -26,6 +26,7 @@ desktop, but the matching module will sit empty if one is missing.
 | `networkmanager` | Wi-Fi status |
 | `bluez`, `bluez-utils` | Bluetooth status |
 | `brightnessctl` | setting the backlight |
+| `pavucontrol` | settings for the volume widget |
 
 ### Required
 

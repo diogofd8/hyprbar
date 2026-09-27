@@ -110,6 +110,7 @@ Chevron {
 
     DropDown {
         id: powerManager
+        spacing: 1
         anchorItem: root
 
         PowerManager {

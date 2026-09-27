@@ -99,10 +99,12 @@ Pane {
 
                         enabled: root.powerModesAvailable
                         bgFill: root.activePowerMode === "power-saver"
-                            ? Settings.colors.accentMain : Settings.colors.bgTint2
+                            ? Settings.colors.accentMain : Settings.colors.bgTint3
                         glyph: PowerUI.Configuration.powerMode[0].icon
                         glyphSize: PowerUI.Configuration.secondaryButtonSize
-                        glyphColor: Settings.colors.fgMain
+                        glyphColor: root.activePowerMode === "power-saver"
+                            ? Settings.colors.fgDark
+                            : Settings.colors.fgMain
 
                         onLeftClicked: root.setPowerMode("power-saver")
                     }
@@ -112,10 +114,12 @@ Pane {
 
                         enabled: root.powerModesAvailable
                         bgFill: root.activePowerMode === "balanced"
-                            ? Settings.colors.accentMain : Settings.colors.bgTint2
+                            ? Settings.colors.accentMain : Settings.colors.bgTint3
                         glyph: PowerUI.Configuration.powerMode[1].icon
                         glyphSize: PowerUI.Configuration.secondaryButtonSize
-                        glyphColor: Settings.colors.fgMain
+                        glyphColor: root.activePowerMode === "balanced"
+                            ? Settings.colors.fgDark
+                            : Settings.colors.fgMain
                         glyphHorizontalOffset: -1
 
                         onLeftClicked: root.setPowerMode("balanced")
@@ -128,10 +132,13 @@ Pane {
                             && (!root.usingPowerProfiles
                                 || Core.PowerProfiles.hasPerformanceProfile)
                         bgFill: root.activePowerMode === "performance"
-                            ? Settings.colors.accentMain : Settings.colors.bgTint2
+                            ? Settings.colors.accentMain : Settings.colors.bgTint3
                         glyph: PowerUI.Configuration.powerMode[2].icon
-                        glyphSize: PowerUI.Configuration.secondaryButtonSize -1
-                        glyphColor: Settings.colors.fgMain
+                        glyphSize: PowerUI.Configuration.secondaryButtonSize - 3
+                        paddingOffset: 3
+                        glyphColor: root.activePowerMode === "performance"
+                            ? Settings.colors.fgDark
+                            : Settings.colors.fgMain
 
                         onLeftClicked: root.setPowerMode("performance")
                     }

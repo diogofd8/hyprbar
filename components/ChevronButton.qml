@@ -24,6 +24,7 @@ Item {
     // gestures it actually uses, and an unconnected signal is simply ignored,
     // so nothing has to be declared just to satisfy the component.
     signal leftClicked()
+    signal middleClicked()
     signal rightClicked()
 
     // +1 per notch up, -1 per notch down, already normalised.
@@ -83,7 +84,7 @@ Item {
         anchors.fill: parent
 
         hoverEnabled: true
-        acceptedButtons: Qt.LeftButton | Qt.RightButton
+        acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
         cursorShape: root.hovered ? Qt.PointingHandCursor : Qt.ArrowCursor
 
         // A MouseArea can only be rectangular, so presses landing in the cap
@@ -97,10 +98,12 @@ Item {
             if (!root.hovered)
                 return
 
-            if (mouse.button === Qt.RightButton)
-                root.rightClicked()
-            else
-                root.leftClicked()
+            switch (mouse.button) {
+                case Qt.RightButton: { root.rightClicked(); return }
+                case Qt.LeftButton: { root.leftClicked(); return }
+                case Qt.MiddleButton: { root.middleClicked(); return }
+                default: return
+            }
         }
 
         onWheel: wheel => {

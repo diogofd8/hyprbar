@@ -21,12 +21,14 @@ desktop, but the matching module will sit empty if one is missing.
 | Package | Used for |
 | --- | --- |
 | `pipewire`, `wireplumber` | volume and mute state |
+| `pavucontrol` | settings for the volume widget |
 | `libpulse` | `pactl`, used to detect the analog headphone jack (see notes) |
 | `upower` | battery levels and charge state |
 | `networkmanager` | Wi-Fi status |
 | `bluez`, `bluez-utils` | Bluetooth status |
 | `brightnessctl` | setting the backlight |
-| `pavucontrol` | settings for the volume widget |
+| `hyprsunset` | scheduled night light and the brightness popup switch |
+| `ddcutil` | external monitor brightness through DDC/CI (optional) |
 
 ### Required
 

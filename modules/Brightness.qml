@@ -3,6 +3,7 @@ import QtQuick
 import qs
 import qs.components
 import qs.core as Core
+import qs.widgets
 
 Row {
     id: root
@@ -20,6 +21,7 @@ Row {
         hoverOpacity: 2 * Settings.colors.hoverOpacity
 
         onScrolled: steps => Core.Backlight.stepBrightness(steps)
+        onLeftClicked: brightnessManager.toggle()
         onRightClicked: Core.Actions.toggleDarkMode()
 
         Glyph {
@@ -43,5 +45,20 @@ Row {
             value: Core.Backlight.value
         }
     }
-}
 
+    Binding {
+        target: Core.Backlight
+        property: "discoveryActive"
+        value: brightnessManager.isOpen
+    }
+
+    DropDown {
+        id: brightnessManager
+        spacing: 1
+        anchorItem: root
+
+        BrightnessManager {
+            anchors.fill: parent
+        }
+    }
+}

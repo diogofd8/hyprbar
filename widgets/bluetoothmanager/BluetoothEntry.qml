@@ -4,6 +4,7 @@ import QtQuick.Controls as Controls
 
 import qs
 import qs.components
+import qs.widgets
 import qs.core as Core
 
 Controls.Pane {
@@ -21,14 +22,17 @@ Controls.Pane {
     readonly property string statusText: BluetoothActions.statusText(root.model)
 
     // ────── Dimensioning ──────
-    padding: Configuration.btEntryPadding
+    leftPadding: WidgetConfiguration.entryHPadding
+    rightPadding: WidgetConfiguration.entryHPadding
+    topPadding: WidgetConfiguration.entryVPadding
+    bottomPadding: WidgetConfiguration.entryVPadding
     implicitHeight: mainContent.implicitHeight + root.topPadding + root.bottomPadding
     clip: true
 
     // ────── Animations ──────
     Behavior on implicitHeight {
         SmoothedAnimation {
-            duration: Configuration.transitionMs
+            duration: WidgetConfiguration.transitionMs
             velocity: -1
             reversingMode: SmoothedAnimation.Eased
         }
@@ -40,27 +44,37 @@ Controls.Pane {
 
     contentItem: RowLayout {
         id: mainContent
-        spacing: Configuration.btEntryPadding
+        spacing: WidgetConfiguration.entryHPadding
 
         Glyph {
             id: entryGlyph
             Layout.alignment: Qt.AlignVCenter
-            Layout.leftMargin: 6
-            Layout.rightMargin: 6
+            Layout.leftMargin: WidgetConfiguration.entryIconHPadding
+            Layout.rightMargin: WidgetConfiguration.entryIconHPadding
 
             icon: root.entryIcon
-            iconSize: Configuration.mainButtonSize
+            iconSize: WidgetConfiguration.entryRowMainIconSz
             useMetrics: false
         }
 
         ColumnLayout {
-            spacing: Configuration.btEntryExpandedRowSpacing
+            spacing: WidgetConfiguration.entryRowVSpacing
 
             // ────── Main Row ──────
             RowLayout {
                 id: mainRow
+
                 Layout.fillWidth: true
-                spacing: Configuration.btEntryPadding
+                Layout.topMargin: root.bottomShown ? 0.5 * WidgetConfiguration.entryIconHPadding : 0
+                Layout.preferredHeight: WidgetConfiguration.entryRowMainIconSz
+                spacing: WidgetConfiguration.entryTitleRowHSpacing
+
+                Behavior on Layout.topMargin {
+                    NumberAnimation {
+                        duration: WidgetConfiguration.transitionMs
+                        easing.type: Easing.InOutCubic
+                    }
+                }
 
                 Text {
                     id: deviceName
@@ -70,7 +84,7 @@ Controls.Pane {
                     elide: Text.ElideRight
                     color: Settings.colors.fgMain
                     font.family: Settings.labelFontFamily
-                    font.pixelSize: Configuration.btNameFontSize
+                    font.pixelSize: WidgetConfiguration.entryRowTitleFontSz
                 }
 
                 SquaredButton {
@@ -80,7 +94,7 @@ Controls.Pane {
                     enabled: root.model.canPair
 
                     glyph: Configuration.btPairIcon
-                    glyphSize: Configuration.secondaryButtonSize
+                    glyphSize: WidgetConfiguration.entryRowSecondaryIconSz
                     color: Settings.colors.fgMain
 
                     onLeftClicked: Core.Bluetooth.pair(root.model.address)
@@ -93,7 +107,7 @@ Controls.Pane {
                     enabled: root.model.canCancel
 
                     glyph: Configuration.btCancelIcon
-                    glyphSize: Configuration.secondaryButtonSize
+                    glyphSize: WidgetConfiguration.entryRowSecondaryIconSz
                     color: Settings.colors.accentAlert
 
                     onLeftClicked: Core.Bluetooth.cancelOperation(root.model.address)
@@ -108,7 +122,7 @@ Controls.Pane {
                     glyph: root.model.canDisconnect
                         ? Configuration.btDisconnectIcon
                         : Configuration.btConnectIcon
-                    glyphSize: Configuration.secondaryButtonSize
+                    glyphSize: WidgetConfiguration.entryRowSecondaryIconSz
                     color: Settings.colors.fgMain
 
                     onLeftClicked: root.runConnectionAction()
@@ -121,7 +135,7 @@ Controls.Pane {
                     enabled: root.model.canForget
 
                     glyph: Configuration.btForgetIcon
-                    glyphSize: Configuration.secondaryButtonSize
+                    glyphSize: WidgetConfiguration.entryRowSecondaryIconSz
                     color: Settings.colors.fgMain
 
                     onLeftClicked: Core.Bluetooth.forget(root.model.address)
@@ -133,7 +147,7 @@ Controls.Pane {
                     visible: root.canExpand
                     rotation: root.bottomShown ? 180 : 0
                     glyph: Configuration.btExpandIcon
-                    glyphSize: Configuration.secondaryButtonSize
+                    glyphSize: WidgetConfiguration.entryRowSecondaryIconSz
                     color: Settings.colors.fgMain
 
                     onLeftClicked: {
@@ -144,7 +158,7 @@ Controls.Pane {
 
                     Behavior on rotation {
                         NumberAnimation {
-                            duration: Configuration.transitionMs
+                            duration: WidgetConfiguration.transitionMs
                             easing.type: Easing.InOutCubic
                         }
                     }
@@ -158,33 +172,31 @@ Controls.Pane {
                 clip: true
 
                 Layout.fillWidth: true
-                Layout.topMargin: visible ? Configuration.btEntryExpandedRowSpacing : 0
-                Layout.bottomMargin: visible ? Configuration.btEntryExpandedRowSpacing : 0
-
-                spacing: Configuration.btEntryPadding
+                spacing: WidgetConfiguration.entryExtendedRowHSpacing
 
                 // ────── Device Details ──────
                 // Future: For now similar to NetworkManager's details but perhaps this should be different
                 // Including trusted status, perhaps more bluetooth detailed information, in more than 1 line
-                Row {
+                RowLayout {
                     Layout.fillWidth: true
                     visible: root.canExpand
                     opacity: 0.7
-                    spacing: 4
+                    spacing: WidgetConfiguration.entryExtendedRowHSpacing
 
                     Text {
                         text: root.model.address
 
                         color: Settings.colors.fgMain
                         font.family: Settings.labelFontFamily
-                        font.pixelSize: Settings.smallCapsFontSize
+                        font.pixelSize: WidgetConfiguration.entryRowDefaultFontSz
                     }
 
                     Circle {
+                        Layout.alignment: Qt.AlignCenter
+
                         visible: model.batteryAvailable
                         diameter: 2
                         color: Settings.colors.fgMain
-                        anchors.verticalCenter: parent.verticalCenter
                     }
 
                     Text {
@@ -193,14 +205,13 @@ Controls.Pane {
 
                         color: Settings.colors.fgMain
                         font.family: Settings.labelFontFamily
-                        font.pixelSize: Settings.smallCapsFontSize
+                        font.pixelSize: WidgetConfiguration.entryRowDefaultFontSz
                     }
                 }
 
-                Rectangle {
+                Item {
                     Layout.fillWidth: true
                     visible: !root.canExpand
-                    color: "transparent"
                 }
 
                 // dismissBtn doubles as empty padding aligned with expandBtn
@@ -213,14 +224,14 @@ Controls.Pane {
                     opacity: root.hasError ? 1 : 0
 
                     glyph: Configuration.btDismissIcon
-                    glyphSize: Configuration.secondaryButtonSize
+                    glyphSize: WidgetConfiguration.entryRowSecondaryIconSz
                     color: Settings.colors.fgMain
 
                     onLeftClicked: Core.Bluetooth.clearEntryError(root.model.address)
 
                     Behavior on opacity {
                         NumberAnimation {
-                            duration: Configuration.transitionMs
+                            duration: WidgetConfiguration.transitionMs
                             easing.type: Easing.InOutCubic
                         }
                     }
@@ -238,7 +249,7 @@ Controls.Pane {
                 color: root.hasError ? Settings.colors.accentError : Settings.colors.fgMain
                 opacity: root.hasError ? 1 : 0.7
                 font.family: Settings.labelFontFamily
-                font.pixelSize: Settings.smallCapsFontSize
+                font.pixelSize: WidgetConfiguration.widgetMsgFieldFontSz
             }
         }
     }

@@ -22,7 +22,7 @@ Item {
     property real hoverOpacity: Settings.colors.hoverOpacity
 
     property real paddingOffset: 0
-    property real defaultPadding: 12
+    property real defaultPadding: 10
     readonly property real padding: defaultPadding + paddingOffset
 
     // Most glyphs need no correction because positioning uses their actual

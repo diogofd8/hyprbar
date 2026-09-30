@@ -40,7 +40,7 @@ Pane {
         }
     }
 
-    padding: PowerUI.Configuration.widgetBoxPadding
+    padding: WidgetConfiguration.dropDownWindowPadding
     implicitHeight: root.targetImplicitHeight
     clip: true
 
@@ -65,115 +65,122 @@ Pane {
         id: panelContent
 
         // ────── Top Row ──────
-        RowLayout {
-            Layout.fillWidth: true
-            spacing: PowerUI.Configuration.topBarSpacing
+        ColumnLayout {
+            id: headerContainer
+            spacing: WidgetConfiguration.mainRowPadding
 
-            Item {
-                id: powerModeControl
-                implicitWidth: powerModeToggles.implicitWidth
-                implicitHeight: powerModeToggles.implicitHeight
-
-                Rectangle {
-                    id: powerModeBg
-
-                    anchors {
-                        top: parent.top
-                        bottom: parent.bottom
-                        left: parent.left
-                        right: parent.right
-                        leftMargin: powerSaverButton.width / 2
-                        rightMargin: performanceButton.width / 2
-                    }
-
-                    color: Settings.colors.bgTint2
-                }
-
-                RowLayout {
-                    id: powerModeToggles
-                    anchors.fill: parent
-                    spacing: PowerUI.Configuration.topBarSpacing
-
-                    HexagonButton {
-                        id: powerSaverButton
-
-                        enabled: root.powerModesAvailable
-                        bgFill: root.activePowerMode === "power-saver"
-                            ? Settings.colors.accentMain : Settings.colors.bgTint3
-                        glyph: PowerUI.Configuration.powerMode[0].icon
-                        glyphSize: PowerUI.Configuration.secondaryButtonSize
-                        glyphColor: root.activePowerMode === "power-saver"
-                            ? Settings.colors.fgDark
-                            : Settings.colors.fgMain
-
-                        onLeftClicked: root.setPowerMode("power-saver")
-                    }
-
-                    HexagonButton {
-                        id: balancedButton
-
-                        enabled: root.powerModesAvailable
-                        bgFill: root.activePowerMode === "balanced"
-                            ? Settings.colors.accentMain : Settings.colors.bgTint3
-                        glyph: PowerUI.Configuration.powerMode[1].icon
-                        glyphSize: PowerUI.Configuration.secondaryButtonSize
-                        glyphColor: root.activePowerMode === "balanced"
-                            ? Settings.colors.fgDark
-                            : Settings.colors.fgMain
-                        glyphHorizontalOffset: -1
-
-                        onLeftClicked: root.setPowerMode("balanced")
-                    }
-
-                    HexagonButton {
-                        id: performanceButton
-
-                        enabled: root.powerModesAvailable
-                            && (!root.usingPowerProfiles
-                                || Core.PowerProfiles.hasPerformanceProfile)
-                        bgFill: root.activePowerMode === "performance"
-                            ? Settings.colors.accentMain : Settings.colors.bgTint3
-                        glyph: PowerUI.Configuration.powerMode[2].icon
-                        glyphSize: PowerUI.Configuration.secondaryButtonSize - 3
-                        paddingOffset: 3
-                        glyphColor: root.activePowerMode === "performance"
-                            ? Settings.colors.fgDark
-                            : Settings.colors.fgMain
-
-                        onLeftClicked: root.setPowerMode("performance")
-                    }
-                }
-            }
-
-            Rectangle {
+            RowLayout {
                 Layout.fillWidth: true
-                Layout.fillHeight: true
-                color: "transparent"
+                Layout.leftMargin: WidgetConfiguration.mainRowPadding
+                Layout.rightMargin: WidgetConfiguration.mainRowPadding
+                spacing: WidgetConfiguration.mainRowHSpacing
+
+                Item {
+                    id: powerModeControl
+                    Layout.topMargin: WidgetConfiguration.hexBtnVPadding
+                    Layout.bottomMargin: WidgetConfiguration.hexBtnVPadding
+                    implicitWidth: powerModeToggles.implicitWidth
+                    implicitHeight: powerModeToggles.implicitHeight
+
+                    Rectangle {
+                        id: powerModeBg
+
+                        anchors {
+                            top: parent.top
+                            bottom: parent.bottom
+                            left: parent.left
+                            right: parent.right
+                            leftMargin: powerSaverButton.width / 2
+                            rightMargin: performanceButton.width / 2
+                        }
+
+                        color: Settings.colors.bgTint2
+                    }
+
+                    RowLayout {
+                        id: powerModeToggles
+                        anchors.fill: parent
+                        spacing: WidgetConfiguration.hexBtnSpacing
+
+                        HexagonButton {
+                            id: powerSaverButton
+
+                            enabled: root.powerModesAvailable
+                            bgFill: root.activePowerMode === "power-saver"
+                                ? Settings.colors.accentMain : Settings.colors.bgTint3
+                            glyph: PowerUI.Configuration.powerMode[0].icon
+                            glyphSize: WidgetConfiguration.widgetEmbeddedIconSz
+                            glyphColor: root.activePowerMode === "power-saver"
+                                ? Settings.colors.fgDark
+                                : Settings.colors.fgMain
+
+                            onLeftClicked: root.setPowerMode("power-saver")
+                        }
+
+                        HexagonButton {
+                            id: balancedButton
+
+                            enabled: root.powerModesAvailable
+                            bgFill: root.activePowerMode === "balanced"
+                                ? Settings.colors.accentMain : Settings.colors.bgTint3
+                            glyph: PowerUI.Configuration.powerMode[1].icon
+                            glyphSize: WidgetConfiguration.widgetEmbeddedIconSz
+                            glyphColor: root.activePowerMode === "balanced"
+                                ? Settings.colors.fgDark
+                                : Settings.colors.fgMain
+                            glyphHorizontalOffset: -1
+
+                            onLeftClicked: root.setPowerMode("balanced")
+                        }
+
+                        HexagonButton {
+                            id: performanceButton
+
+                            enabled: root.powerModesAvailable
+                                && (!root.usingPowerProfiles
+                                    || Core.PowerProfiles.hasPerformanceProfile)
+                            bgFill: root.activePowerMode === "performance"
+                                ? Settings.colors.accentMain : Settings.colors.bgTint3
+                            glyph: PowerUI.Configuration.powerMode[2].icon
+                            glyphSize: WidgetConfiguration.widgetEmbeddedIconSz - 3
+                            paddingOffset: 3
+                            glyphColor: root.activePowerMode === "performance"
+                                ? Settings.colors.fgDark
+                                : Settings.colors.fgMain
+
+                            onLeftClicked: root.setPowerMode("performance")
+                        }
+                    }
+                }
+
+                Item {
+                    Layout.fillWidth: true
+                }
+
+                Text {
+                    text: "MODE:"
+                    elide: Text.ElideRight
+                    color: Settings.colors.fgMain
+                    font.family: Settings.labelFontFamily
+                    font.pixelSize: WidgetConfiguration.widgetMainFontSz
+                }
+
+                Text {
+                    text: root.powerModeLabel(root.activePowerMode)
+                    elide: Text.ElideRight
+                    color: Settings.colors.accentMain
+                    font.family: Settings.labelFontFamily
+                    font.pixelSize: WidgetConfiguration.widgetMainFontSz
+                }
             }
 
-            Text {
-                text: "MODE:"
-                elide: Text.ElideRight
-                color: Settings.colors.fgMain
-                font.family: Settings.labelFontFamily
-                font.pixelSize: PowerUI.Configuration.subTextFontSize
+            // ────── Separator ──────
+            Separator {
+                Layout.fillWidth: true
+                Layout.topMargin: 1
+                Layout.bottomMargin: WidgetConfiguration.mainRowVMargin
+                color: Settings.colors.bgTint4
             }
-
-            Text {
-                text: root.powerModeLabel(root.activePowerMode)
-                elide: Text.ElideRight
-                color: Settings.colors.accentMain
-                font.family: Settings.labelFontFamily
-                font.pixelSize: PowerUI.Configuration.subTextFontSize
-            }
-        }
-
-        // ────── Separator ──────
-        Separator {
-            Layout.fillWidth: true
-            Layout.topMargin: 1
-            Layout.bottomMargin: PowerUI.Configuration.mainColumnGap
-            color: Settings.colors.bgTint4
         }
 
         // ────── Battery Entries ──────
@@ -182,7 +189,7 @@ Pane {
             Layout.fillWidth: true
             Layout.preferredHeight: implicitHeight
             implicitWidth: PowerUI.Configuration.contentWidth
-            implicitHeight: Math.min(contents.implicitHeight, PowerUI.Configuration.listMaxHeight)
+            implicitHeight: Math.min(contents.implicitHeight, WidgetConfiguration.rowContentMaxHeight)
             contentWidth: width
             contentHeight: contents.implicitHeight
             clip: true
@@ -192,25 +199,22 @@ Pane {
                 id: contents
                 readonly property var cumulativeBattery: Core.PowerSupply.display
                 width: scroll.width
-                spacing: PowerUI.Configuration.sectionSpacing
+                spacing: WidgetConfiguration.sectionVSpacing
 
                 ColumnLayout {
                     id: batterySection
 
                     Layout.fillWidth: true
                     visible: true
-                    spacing: PowerUI.Configuration.pwrEntryRowSpacing
+                    spacing: WidgetConfiguration.sectionContentVSpacing
 
                     RowLayout {
-                        Layout.bottomMargin: 4
-
                         Text {
-
                             text: "BATTERY"
                             color: Settings.colors.fgMain
                             font.family: Settings.labelFontFamily
                             font.bold: true
-                            font.pixelSize: PowerUI.Configuration.columnLabelFontSize
+                            font.pixelSize: WidgetConfiguration.sectionRowLabelFontSz
                         }
 
                         Text {
@@ -218,12 +222,12 @@ Pane {
                             color: Settings.colors.fgMain
                             font.family: Settings.labelFontFamily
                             font.bold: true
-                            font.pixelSize: PowerUI.Configuration.columnLabelFontSize
+                            font.pixelSize: WidgetConfiguration.sectionRowLabelFontSz
                         }
 
                         Percentage {
                             value: contents.cumulativeBattery.value
-                            fontSize: PowerUI.Configuration.columnLabelFontSize
+                            fontSize: WidgetConfiguration.sectionRowLabelFontSz
                             fontFamily: Settings.labelFontFamily
                         }
                     }
@@ -243,7 +247,7 @@ Pane {
                         color: Settings.colors.fgMain
                         opacity: 0.7
                         font.family: Settings.labelFontFamily
-                        font.pixelSize: PowerUI.Configuration.subTextFontSize
+                        font.pixelSize: WidgetConfiguration.widgetMsgFieldFontSz
                     }
                 }
 
@@ -252,16 +256,14 @@ Pane {
 
                     Layout.fillWidth: true
                     visible: Core.PowerSupply.peripheralEntryModel.count > 0
-                    spacing: PowerUI.Configuration.pwrEntryRowSpacing
+                    spacing: WidgetConfiguration.sectionContentVSpacing
 
                     Text {
-                        Layout.bottomMargin: 4
-
                         text: "CONNECTED DEVICES"
                         color: Settings.colors.fgMain
                         font.family: Settings.labelFontFamily
                         font.bold: true
-                        font.pixelSize: PowerUI.Configuration.columnLabelFontSize
+                        font.pixelSize: WidgetConfiguration.sectionRowLabelFontSz
                     }
 
                     Repeater {
@@ -273,32 +275,32 @@ Pane {
                         }
                     }
                 }
+            }
+        }
 
-                RowLayout {
-                    Layout.bottomMargin: PowerUI.Configuration.widgetBoxPadding
-                    Text {
+        // ────── Caffeine Mode ──────
+        RowLayout {
+            Layout.topMargin: WidgetConfiguration.mainRowVMargin
+            Layout.bottomMargin: WidgetConfiguration.mainRowPadding
 
-                        text: "CAFFEINE MODE"
-                        color: Settings.colors.fgMain
-                        font.family: Settings.labelFontFamily
-                        font.bold: true
-                        font.pixelSize: PowerUI.Configuration.columnLabelFontSize
-                    }
+            Text {
+                text: "CAFFEINE MODE"
+                color: Settings.colors.fgMain
+                font.family: Settings.labelFontFamily
+                font.bold: true
+                font.pixelSize: WidgetConfiguration.sectionRowLabelFontSz
+            }
 
-                    Rectangle {
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        color: "transparent"
-                    }
+            Item {
+                Layout.fillWidth: true
+            }
 
-                    HexagonSwitch {
-                        actionable: true
-                        checked: Core.Caffeine.enabled
-                        onClicked: Core.Caffeine.toggle()
+            HexagonSwitch {
+                actionable: true
+                checked: Core.Caffeine.enabled
+                onClicked: Core.Caffeine.toggle()
 
-                        backgroundColor: root.panelBackgroundColor
-                    }
-                }
+                backgroundColor: root.panelBackgroundColor
             }
         }
     }

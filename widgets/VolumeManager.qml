@@ -18,7 +18,7 @@ Pane {
     // 0 shows physical input/output devices; 1 shows application streams.
     property int activeMixerMode: 0
 
-    padding: VolumeUI.Configuration.widgetBoxPadding
+    padding: WidgetConfiguration.dropDownWindowPadding
     implicitHeight: root.targetImplicitHeight
     clip: true
 
@@ -43,78 +43,80 @@ Pane {
         id: panelContent
 
         // ────── Top Row ──────
-        RowLayout {
-            Layout.fillWidth: true
-            spacing: VolumeUI.Configuration.topBarSpacing
-
-            Item {
-                id: volumeMixer
-                implicitWidth: mixerToggler.implicitWidth
-                implicitHeight: mixerToggler.implicitHeight
-
-                Rectangle {
-                    id: volumeMixerBg
-
-                    anchors {
-                        top: parent.top
-                        bottom: parent.bottom
-                        left: parent.left
-                        right: parent.right
-                        leftMargin: mixerDevicesBtn.width / 2
-                        rightMargin: mixerStreamsBtn.width / 2
-                    }
-
-                    color: Settings.colors.bgTint2
-                }
-
-                RowLayout {
-                    id: mixerToggler
-                    anchors.fill: parent
-                    spacing: VolumeUI.Configuration.mixerTogglerSpacing
-
-                    HexagonButton {
-                        id: mixerDevicesBtn
-
-                        enabled: true // PLACEBO
-                        bgFill: root.activeMixerMode === 0
-                            ? Settings.colors.accentMain : Settings.colors.bgTint3
-                        glyph: VolumeUI.Configuration.volMixerMode[0].icon
-                        glyphSize: VolumeUI.Configuration.secondaryButtonSize
-                        glyphColor: root.activeMixerMode === 0
-                            ? Settings.colors.fgDark : Settings.colors.fgMain
-                        glyphHorizontalOffset: -0.5
-                        onLeftClicked: root.activeMixerMode = 0
-                    }
-
-                    HexagonButton {
-                        id: mixerStreamsBtn
-
-                        bgFill: root.activeMixerMode === 1
-                            ? Settings.colors.accentMain : Settings.colors.bgTint3
-                        glyph: VolumeUI.Configuration.volMixerMode[1].icon
-                        glyphSize: VolumeUI.Configuration.secondaryButtonSize
-                        glyphColor: root.activeMixerMode === 1
-                            ? Settings.colors.fgDark : Settings.colors.fgMain
-                        glyphHorizontalOffset: -0.5
-                        onLeftClicked: root.activeMixerMode = 1
-                    }
-                }
-            }
-
-            Rectangle {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                color: "transparent"
-            }
+        ColumnLayout {
+            id: headerContainer
+            spacing: WidgetConfiguration.mainRowPadding
 
             RowLayout {
-                id: muteRow
-                spacing: VolumeUI.Configuration.topBarPadding
+                Layout.fillWidth: true
+                Layout.leftMargin: WidgetConfiguration.mainRowPadding
+                Layout.rightMargin: WidgetConfiguration.mainRowPadding
+                spacing: WidgetConfiguration.mainRowHSpacing
+
+                Item {
+                    id: volumeMixer
+                    Layout.topMargin: WidgetConfiguration.hexBtnVPadding
+                    Layout.bottomMargin: WidgetConfiguration.hexBtnVPadding
+                    implicitWidth: mixerToggler.implicitWidth
+                    implicitHeight: mixerToggler.implicitHeight
+
+                    Rectangle {
+                        id: volumeMixerBg
+
+                        anchors {
+                            top: parent.top
+                            bottom: parent.bottom
+                            left: parent.left
+                            right: parent.right
+                            leftMargin: mixerDevicesBtn.width / 2
+                            rightMargin: mixerStreamsBtn.width / 2
+                        }
+
+                        color: Settings.colors.bgTint2
+                    }
+
+                    RowLayout {
+                        id: mixerToggler
+                        anchors.fill: parent
+                        spacing: WidgetConfiguration.hexBtnSpacing
+
+                        HexagonButton {
+                            id: mixerDevicesBtn
+
+                            enabled: true // PLACEBO
+                            bgFill: root.activeMixerMode === 0
+                                ? Settings.colors.accentMain : Settings.colors.bgTint3
+                            glyph: VolumeUI.Configuration.volMixerMode[0].icon
+                            glyphSize: WidgetConfiguration.widgetEmbeddedIconSz
+                            glyphColor: root.activeMixerMode === 0
+                                ? Settings.colors.fgDark : Settings.colors.fgMain
+                            glyphHorizontalOffset: -0.5
+                            onLeftClicked: root.activeMixerMode = 0
+                        }
+
+                        HexagonButton {
+                            id: mixerStreamsBtn
+
+                            bgFill: root.activeMixerMode === 1
+                                ? Settings.colors.accentMain : Settings.colors.bgTint3
+                            glyph: VolumeUI.Configuration.volMixerMode[1].icon
+                            glyphSize: WidgetConfiguration.widgetEmbeddedIconSz
+                            glyphColor: root.activeMixerMode === 1
+                                ? Settings.colors.fgDark : Settings.colors.fgMain
+                            glyphHorizontalOffset: -0.5
+                            onLeftClicked: root.activeMixerMode = 1
+                        }
+                    }
+                }
+
+                Item {
+                    Layout.fillWidth: true
+                }
 
                 RowLayout {
                     id: outputVolumeToggler
                     Layout.alignment: Qt.AlignVCenter
-                    spacing: 5
+                    spacing: WidgetConfiguration.hexSwitchSpacing
 
                     Item {
                         Layout.alignment: Qt.AlignVCenter
@@ -126,7 +128,7 @@ Pane {
                             anchors.horizontalCenter: parent.horizontalCenter
                             icon: VolumeUI.Configuration.outputMuteState[
                                 Core.Audio.sink.muted ? 1 : 0]
-                            iconSize: VolumeUI.Configuration.mainButtonSize
+                            iconSize: WidgetConfiguration.widgetMainIconSz
                             iconColor: Settings.colors.fgMain
                             useMetrics: true
                             verticalOffset: 0
@@ -143,10 +145,14 @@ Pane {
                     }
                 }
 
+                Item {
+                    Layout.fillWidth: true
+                }
+
                 RowLayout {
                     id: inputVolumeToggler
                     Layout.alignment: Qt.AlignVCenter
-                    spacing: 5
+                    spacing: WidgetConfiguration.hexSwitchSpacing
 
                     Item {
                         Layout.alignment: Qt.AlignVCenter
@@ -158,7 +164,7 @@ Pane {
                             anchors.horizontalCenter: parent.horizontalCenter
                             icon: VolumeUI.Configuration.inputMuteState[
                                 Core.Audio.source.muted ? 1 : 0]
-                            iconSize: VolumeUI.Configuration.mainButtonSize
+                            iconSize: WidgetConfiguration.widgetMainIconSz
                             iconColor: Settings.colors.fgMain
                             useMetrics: true
                             verticalOffset: 0
@@ -174,36 +180,33 @@ Pane {
                         backgroundColor: root.panelBackgroundColor
                     }
                 }
-            }
 
-            Rectangle {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                color: "transparent"
-            }
+                Item {
+                    Layout.fillWidth: true
+                }
 
-            SquaredButton {
-                Layout.rightMargin: VolumeUI.Configuration.topBarSpacing
+                SquaredButton {
+                    glyph: VolumeUI.Configuration.volumeSettingsIcon
+                    glyphSize: WidgetConfiguration.widgetMainIconSz
+                    useMetrics: true
+                    color: Settings.colors.fgMain
 
-                glyph: VolumeUI.Configuration.volumeSettingsIcon
-                glyphSize: VolumeUI.Configuration.mainButtonSize
-                useMetrics: true
-                color: Settings.colors.fgMain
-
-                onLeftClicked: {
-                    VolumeUI.VolumeActions.volumeManager()
-                    root.dismissRequested()
+                    onLeftClicked: {
+                        VolumeUI.VolumeActions.volumeManager()
+                        root.dismissRequested()
+                    }
                 }
             }
+
+            // ────── Separator ──────
+            Separator {
+                Layout.fillWidth: true
+                Layout.topMargin: 1
+                Layout.bottomMargin: WidgetConfiguration.mainRowVMargin
+                color: Settings.colors.bgTint4
+            }
         }
 
-        // ────── Separator ──────
-        Separator {
-            Layout.fillWidth: true
-            Layout.topMargin: 1
-            Layout.bottomMargin: VolumeUI.Configuration.mainColumnGap
-            color: Settings.colors.bgTint4
-        }
 
         // ────── Volume Entries ──────
         Flickable {
@@ -211,7 +214,7 @@ Pane {
             Layout.fillWidth: true
             Layout.preferredHeight: implicitHeight
             implicitWidth: VolumeUI.Configuration.contentWidth
-            implicitHeight: Math.min(contents.implicitHeight, VolumeUI.Configuration.listMaxHeight)
+            implicitHeight: Math.min(contents.implicitHeight, WidgetConfiguration.rowContentMaxHeight)
             contentWidth: width
             contentHeight: contents.implicitHeight
             clip: true
@@ -239,25 +242,21 @@ Pane {
                     ColumnLayout {
                         id: deviceSections
                         width: parent.width
-                        spacing: VolumeUI.Configuration.sectionSpacing
+                        spacing: WidgetConfiguration.sectionVSpacing
 
                         ColumnLayout {
                             id: outputVolumeSection
 
                             Layout.fillWidth: true
                             visible: true
-                            spacing: VolumeUI.Configuration.volEntryRowSpacing
+                            spacing: WidgetConfiguration.sectionContentVSpacing
 
-                            RowLayout {
-                                Layout.bottomMargin: 4
-
-                                Text {
-                                    text: "OUTPUT DEVICES"
-                                    color: Settings.colors.fgMain
-                                    font.family: Settings.labelFontFamily
-                                    font.bold: true
-                                    font.pixelSize: VolumeUI.Configuration.columnLabelFontSize
-                                }
+                            Text {
+                                text: "OUTPUT DEVICES"
+                                color: Settings.colors.fgMain
+                                font.family: Settings.labelFontFamily
+                                font.bold: true
+                                font.pixelSize: WidgetConfiguration.sectionRowLabelFontSz
                             }
 
                             Repeater {
@@ -275,7 +274,7 @@ Pane {
 
                             Layout.fillWidth: true
                             visible: true
-                            spacing: VolumeUI.Configuration.volEntryRowSpacing
+                            spacing: WidgetConfiguration.sectionContentVSpacing
 
                             Text {
                                 Layout.bottomMargin: 4
@@ -284,7 +283,7 @@ Pane {
                                 color: Settings.colors.fgMain
                                 font.family: Settings.labelFontFamily
                                 font.bold: true
-                                font.pixelSize: VolumeUI.Configuration.columnLabelFontSize
+                                font.pixelSize: WidgetConfiguration.sectionRowLabelFontSz
                             }
 
                             Repeater {
@@ -307,7 +306,7 @@ Pane {
 
                     Behavior on x {
                         NumberAnimation {
-                            duration: VolumeUI.Configuration.transitionMs
+                            duration: WidgetConfiguration.transitionMs
                             easing.type: Easing.OutCubic
                         }
                     }
@@ -315,16 +314,14 @@ Pane {
                     ColumnLayout {
                         id: appVolumeSection
                         width: parent.width
-                        spacing: VolumeUI.Configuration.volEntryRowSpacing
+                        spacing: WidgetConfiguration.sectionContentVSpacing
 
                     Text {
-                        Layout.bottomMargin: 4
-
                         text: "APPLICATIONS"
                         color: Settings.colors.fgMain
                         font.family: Settings.labelFontFamily
                         font.bold: true
-                        font.pixelSize: VolumeUI.Configuration.columnLabelFontSize
+                        font.pixelSize: WidgetConfiguration.sectionRowLabelFontSz
                     }
 
                         Repeater {
@@ -342,7 +339,7 @@ Pane {
                             color: Settings.colors.fgMain
                             opacity: 0.7
                             font.family: Settings.labelFontFamily
-                            font.pixelSize: VolumeUI.Configuration.subTextFontSize
+                            font.pixelSize: WidgetConfiguration.widgetMsgFieldFontSz
                         }
                     }
                 }

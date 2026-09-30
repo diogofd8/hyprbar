@@ -5,6 +5,7 @@ import Quickshell.Widgets
 
 import qs
 import qs.components
+import qs.widgets
 import qs.core as Core
 
 Controls.Pane {
@@ -12,13 +13,17 @@ Controls.Pane {
     required property var model
     signal dismissRequested()
 
-    padding: Configuration.volEntryPadding
+    // ────── Dimensioning ──────
+    leftPadding: WidgetConfiguration.entryHPadding
+    rightPadding: WidgetConfiguration.entryHPadding
+    topPadding: WidgetConfiguration.entryVPadding
+    bottomPadding: WidgetConfiguration.entryVPadding
     implicitHeight: mainContent.implicitHeight + root.topPadding + root.bottomPadding
     clip: true
 
     Behavior on implicitHeight {
         SmoothedAnimation {
-            duration: Configuration.transitionMs
+            duration: WidgetConfiguration.transitionMs
             velocity: -1
             reversingMode: SmoothedAnimation.Eased
         }
@@ -30,19 +35,17 @@ Controls.Pane {
 
     contentItem: RowLayout {
         id: mainContent
-        spacing: Configuration.volEntryPadding
+        spacing: WidgetConfiguration.entryHPadding
 
         Item {
             Layout.alignment: Qt.AlignVCenter
-            Layout.leftMargin: 6
-            Layout.rightMargin: 6
-            implicitWidth: Configuration.applicationIconSize
-            implicitHeight: Configuration.applicationIconSize
+            Layout.leftMargin: WidgetConfiguration.entryIconHPadding
+            Layout.rightMargin: WidgetConfiguration.entryIconHPadding
 
             IconImage {
                 id: volEntryIcon
                 anchors.centerIn: parent
-                implicitSize: Configuration.applicationIconSize
+                implicitSize: WidgetConfiguration.entryRowMainIconSz
                 source: root.model.iconSource
                 visible: source.toString() !== "" && status !== Image.Error
 
@@ -55,17 +58,19 @@ Controls.Pane {
                 anchors.centerIn: parent
                 visible: !volEntryIcon.visible
                 icon: Configuration.applicationFallbackIcon
-                iconSize: Configuration.applicationIconSize
+                iconSize: WidgetConfiguration.entryRowMainIconSz
                 useMetrics: false
             }
         }
 
         ColumnLayout {
-            spacing: 0
+            spacing: WidgetConfiguration.entryRowVSpacing
 
             RowLayout {
                 Layout.fillWidth: true
-                spacing: Configuration.volEntryPadding
+                Layout.topMargin: 0.5 * WidgetConfiguration.entryIconHPadding
+                Layout.preferredHeight: WidgetConfiguration.entryRowMainIconSz
+                spacing: WidgetConfiguration.entryTitleRowHSpacing
 
                 Text {
                     id: volEntryName
@@ -75,7 +80,7 @@ Controls.Pane {
                     elide: Text.ElideRight
                     color: Settings.colors.fgMain
                     font.family: Settings.labelFontFamily
-                    font.pixelSize: Configuration.volEntryNameFontSize
+                    font.pixelSize: WidgetConfiguration.entryRowTitleFontSz
                 }
 
                 Text {
@@ -84,20 +89,18 @@ Controls.Pane {
                     color: Settings.colors.fgMain
                     opacity: 0.7
                     font.family: Settings.labelFontFamily
-                    font.pixelSize: Configuration.subTextFontSize
+                    font.pixelSize: WidgetConfiguration.entryRowTitleFontSz
                 }
 
-                Rectangle {
+                Item {
                     Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    color: "transparent"
                 }
 
                 SquaredButton {
                     id: settingsBtn
 
                     glyph: Configuration.volEntrySettingsIcon
-                    glyphSize: Configuration.secondaryButtonSize
+                    glyphSize: WidgetConfiguration.widgetSecondaryIconSz
                     color: Settings.colors.fgMain
 
                     onLeftClicked: {
@@ -110,7 +113,6 @@ Controls.Pane {
             RowLayout {
                 Layout.fillWidth: true
                 spacing: 0
-                clip: true
 
                 SquaredButton {
                     id: muteBtn
@@ -120,40 +122,48 @@ Controls.Pane {
                     glyph: root.model.muted
                         ? Configuration.outputMuteState[1]
                         : Configuration.outputMuteState[0]
-                    glyphSize: Configuration.secondaryButtonSize
+                    glyphSize: WidgetConfiguration.widgetSecondaryIconSz
                     color: Settings.colors.fgMain
 
                     onLeftClicked: Core.Audio.setEntryMuted(
                         root.model.id, !root.model.muted)
                 }
 
-                HexagonSlider {
-                    id: volumeSlider
-                    Layout.fillWidth: true
+                RowLayout {
+                    id: volumeSliderContainer
+                    spacing: WidgetConfiguration.entryExtendedRowHSpacing
+                    Layout.topMargin: WidgetConfiguration.sliderExtraSpacing
+                    Layout.bottomMargin: WidgetConfiguration.sliderExtraSpacing
 
-                    backgroundColor: Settings.colors.bgTint2
+                    clip: true
 
-                    from: 0
-                    to: 100
-                    value: root.model.value
+                    HexagonSlider {
+                        id: volumeSlider
+                        Layout.fillWidth: true
 
-                    actionable: root.model.hasStream
-                    opacity: actionable ? 1 : 0.4
-                    stepSize: 1
-                    snapMode: Controls.Slider.SnapAlways
+                        backgroundColor: Settings.colors.bgTint2
 
-                    onMoved: Core.Audio.setEntryVolume(root.model.id, value)
-                }
+                        from: 0
+                        to: 100
+                        value: root.model.value
 
-                Percentage {
-                    Layout.leftMargin: Configuration.volEntryRowSpacing
-                    height: parent.height
+                        actionable: root.model.hasStream
+                        opacity: actionable ? 1 : 0.4
+                        stepSize: 1
+                        snapMode: Controls.Slider.SnapAlways
 
-                    value: String(root.model.value)
-                    visible: root.model.hasStream
+                        onMoved: Core.Audio.setEntryVolume(root.model.id, value)
+                    }
 
-                    fontFamily: Settings.labelFontFamily
-                    fontSize: Configuration.volEntryNameFontSize
+                    Percentage {
+                        height: parent.height
+
+                        value: String(root.model.value)
+                        visible: root.model.hasStream
+
+                        fontFamily: Settings.labelFontFamily
+                        fontSize: WidgetConfiguration.entryRowDefaultFontSz
+                    }
                 }
             }
         }

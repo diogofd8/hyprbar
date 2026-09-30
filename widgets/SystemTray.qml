@@ -23,7 +23,7 @@ Pane {
     )
     readonly property bool isEmpty: root.visibleItems.length === 0
 
-    padding: SysTrayUI.Configuration.widgetBoxPadding
+    padding: WidgetConfiguration.dropDownWindowPadding
     implicitHeight: root.targetImplicitHeight
     clip: true
 
@@ -64,7 +64,7 @@ Pane {
             id: itemsRow
 
             Layout.fillWidth: true
-            spacing: SysTrayUI.Configuration.stEntryRowSpacing
+            spacing: WidgetConfiguration.sectionContentVSpacing
             visible: root.visibleItems.length > 0
 
             Repeater {

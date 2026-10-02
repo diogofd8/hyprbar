@@ -45,8 +45,7 @@ sudo pacman -S quickshell hyprland ttf-jetbrains-mono ttf-iosevkaterm-nerd
 
 ### Optional
 
-Only needed by the click actions in `core/Actions.qml`. Drop the ones you don't want
-and edit that file. Nothing else depends on them.
+These support optional click actions and modules. Install only the parts you use.
 
 | Package | Used for |
 | --- | --- |
@@ -61,7 +60,7 @@ and edit that file. Nothing else depends on them.
 | `network-manager-applet` | `nm-connection-editor` |
 | `blueman` | `blueman-manager` |
 | `pacman-contrib` | `checkupdates`, for the update script |
-| `spotify-bin`, Spotify binary |
+| `spotify-bin` | Spotify desktop player for the Spotify module |
 | `gtk3` | `gtk-launch`, used by the Spotify module |
 
 ## Installation
@@ -144,8 +143,8 @@ add the icon that goes with it.
   `~/.config/rofi/powermenu/powermenu.sh`, which is **not** part of this repository —
   it will be a dangling symlink after cloning. Replace it with your own script, or
   point `Actions.powerMenu()` somewhere else.
-- **Spotify.** `scripts/spotify_module` is a prebuilt Rust binary. If it doesn't run on
-  your system, remove the Spotify module from `bar/RightSection.qml`.
+- **Spotify.** The module reads Spotify's MPRIS state and scrolls metadata in QML.
+  Edit `SpotifyConfig.qml` to change the player, text format, and scroll behavior.
 
 ## Notes and limitations
 

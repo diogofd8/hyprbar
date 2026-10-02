@@ -13,6 +13,7 @@ Slider {
     property color activeColor: Settings.colors.accentMain
     property color hoverColor: Settings.colors.fgMain
     property real hoverOpacity: Settings.colors.hoverOpacity
+    property real dimOpacity: Settings.colors.dimOpacity
 
     // Preferred track length only; the actual track follows the assigned width.
     property real trackWidth: 100
@@ -117,7 +118,7 @@ Slider {
 
             delegate: Rectangle {
                 required property int index
-                opacity: 0.7
+                opacity: root.dimOpacity
 
                 width: 2
                 height: root.tickHeight

@@ -77,7 +77,7 @@ Controls.Pane {
                     visible: root.model.statusText.length > 0
                     text: shortStatus(root.model.statusText)
                     color: root.statusColor()
-                    opacity: 0.75
+                    opacity: Settings.colors.dimOpacity
                     font.family: Settings.labelFontFamily
                     font.pixelSize: WidgetConfiguration.widgetMainFontSz
                 }
@@ -100,7 +100,7 @@ Controls.Pane {
                 spacing: WidgetConfiguration.entryExtendedRowHSpacing
                 clip: true
                 visible: root.hasDetails
-                opacity: 0.7
+                opacity: Settings.colors.dimOpacity
 
                 RowLayout {
                     id: batteryHealth

@@ -245,7 +245,7 @@ Pane {
                         visible: Core.PowerSupply.batteryEntryModel.count === 0
                         text: "No batteries available"
                         color: Settings.colors.fgMain
-                        opacity: 0.7
+                        opacity: Settings.colors.dimOpacity
                         font.family: Settings.labelFontFamily
                         font.pixelSize: WidgetConfiguration.widgetMsgFieldFontSz
                     }

@@ -57,7 +57,7 @@ Pane {
             font.pixelSize: Settings.smallCapsFontSize
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            opacity: 0.7
+            opacity: Settings.colors.dimOpacity
         }
 
         RowLayout {

@@ -13,8 +13,10 @@ Singleton {
         readonly property color bgTint2: "#181E25"
         readonly property color bgTint3: "#202831"
         readonly property color bgTint4: "#28313E"
+
         readonly property real hoverOpacity: 0.10
         readonly property real bgOpacity: 0.7
+        readonly property real dimOpacity: 0.7
 
         readonly property color fgMain: "#7E85B2"
         readonly property color fgDark: bgMain
@@ -25,6 +27,8 @@ Singleton {
 
         readonly property color internalBatteryColor: "#DAA250"
         readonly property color externalBatteryColor: "#5088DA"
+
+        readonly property color spotifyColor: "#1DB954"
     }
 
     // ────── Light Theme ──────
@@ -34,8 +38,10 @@ Singleton {
         readonly property color bgTint2: "#DCE0E6"
         readonly property color bgTint3: "#D0D5DD"
         readonly property color bgTint4: "#C3C9D3"
+
         readonly property real hoverOpacity: 0.10
         readonly property real bgOpacity: 0.95
+        readonly property real dimOpacity: 0.7
 
         readonly property color fgMain: "#555D8A"
         readonly property color fgDark: bgMain
@@ -46,5 +52,7 @@ Singleton {
 
         readonly property color internalBatteryColor: "#DAA250"
         readonly property color externalBatteryColor: "#5088DA"
+
+        readonly property color spotifyColor: "#1DB954"
     }
 }

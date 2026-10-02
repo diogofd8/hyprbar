@@ -158,7 +158,7 @@ Controls.Pane {
                 RowLayout {
                     Layout.fillWidth: true
                     visible: !root.askingPassword
-                    opacity: 0.7
+                    opacity: Settings.colors.dimOpacity
                     spacing: WidgetConfiguration.entryExtendedRowHSpacing
 
                     Text {

@@ -87,7 +87,7 @@ Controls.Pane {
                     visible: !root.model.hasStream
                     text: "Idle"
                     color: Settings.colors.fgMain
-                    opacity: 0.7
+                    opacity: Settings.colors.dimOpacity
                     font.family: Settings.labelFontFamily
                     font.pixelSize: WidgetConfiguration.entryRowTitleFontSz
                 }

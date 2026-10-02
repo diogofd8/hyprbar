@@ -82,7 +82,7 @@ Pane {
                 Temperature {
                     value: BrightnessUI.BrightnessActions.nightTemperatureText(Core.Backlight.nightLightEnabled, Core.Backlight.nightTemperature)
                     visible: Core.Backlight.nightLightLoaded
-                    opacity: 0.7
+                    opacity: Settings.colors.dimOpacity
                     color: Core.Backlight.nightLightEnabled ? Settings.colors.accentAlert : Settings.colors.fgMain
                     unit: "K"
                     verticalOffset: 0

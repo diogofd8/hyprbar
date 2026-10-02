@@ -180,7 +180,7 @@ Controls.Pane {
                 RowLayout {
                     Layout.fillWidth: true
                     visible: root.canExpand
-                    opacity: 0.7
+                    opacity: Settings.colors.dimOpacity
                     spacing: WidgetConfiguration.entryExtendedRowHSpacing
 
                     Text {

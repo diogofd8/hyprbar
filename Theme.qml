@@ -17,6 +17,7 @@ Singleton {
         readonly property real hoverOpacity: 0.10
         readonly property real bgOpacity: 0.7
         readonly property real dimOpacity: 0.7
+        readonly property real disabledOpacity: 0.4
 
         readonly property color fgMain: "#7E85B2"
         readonly property color fgDark: bgMain
@@ -42,6 +43,7 @@ Singleton {
         readonly property real hoverOpacity: 0.10
         readonly property real bgOpacity: 0.95
         readonly property real dimOpacity: 0.7
+        readonly property real disabledOpacity: 0.4
 
         readonly property color fgMain: "#555D8A"
         readonly property color fgDark: bgMain

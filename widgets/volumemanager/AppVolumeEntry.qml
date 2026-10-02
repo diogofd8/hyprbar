@@ -117,7 +117,7 @@ Controls.Pane {
                 SquaredButton {
                     id: muteBtn
                     enabled: root.model.hasStream
-                    opacity: enabled ? 1 : 0.4
+                    opacity: enabled ? 1 : Settings.colors.disabledOpacity
 
                     glyph: root.model.muted
                         ? Configuration.outputMuteState[1]
@@ -148,7 +148,7 @@ Controls.Pane {
                         value: root.model.value
 
                         actionable: root.model.hasStream
-                        opacity: actionable ? 1 : 0.4
+                        opacity: actionable ? 1 : Settings.colors.disabledOpacity
                         stepSize: 1
                         snapMode: Controls.Slider.SnapAlways
 

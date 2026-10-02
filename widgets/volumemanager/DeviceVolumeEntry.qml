@@ -39,7 +39,7 @@ Controls.Pane {
         GlyphButton {
             id: volEntryBtn
             enabled: root.model.canSelect
-            opacity: enabled ? 1 : 0.4
+            opacity: enabled ? 1 : Settings.colors.disabledOpacity
             Layout.alignment: Qt.AlignVCenter
             Layout.leftMargin: WidgetConfiguration.entryIconHPadding
             Layout.rightMargin: WidgetConfiguration.entryIconHPadding

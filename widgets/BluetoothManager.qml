@@ -129,7 +129,7 @@ Pane {
                     useMetrics: true
                     color: btScanBtn.enabled
                         ? Settings.colors.fgMain
-                        : Qt.alpha(Settings.colors.fgMain, 0.4)
+                        : Qt.alpha(Settings.colors.fgMain, Settings.colors.disabledOpacity)
 
                     onLeftClicked: Bluetooth.toggleDiscovery()
                 }

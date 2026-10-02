@@ -18,7 +18,7 @@ Row {
         rightCap: Core.ChevronGeometry.Cap.Point
 
         bgFill: Settings.colors.bgTint3
-        hoverOpacity: 2 * Settings.colors.hoverOpacity
+        hoverOpacity: Settings.colors.hoverOpacityStrong
 
         onScrolled: steps => Core.Backlight.stepBrightness(steps)
         onLeftClicked: brightnessManager.toggle()

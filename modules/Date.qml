@@ -23,7 +23,7 @@ Row {
         rightCap: Core.ChevronGeometry.Cap.Notch
 
         bgFill: Settings.colors.bgTint3
-        hoverOpacity: 2 * Settings.colors.hoverOpacity
+        hoverOpacity: Settings.colors.hoverOpacityStrong
 
         onLeftClicked: Core.Actions.calendarPopUp()
         onRightClicked: Core.Actions.calendarFullPopUp()

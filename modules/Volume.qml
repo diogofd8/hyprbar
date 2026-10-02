@@ -38,7 +38,7 @@ Chevron {
             rightCap: Core.ChevronGeometry.Cap.Point
 
             bgFill: Settings.colors.bgTint4
-            hoverOpacity: 2 * Settings.colors.hoverOpacity
+            hoverOpacity: Settings.colors.hoverOpacityStrong
 
             onLeftClicked: volumeManager.toggle()
             onMiddleClicked: Core.Audio.toggleSourceMute()
@@ -95,7 +95,7 @@ Chevron {
             rightCap: Core.ChevronGeometry.Cap.Point
 
             bgFill: Settings.colors.bgTint4
-            hoverOpacity: 2 * Settings.colors.hoverOpacity
+            hoverOpacity: Settings.colors.hoverOpacityStrong
 
             onLeftClicked: volumeManager.toggle()
             onMiddleClicked: Core.Audio.toggleMute()

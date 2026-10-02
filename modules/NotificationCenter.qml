@@ -14,7 +14,7 @@ ChevronButton {
     rightCap: Core.ChevronGeometry.Cap.Point
 
     bgFill: Settings.colors.bgTint3
-    hoverOpacity: 2 * Settings.colors.hoverOpacity
+    hoverOpacity: Settings.colors.hoverOpacityStrong
 
     onLeftClicked: Core.Actions.notificationMenu()
 

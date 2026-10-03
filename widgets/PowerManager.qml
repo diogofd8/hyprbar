@@ -17,10 +17,9 @@ Pane {
     property string requestedPowerMode: ""
     readonly property bool usingPowerProfiles:
         PowerUI.Configuration.powerProfileBackend === "power-profiles-daemon"
-    readonly property bool powerModesAvailable:
-        !root.usingPowerProfiles || Core.PowerProfiles.available
-    readonly property string activePowerMode: root.usingPowerProfiles
-        ? Core.PowerProfiles.activeProfile : root.requestedPowerMode
+    readonly property bool powerModesAvailable: !root.usingPowerProfiles || Core.PowerProfiles.available
+    readonly property bool hasManuallyEnforcedPowerMode: Core.PowerProfiles.settingMode === "manual"
+    readonly property string activePowerMode: root.usingPowerProfiles ? Core.PowerProfiles.activeProfile : root.requestedPowerMode
 
     function setPowerMode(profile) {
         if (!PowerUI.PowerActions.setConfiguredPowerProfile(
@@ -155,6 +154,30 @@ Pane {
 
                 Item {
                     Layout.fillWidth: true
+                }
+
+                SquaredButton {
+                    id: restoreTlpButton
+
+                    enabled: root.hasManuallyEnforcedPowerMode && !PowerUI.PowerActions.resettingTlpProfile
+                    opacity: root.hasManuallyEnforcedPowerMode ? 1 : Settings.colors.disabledOpacity
+
+                    glyph: PowerUI.Configuration.restoreTlpButton
+                    glyphSize: WidgetConfiguration.widgetMainIconSz
+                    useMetrics: true
+                    color: Settings.colors.fgMain
+
+                    onLeftClicked: root.setPowerMode("auto")
+
+                    NumberAnimation on rotation {
+                        from: 0
+                        to: 360
+                        duration: 1500
+                        loops: Animation.Infinite
+                        running: PowerUI.PowerActions.resettingTlpProfile
+
+                        onStopped: restoreTlpButton.rotation = 0
+                    }
                 }
 
                 Text {

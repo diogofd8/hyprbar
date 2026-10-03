@@ -19,6 +19,7 @@ Singleton {
         { icon: "󰗑", mode: "balanced" },
         { icon: "", mode: "performance" },
     ]
+    readonly property var restoreTlpButton: "󰁯"
 
-    readonly property int contentWidth: 270
+    readonly property int contentWidth: 275
 }

@@ -210,7 +210,14 @@ Pane {
             Item {
                 id: contents
                 width: scroll.width
-                implicitHeight: root.activeMixerMode === 0 ? devicePage.implicitHeight : streamPage.implicitHeight
+                // Height follows the page slide: 0 on the device page, 1 on the
+                // stream page, read from the sliding x. The popout then grows or
+                // shrinks with the slide, on the same frames and curve, while a
+                // page's own height changes still apply directly.
+                readonly property real pageProgress: width > 0
+                    ? -devicePage.x / width : root.activeMixerMode
+                implicitHeight: devicePage.implicitHeight
+                    + (streamPage.implicitHeight - devicePage.implicitHeight) * pageProgress
                 clip: true
 
                 Item {

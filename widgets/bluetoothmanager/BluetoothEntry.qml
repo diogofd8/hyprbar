@@ -29,15 +29,6 @@ Controls.Pane {
     implicitHeight: mainContent.implicitHeight + root.topPadding + root.bottomPadding
     clip: true
 
-    // ────── Animations ──────
-    Behavior on implicitHeight {
-        SmoothedAnimation {
-            duration: WidgetConfiguration.transitionMs
-            velocity: -1
-            reversingMode: SmoothedAnimation.Eased
-        }
-    }
-
     background: Rectangle {
         color: Settings.colors.bgTint2
     }
@@ -71,7 +62,7 @@ Controls.Pane {
 
                 Behavior on Layout.topMargin {
                     NumberAnimation {
-                        duration: WidgetConfiguration.transitionMs
+                        duration: Motion.rowExpandMs
                         easing.type: Easing.InOutCubic
                     }
                 }
@@ -158,7 +149,7 @@ Controls.Pane {
 
                     Behavior on rotation {
                         NumberAnimation {
-                            duration: WidgetConfiguration.transitionMs
+                            duration: Motion.rowExpandMs
                             easing.type: Easing.InOutCubic
                         }
                     }
@@ -166,11 +157,9 @@ Controls.Pane {
             }
 
             // ────── Extended Row ──────
-            RowLayout {
+            CollapsibleRow {
                 id: bottom
-                visible: root.bottomShown
-                clip: true
-
+                shown: root.bottomShown
                 Layout.fillWidth: true
                 spacing: WidgetConfiguration.entryExtendedRowHSpacing
 
@@ -231,7 +220,7 @@ Controls.Pane {
 
                     Behavior on opacity {
                         NumberAnimation {
-                            duration: WidgetConfiguration.transitionMs
+                            duration: Motion.rowExpandMs
                             easing.type: Easing.InOutCubic
                         }
                     }

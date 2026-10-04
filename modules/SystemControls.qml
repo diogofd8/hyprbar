@@ -6,7 +6,9 @@ import qs.core as Core
 import qs.widgets
 
 Chevron {
-    height: root.height
+    id: root
+
+    height: root.implicitHeight
     contentLeftPadding: 0
     contentRightPadding: 1
 

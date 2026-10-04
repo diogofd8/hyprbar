@@ -59,11 +59,6 @@ PanelWindow {
         return first.owner === dropdown || second.owner === dropdown
     }
 
-    function startRevealWhenVisible() {
-        if (root.waitingToReveal && root.backingWindowVisible)
-            revealStart.restart()
-    }
-
     function show(dropdown) {
         if (!dropdown || !dropdown.menuContent || root.current === dropdown)
             return
@@ -92,7 +87,6 @@ PanelWindow {
         ++root.interactionSerial
         root.current = null
         root.waitingToReveal = false
-        revealStart.stop()
         root.reveal = 0
         if (root.displayedSlot < 0 || root.reveal <= 0)
             root.finishClose()
@@ -127,9 +121,9 @@ PanelWindow {
         root.updateTarget()
         root.waitingToReveal = firstOpen
         root.mapped = true
-        if (firstOpen)
-            root.startRevealWhenVisible()
-        else {
+        // A first open reveals from the window's first presented frame
+        // (firstFrame below); a switch starts at once.
+        if (!firstOpen) {
             root.reveal = 1
             morph.start()
         }
@@ -167,7 +161,6 @@ PanelWindow {
             return
 
         root.waitingToReveal = false
-        revealStart.stop()
         root.mapped = false
         morph.stop()
         root.morphing = false
@@ -177,9 +170,6 @@ PanelWindow {
     }
 
     onRevealChanged: if (root.reveal <= 0 && !root.current) root.finishClose()
-    onBackingWindowVisibleChanged: {
-        root.startRevealWhenVisible()
-    }
     onWidthChanged: root.updateTarget()
     onHeightChanged: root.updateTarget()
 
@@ -189,16 +179,18 @@ PanelWindow {
         onTransformChanged: root.updateTarget()
     }
 
-    // Start on a painted frame rather than advancing the animation while the
-    // newly mapped layer is still waiting for its first compositor frame.
-    Timer {
-        id: revealStart
-        interval: Motion.popoutStartMs
-        onTriggered: {
-            if (root.waitingToReveal && root.current && root.backingWindowVisible) {
-                root.waitingToReveal = false
+    // Quickshell destroys a layer window when it's hidden, so every open builds
+    // a new QQuickWindow, and its first frame is the slow one. Start the reveal
+    // once that frame has been presented, so the animation never runs during it.
+    // frameSwapped comes from the render thread; QML delivers it on this thread.
+    Connections {
+        id: firstFrame
+        target: panel.Window.window
+        enabled: root.waitingToReveal
+        function onFrameSwapped() {
+            root.waitingToReveal = false
+            if (root.current)
                 root.reveal = 1
-            }
         }
     }
 

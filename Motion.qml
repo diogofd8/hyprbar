@@ -10,7 +10,6 @@ Singleton {
     // ────── Durations ──────
     readonly property int fastMs: 150               // small flips on the bar (tray chevron)
     readonly property int normalMs: 200             // expand/collapse and slides inside a popout
-    readonly property int popoutStartMs: 24
     readonly property int popoutOpenMs: 300
     readonly property int popoutCloseMs: 210
     readonly property int popoutMorphMs: 300

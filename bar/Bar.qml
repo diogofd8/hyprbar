@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Wayland
 
 import qs
+import qs.components
 import qs.core as Core
 
 PanelWindow {
@@ -11,7 +12,7 @@ PanelWindow {
 
     // The shared host is a sibling window, supplied by shell.qml. DropDown
     // controllers find it through their QsWindow attached property.
-    property var popoutHost: null
+    property PopoutHost popoutHost: null
 
     anchors {
         top: true

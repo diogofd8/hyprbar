@@ -17,14 +17,13 @@ Pane {
     signal platformMenuClosed()
 
     readonly property string panelBackgroundColor: Settings.colors.bgMain
-    readonly property real targetImplicitHeight: panelContent.implicitHeight + root.topPadding + root.bottomPadding
     readonly property var visibleItems: TrayService.SystemTray.items.values.filter(
         item => SysTrayUI.Configuration.isVisible(item)
     )
     readonly property bool isEmpty: root.visibleItems.length === 0
 
     padding: WidgetConfiguration.dropDownWindowPadding
-    implicitHeight: root.targetImplicitHeight
+    implicitHeight: panelContent.implicitHeight + root.topPadding + root.bottomPadding
     clip: true
 
     // PopoutHost draws the panel background shared by every widget. Null, not

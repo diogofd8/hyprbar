@@ -20,7 +20,7 @@ Item {
     property bool holdOpen: false
     property bool wantsKeyboardFocus: false
 
-    readonly property var host: root.QsWindow.window
+    readonly property PopoutHost host: root.QsWindow.window
         ? (root.QsWindow.window.popoutHost || null) : null
     readonly property bool isOpen: root.host !== null && root.host.current === root
     readonly property bool contentActive: root.host !== null && root.host.retains(root)

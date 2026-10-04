@@ -13,10 +13,9 @@ Pane {
     signal dismissRequested()
 
     readonly property string panelBackgroundColor: Settings.colors.bgMain
-    readonly property real targetImplicitHeight: panelContent.implicitHeight + topPadding + bottomPadding
 
     padding: WidgetConfiguration.dropDownWindowPadding
-    implicitHeight: targetImplicitHeight
+    implicitHeight: panelContent.implicitHeight + root.topPadding + root.bottomPadding
     clip: true
 
     // PopoutHost draws the panel background shared by every widget. Null, not

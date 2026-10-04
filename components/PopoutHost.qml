@@ -10,8 +10,8 @@ import qs
 PanelWindow {
     id: root
 
-    required property var bar
-    property var current: null
+    required property PanelWindow bar
+    property DropDown current: null
     property int interactionSerial: 0
     property int displayedSlot: -1
     property bool mapped: false
@@ -26,6 +26,8 @@ PanelWindow {
     property real targetY: 0
     property real targetWidth: 0
     property real targetHeight: 0
+    // The last popout whose content didn't fit, so the warning prints once
+    property DropDown clampWarned: null
 
     screen: root.bar.screen
     anchors { top: true; left: true; right: true }
@@ -172,6 +174,14 @@ PanelWindow {
         const rect = root.bar.itemRect(root.current.anchorItem)
         const width = Math.min(loader.implicitWidth, root.width)
         const height = Math.min(loader.implicitHeight, root.height)
+        // Compared with the height the host asks for: until Hyprland
+        // configures a new window, width and height are placeholders.
+        if (loader.implicitHeight > root.implicitHeight && root.clampWarned !== root.current) {
+            root.clampWarned = root.current
+            console.warn(`PopoutHost: popout content is ${loader.implicitHeight} px tall,`
+                + ` taller than the host's ${root.implicitHeight} px; it is cut off.`
+                + " Raise Settings.popoutHostHeight.")
+        }
         root.targetWidth = width
         root.targetHeight = height
         root.targetX = Math.max(0, Math.min(root.width - width,
@@ -250,8 +260,8 @@ PanelWindow {
         id: slotLoader
 
         required property int slotIndex
-        required property var host
-        property var owner: null
+        required property PopoutHost host
+        property DropDown owner: null
 
         // Natural size, centred in the panel. A morph moves the shared
         // background and the clip; it never re-lays out the widget itself.

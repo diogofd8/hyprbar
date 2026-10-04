@@ -16,13 +16,11 @@ Pane {
     signal dismissRequested()
 
     readonly property string panelBackgroundColor: Settings.colors.bgMain
-    readonly property real targetImplicitHeight: panelContent.implicitHeight
-        + root.topPadding + root.bottomPadding
 
     padding: WidgetConfiguration.dropDownWindowPadding
     // Entry heights already contain the transition. The shared host keeps
     // its window size fixed while its clipped panel follows this height.
-    implicitHeight: root.targetImplicitHeight
+    implicitHeight: panelContent.implicitHeight + root.topPadding + root.bottomPadding
     clip: true
 
     // PopoutHost draws the panel background shared by every widget. Null, not

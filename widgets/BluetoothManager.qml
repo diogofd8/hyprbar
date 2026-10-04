@@ -13,7 +13,6 @@ Pane {
     signal dismissRequested()
 
     readonly property string panelBackgroundColor: Settings.colors.bgMain
-    readonly property real targetImplicitHeight: panelContent.implicitHeight + root.topPadding + root.bottomPadding
 
     // Overrides the remembered-device cap. The popup is rebuilt on every open, so this resets itself without any teardown.
     property bool showAllPaired: false
@@ -21,7 +20,7 @@ Pane {
     readonly property bool scanSectionShown: Bluetooth.scanning || Bluetooth.scanPerformed || Bluetooth.discoveredDevices.count > 0
 
     padding: WidgetConfiguration.dropDownWindowPadding
-    implicitHeight: root.targetImplicitHeight
+    implicitHeight: panelContent.implicitHeight + root.topPadding + root.bottomPadding
     clip: true
 
     // PopoutHost draws the panel background shared by every widget. Null, not

@@ -13,7 +13,6 @@ Pane {
     signal dismissRequested()
 
     readonly property string panelBackgroundColor: Settings.colors.bgMain
-    readonly property real targetImplicitHeight: panelContent.implicitHeight + root.topPadding + root.bottomPadding
     property string requestedPowerMode: ""
     readonly property bool usingPowerProfiles:
         PowerUI.Configuration.powerProfileBackend === "power-profiles-daemon"
@@ -40,7 +39,7 @@ Pane {
     }
 
     padding: WidgetConfiguration.dropDownWindowPadding
-    implicitHeight: root.targetImplicitHeight
+    implicitHeight: panelContent.implicitHeight + root.topPadding + root.bottomPadding
     clip: true
 
     // PopoutHost draws the panel background shared by every widget. Null, not

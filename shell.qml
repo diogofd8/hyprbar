@@ -1,4 +1,5 @@
 //@ pragma UseQApplication
+//@ pragma Env QT_QPA_PLATFORMTHEME =
 
 import Quickshell
 import QtQuick

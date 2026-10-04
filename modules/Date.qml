@@ -67,7 +67,7 @@ Row {
             }
 
             Text {
-                text: Qt.formatDateTime(clock.date, "d")
+                text: Qt.formatDateTime(clock.date, "dd")
                 color: Settings.colors.fgMain
                 font.family: Settings.labelFontFamily
                 font.pixelSize: Settings.labelFontSize

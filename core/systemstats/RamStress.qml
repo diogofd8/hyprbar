@@ -55,6 +55,12 @@ Singleton {
 
             if (match)
                 fields[match[1]] = Number(match[2]) * 1024
+
+            // Both come within the first three lines; nothing reads the
+            // other ~55 yet. Without MemAvailable this reads on, for the
+            // fallback below.
+            if (fields.MemTotal !== undefined && fields.MemAvailable !== undefined)
+                break
         }
 
         const total = fields.MemTotal

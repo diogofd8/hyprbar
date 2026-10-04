@@ -14,6 +14,23 @@ Singleton {
     readonly property var cpuTemperature: CpuTemperature
     readonly property var ramStress: RamStress
 
+    // Per-thread usage and per-core temperatures are only worked out while
+    // something shows them. The bar needs the overall values alone. Set by
+    // the system-info dropdown, like the other services' discoveryActive.
+    property bool detailActive: false
+
+    Binding {
+        target: CpuStress
+        property: "detailActive"
+        value: root.detailActive
+    }
+
+    Binding {
+        target: CpuTemperature
+        property: "detailActive"
+        value: root.detailActive
+    }
+
     Timer {
         interval: Settings.systemStatsPollingIntervalMs
         running: true

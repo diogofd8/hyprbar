@@ -16,6 +16,10 @@ Singleton {
 
     readonly property var threads: _threads
 
+    // Set by SystemStats. Without it only the aggregate line is parsed and
+    // `threads` stays empty.
+    property bool detailActive: false
+
     property real _overallValue: 0
     property string _overallState: "idle"
 
@@ -43,7 +47,11 @@ Singleton {
         if (!text)
             return
 
-        const lines = text.split("\n")
+        // The aggregate is the first line. Most of the file is the interrupt
+        // counters, so without detail the rest isn't even split.
+        const lines = root.detailActive
+            ? text.split("\n")
+            : [text.substring(0, text.indexOf("\n"))]
         const currentCounters = {}
 
         for (const line of lines) {
@@ -103,7 +111,9 @@ Singleton {
             }
         }
 
-        root._threads = threadValues
+        // Without detail this is empty: assign it once to clear, not every tick
+        if (root.detailActive || root._threads.length > 0)
+            root._threads = threadValues
 
         // console.log(
         //     "CPU:",

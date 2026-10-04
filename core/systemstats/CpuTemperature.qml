@@ -17,6 +17,10 @@ Singleton {
 
     readonly property var cores: _cores
 
+    // Set by SystemStats. Without it only the package sensor is read and
+    // `cores` stays empty.
+    property bool detailActive: false
+
     property real _overallValue: 0
     property string _overallState: "normal"
 
@@ -34,6 +38,10 @@ Singleton {
 
     property var _readings: ({})       // "tempN_input" -> degrees celsius
     property int _pending: 0
+
+    // A chip without a package sensor falls back to its hottest core (see
+    // publish), so then every sensor is read, detail or not.
+    readonly property bool _allSensors: root.detailActive || !root._packageFile
 
     // ────── Discovery: locate the CPU temperature chip ──────
 
@@ -109,13 +117,22 @@ Singleton {
     }
 
     function update() {
-        if (inputs.count === 0)
+        const due = []
+
+        for (let i = 0; i < inputs.count; i++) {
+            const view = inputs.objectAt(i)
+
+            if (root._allSensors || view.modelData === root._packageFile)
+                due.push(view)
+        }
+
+        if (due.length === 0)
             return
 
-        root._pending = inputs.count
+        root._pending = due.length
 
-        for (let i = 0; i < inputs.count; i++)
-            inputs.objectAt(i).reload()
+        for (const view of due)
+            view.reload()
     }
 
     function registerSensor(labelFile, label) {
@@ -151,16 +168,21 @@ Singleton {
 
         // Core ids can be sparse (a CPU may report Core 0, 1, 4, 5), so sort
         // by id and emit a dense array rather than indexing by id directly.
+        // Core readings are only fresh when every sensor was read this tick.
         const found = []
 
-        for (const file in root._coreOf) {
-            if (readings[file] !== undefined)
-                found.push({id: root._coreOf[file], value: readings[file]})
+        if (root._allSensors) {
+            for (const file in root._coreOf) {
+                if (readings[file] !== undefined)
+                    found.push({id: root._coreOf[file], value: readings[file]})
+            }
+
+            found.sort((a, b) => a.id - b.id)
         }
 
-        found.sort((a, b) => a.id - b.id)
-
-        root._cores = found.map(core => makeReading(core.value))
+        // Without detail this is empty: assign it once to clear, not every tick
+        if (root.detailActive || root._cores.length > 0)
+            root._cores = root.detailActive ? found.map(core => makeReading(core.value)) : []
 
         // Chips without a package sensor fall back to the hottest core, which
         // is what a package sensor reports anyway.

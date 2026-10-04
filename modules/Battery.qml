@@ -105,7 +105,7 @@ Chevron {
     Binding {
         target: Core.PowerSupply
         property: "discoveryActive"
-        value: powerManager.isOpen
+        value: powerManager.contentActive
     }
 
     DropDown {

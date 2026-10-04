@@ -9,7 +9,7 @@ import qs
 Singleton {
     id: root
 
-    // The popup owns discovery demand. No scans are requested by the bar.
+    // Set while the popup's content is loaded; the entry models follow it.
     property bool discoveryActive: false
 
     // ────── Public API ──────
@@ -95,36 +95,22 @@ Singleton {
         return found
     }
 
-    readonly property string entrySignature: {
-        const devices = UPower.devices.values
-        return devices.map(device => [
-            device.nativePath, device.ready, device.isPresent,
-            device.powerSupply, device.isLaptopBattery, device.type,
-            device.model, device.percentage, device.state,
-            device.changeRate, device.timeToEmpty, device.timeToFull,
-            device.healthPercentage, device.healthSupported
-        ].join(":")).join("\n")
-    }
+    // Only the popup shows the entries, so they are built only while it is
+    // loaded. UPower updates every pack every few seconds while discharging,
+    // and each update would otherwise rebuild both lists.
+    readonly property var batteryEntrySnapshots: root.discoveryActive
+        ? makeEntries(batteries, "battery") : []
+    readonly property var peripheralEntrySnapshots: root.discoveryActive
+        ? makeEntries(peripheralBatteries, "device") : []
 
-    readonly property var batteryEntrySnapshots: makeEntries(batteries, "battery")
-    readonly property var peripheralEntrySnapshots: makeEntries(peripheralBatteries, "device")
-
-    onEntrySignatureChanged: {
-        root.refreshEntryModels()
-    }
-
-    Component.onCompleted: root.refreshEntryModels()
+    onBatteryEntrySnapshotsChanged: syncModel(batteryEntries, root.batteryEntrySnapshots)
+    onPeripheralEntrySnapshotsChanged: syncModel(peripheralEntries, root.peripheralEntrySnapshots)
 
     ListModel { id: batteryEntries }
     ListModel { id: peripheralEntries }
 
     readonly property var batteryEntryModel: batteryEntries
     readonly property var peripheralEntryModel: peripheralEntries
-
-    function refreshEntryModels() {
-        syncModel(batteryEntries, root.batteryEntrySnapshots)
-        syncModel(peripheralEntries, root.peripheralEntrySnapshots)
-    }
 
     function deviceFor(nativePath) {
         for (const battery of batteries) {

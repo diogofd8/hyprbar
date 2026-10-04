@@ -62,13 +62,16 @@ Singleton {
         }
         return null
     }
+    // Only needed while the popup is loaded: it re-runs on every access
+    // point's signal change. Opening the popup changes it too, so both
+    // handlers defer the refresh and Qt.callLater runs nmcli once.
     readonly property string wifiVisibilitySignature: {
-        if (!root.wifiDevice) return ""
+        if (!root.discoveryActive || !root.wifiDevice) return ""
         return root.wifiDevice.networks.values.map(network =>
             network.name + ":" + (network.signalStrength > 0)).sort().join("\n")
     }
     onWifiVisibilitySignatureChanged: {
-        if (root.discoveryActive) refreshVisibleNetworks()
+        if (root.discoveryActive) Qt.callLater(root.refreshVisibleNetworks)
     }
     readonly property int wifiStrength: root.connectedWifiNetwork
         ? Math.round(root.connectedWifiNetwork.signalStrength * 100) : 0
@@ -271,7 +274,7 @@ Singleton {
         when: root.wifiDevice !== null
     }
     onDiscoveryActiveChanged: {
-        if (root.discoveryActive) refreshVisibleNetworks()
+        if (root.discoveryActive) Qt.callLater(root.refreshVisibleNetworks)
         else priv.visibleSsids = null
     }
     function escapedFields(line) {

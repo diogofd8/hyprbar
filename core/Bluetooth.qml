@@ -257,7 +257,13 @@ Singleton {
     }
 
     // ────── Device models ──────
+    // Built only while the popup's content is loaded. Otherwise every device
+    // change, a headset's battery level included, would rebuild all three
+    // lists for nobody. The bar icon reads deviceList directly.
     readonly property var entrySnapshots: {
+        if (!root.discoveryActive)
+            return {connected: [], paired: [], discovered: []}
+
         const connected = []
         const paired = []
         const discovered = []

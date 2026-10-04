@@ -49,7 +49,7 @@ Row {
     Binding {
         target: Core.Backlight
         property: "discoveryActive"
-        value: brightnessManager.isOpen
+        value: brightnessManager.contentActive
     }
 
     DropDown {

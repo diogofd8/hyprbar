@@ -73,18 +73,19 @@ Singleton {
         property real lastCheckedMs: 0
     }
 
-    readonly property bool due:
-        Date.now() - persist.lastCheckedMs >= Settings.updateCheckIntervalMs
+    function isDue(): bool {
+        return Date.now() - persist.lastCheckedMs >= Settings.updateCheckIntervalMs
+    }
 
     Timer {
         interval: Settings.updateCheckHeartbeatMs
         running: true
         repeat: true
 
-        onTriggered: if (root.due) root.check()
+        onTriggered: if (root.isDue()) root.check()
     }
 
-    Component.onCompleted: if (root.due) root.check()
+    Component.onCompleted: if (root.isDue()) root.check()
 
     Process {
         id: checker

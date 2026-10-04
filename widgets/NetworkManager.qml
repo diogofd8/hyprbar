@@ -99,6 +99,16 @@ Pane {
             }
         }
 
+        // ────── Wi-Fi Toggle Error ──────
+        Text {
+            Layout.fillWidth: true
+            visible: Network.wifiErrorMessage.length > 0
+            text: Network.wifiErrorMessage
+            wrapMode: Text.WordWrap
+            color: Settings.colors.accentError
+            font.family: Settings.labelFontFamily
+            font.pixelSize: WidgetConfiguration.widgetMsgFieldFontSz
+        }
 
         // ────── Connections ──────
         Flickable {

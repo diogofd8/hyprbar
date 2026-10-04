@@ -179,7 +179,7 @@ Controls.Pane {
     function statusColor() {
         if (root.model.charging)
             return Settings.colors.accentCharging
-        if (root.model.state === "empty" || root.model.state === "discharging")
+        if (root.model.state === "empty")
             return Settings.colors.accentError
         if (root.model.state === "alert")
             return Settings.colors.accentAlert

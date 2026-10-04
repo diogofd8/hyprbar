@@ -24,37 +24,17 @@ PanelWindow {
 
     color: Settings.colors.bgMain
 
-    // The focus grab includes the bar so another module can switch popouts.
-    // Watch bar taps passively, then close only if the clicked control did not
-    // replace the active popout. Qt.callLater lets the control handle the same
-    // release first, regardless of signal delivery order.
+    // While a popout is open, forwards taps on the bar to the host, which
+    // decides whether they close it (PopoutHost.barTapped). Controls accept
+    // their own presses first, so only taps on blank parts of the bar get here.
     TapHandler {
         parent: root.contentItem
         enabled: root.popoutHost !== null && root.popoutHost.current !== null
         acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
         gesturePolicy: TapHandler.DragThreshold
 
-        property var openAtPress: null
-        property int serialAtPress: 0
-
-        onPressedChanged: {
-            if (pressed) {
-                openAtPress = root.popoutHost.current
-                serialAtPress = root.popoutHost.interactionSerial
-            }
-        }
-
-        onTapped: {
-            const previous = openAtPress
-            const serial = serialAtPress
-            Qt.callLater(() => {
-                // A widget action on this press, or any later press, wins over
-                // this delayed blank-bar dismissal.
-                if (root.popoutHost && root.popoutHost.interactionSerial === serial
-                        && root.popoutHost.current === previous)
-                    root.popoutHost.dismiss(previous)
-            })
-        }
+        onPressedChanged: if (pressed) root.popoutHost.barPressed()
+        onTapped: root.popoutHost.barTapped()
     }
 
     // ────── Caffeine Mode ──────
@@ -69,16 +49,11 @@ PanelWindow {
     Item {
         id: contentBox
 
-        // The focus grab can return keyboard focus to the bar after the
-        // popout maps. Handle close keys here as well as in PopoutHost.
+        // While a popout is open, close keys usually arrive here, not in the
+        // popout (it takes keyboard focus only for the Wi-Fi password). The
+        // host decides what they do.
         focus: root.popoutHost !== null && root.popoutHost.current !== null
-        Keys.onPressed: event => {
-            const dropdown = root.popoutHost ? root.popoutHost.current : null
-            if (dropdown && dropdown.closeKeys.includes(event.key)) {
-                root.popoutHost.dismiss(dropdown)
-                event.accepted = true
-            }
-        }
+        Keys.onPressed: event => root.popoutHost?.handleKey(event)
 
         anchors.fill: parent
         anchors.topMargin: Settings.barPaddingTop

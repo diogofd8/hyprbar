@@ -92,6 +92,37 @@ PanelWindow {
             root.finishClose()
     }
 
+    // ────── Bar input ──────
+    // The bar is part of the focus grab (so another module can switch the
+    // popout), which means a click on it doesn't clear the grab. Instead, a
+    // bar tap that didn't change the popout closes it. Bar.qml forwards its
+    // taps and keys here. Its TapHandler only sees presses no control
+    // accepted, so in practice these are taps on blank parts of the bar.
+    property var barPressSnapshot: null
+
+    function barPressed() {
+        root.barPressSnapshot = { current: root.current, serial: root.interactionSerial }
+    }
+
+    function barTapped() {
+        const snapshot = root.barPressSnapshot
+        // Qt.callLater lets the control under the cursor handle the same
+        // release first, whichever order the two receive it in. Any popout
+        // change since the press (that control, or a later press) wins.
+        Qt.callLater(() => {
+            if (snapshot && root.interactionSerial === snapshot.serial
+                    && root.current === snapshot.current)
+                root.dismiss(snapshot.current)
+        })
+    }
+
+    function handleKey(event) {
+        if (root.current && root.current.closeKeys.includes(event.key)) {
+            root.dismiss(root.current)
+            event.accepted = true
+        }
+    }
+
     function ready(loader) {
         if (loader.owner !== root.current || loader.status !== Loader.Ready)
             return
@@ -269,12 +300,7 @@ PanelWindow {
             : root.targetHeight
         focus: root.current !== null
 
-        Keys.onPressed: event => {
-            if (root.current && root.current.closeKeys.includes(event.key)) {
-                root.dismiss(root.current)
-                event.accepted = true
-            }
-        }
+        Keys.onPressed: event => root.handleKey(event)
 
         // Open and close reveal the panel vertically. The full content stays
         // laid out, so the clip does not change any widget's own geometry.

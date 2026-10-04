@@ -25,19 +25,6 @@ PanelWindow {
 
     color: Settings.colors.bgMain
 
-    // While a popout is open, forwards taps on the bar to the host, which
-    // decides whether they close it (PopoutHost.barTapped). Controls accept
-    // their own presses first, so only taps on blank parts of the bar get here.
-    TapHandler {
-        parent: root.contentItem
-        enabled: root.popoutHost !== null && root.popoutHost.current !== null
-        acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
-        gesturePolicy: TapHandler.DragThreshold
-
-        onPressedChanged: if (pressed) root.popoutHost.barPressed()
-        onTapped: root.popoutHost.barTapped()
-    }
-
     // ────── Caffeine Mode ──────
     // The Wayland protocol attaches an inhibitor to a surface,
     // so it is anchored to the bar: the one window that is always mapped
@@ -90,6 +77,28 @@ PanelWindow {
             anchors.bottom: parent.bottom
 
             anchors.leftMargin: Settings.moduleSpacing - Core.ChevronGeometry.calcCapWidth(height)
+        }
+    }
+
+    // ────── Popout Dismissal ──────
+    // Stacked above the content, so its handler is offered every press before
+    // the controls are. A PointHandler only ever takes a passive grab, so the
+    // controls still get their clicks (a TapHandler here blocked them). The
+    // host closes the popout on any bar tap that didn't change it
+    // (PopoutHost.barTapped).
+    Item {
+        anchors.fill: parent
+
+        PointHandler {
+            enabled: root.popoutHost !== null && root.popoutHost.current !== null
+            acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
+
+            onActiveChanged: {
+                if (active)
+                    root.popoutHost.barPressed()
+                else
+                    root.popoutHost.barTapped()
+            }
         }
     }
 

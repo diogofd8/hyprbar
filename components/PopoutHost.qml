@@ -96,10 +96,9 @@ PanelWindow {
 
     // ────── Bar input ──────
     // The bar is part of the focus grab (so another module can switch the
-    // popout), which means a click on it doesn't clear the grab. Instead, a
-    // bar tap that didn't change the popout closes it. Bar.qml forwards its
-    // taps and keys here. Its TapHandler only sees presses no control
-    // accepted, so in practice these are taps on blank parts of the bar.
+    // popout), which means a click on it doesn't clear the grab. Instead, any
+    // bar tap that didn't change the popout closes it: blank bar, a workspace
+    // pip, a launcher button. Bar.qml forwards its taps and keys here.
     property var barPressSnapshot: null
 
     function barPressed() {

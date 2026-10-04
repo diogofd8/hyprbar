@@ -34,8 +34,8 @@ Singleton {
     readonly property int barPaddingRight: 10
     readonly property int barPaddingLeft: 10
     readonly property int dropDownPadding: barPaddingBottom + 1
-    readonly property int dropDownTransitionMs: 120
-    readonly property real dropDownTransitionOffset: 10
+    readonly property int popoutHostHeight: 600
+    readonly property real popoutTransitionOffset: 8
 
     readonly property real chevronAngle: 105
     readonly property int moduleSpacing: 6

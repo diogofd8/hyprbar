@@ -1,9 +1,10 @@
 import QtQuick
 import Quickshell
-import Quickshell.Hyprland
 
 import qs
 
+// A bar-side controller. The shared PopoutHost owns the window and the loaded
+// widget; modules keep their existing open/close and isOpen contract.
 Item {
     id: root
 
@@ -14,110 +15,30 @@ Item {
     visible: false
 
     property Item anchorItem: root.parent
-    property int edges: Edges.Bottom
-    property int gravity: Edges.Bottom
     property real spacing: Settings.dropDownPadding
-    property color backgroundColor: "transparent"
-    property int transitionDuration: Settings.dropDownTransitionMs
-    property real transitionOffset: Settings.dropDownTransitionOffset
-
     property var closeKeys: Settings.popupCloseKeys
-
-    // Set while something the popup started has handed a prompt to another
-    // window. The grab is released so that window can take focus freely, and a
-    // cleared grab stops meaning "the user dismissed us". Guarding only
-    // onCleared would leave the grab armed to fight the other window for focus.
     property bool holdOpen: false
+    property bool wantsKeyboardFocus: false
 
-    readonly property bool isOpen: priv.isRequested
-    property real transitionProgress: priv.isRequested ? 1 : 0
+    readonly property var host: root.QsWindow.window
+        ? (root.QsWindow.window.popoutHost || null) : null
+    readonly property bool isOpen: root.host !== null && root.host.current === root
+    readonly property bool contentActive: root.host !== null && root.host.retains(root)
 
-    Behavior on transitionProgress {
-        SmoothedAnimation {
-            duration: root.transitionDuration
-            velocity: -1
-            reversingMode: SmoothedAnimation.Eased
-        }
+    function open() {
+        if (root.host)
+            root.host.show(root)
     }
 
-    function open() { priv.isRequested = true }
-    function close() { priv.isRequested = false }
-    function toggle() { priv.isRequested = !priv.isRequested }
-
-    QtObject {
-        id: priv
-        property bool isRequested: false
+    function close() {
+        if (root.host)
+            root.host.dismiss(root)
     }
 
-    HyprlandFocusGrab {
-        active: priv.isRequested && popup.backingWindowVisible && !root.holdOpen
-        windows: [popup]
-
-        onCleared: if (!root.holdOpen) root.close()
-    }
-
-    PopupWindow {
-        id: popup
-
-        visible: contentLoader.item !== null
-            && popup.implicitWidth > 0
-            && popup.implicitHeight > 0
-
-        anchor {
-            item: root.anchorItem
-            edges: root.edges
-            gravity: root.gravity
-
-            margins.top: (root.edges & Edges.Top) ? -root.spacing : 0
-            margins.bottom: (root.edges & Edges.Bottom) ? -root.spacing : 0
-            margins.left: (root.edges & Edges.Left) ? -root.spacing : 0
-            margins.right: (root.edges & Edges.Right) ? -root.spacing : 0
-
-            adjustment: PopupAdjustment.Slide
-        }
-
-        implicitWidth: contentLoader.implicitWidth
-        implicitHeight: contentLoader.implicitHeight
-
-        color: root.backgroundColor
-
-        Loader {
-            id: contentLoader
-            anchors.fill: parent
-
-            active: priv.isRequested || root.transitionProgress > 0
-            sourceComponent: root.menuContent
-            focus: priv.isRequested
-            enabled: priv.isRequested
-            opacity: root.transitionProgress
-
-            transform: Translate {
-                x: {
-                    if (root.gravity & Edges.Right)
-                        return -root.transitionOffset
-                            * (1 - root.transitionProgress)
-                    if (root.gravity & Edges.Left)
-                        return root.transitionOffset
-                            * (1 - root.transitionProgress)
-                    return 0
-                }
-                y: {
-                    if (root.gravity & Edges.Bottom)
-                        return -root.transitionOffset
-                            * (1 - root.transitionProgress)
-                    if (root.gravity & Edges.Top)
-                        return root.transitionOffset
-                            * (1 - root.transitionProgress)
-                    return 0
-                }
-            }
-
-            Keys.onPressed: event => {
-                if (root.closeKeys.includes(event.key)) {
-                    root.close()
-                    event.accepted = true
-                }
-            }
-        }
+    function toggle() {
+        if (root.isOpen)
+            root.close()
+        else
+            root.open()
     }
 }

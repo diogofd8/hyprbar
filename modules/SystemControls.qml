@@ -64,7 +64,7 @@ Chevron {
             Binding {
                 target: Core.Bluetooth
                 property: "discoveryActive"
-                value: btManager.isOpen
+                value: btManager.contentActive
             }
 
             DropDown {
@@ -97,16 +97,17 @@ Chevron {
             onLeftClicked: nwManager.toggle()
             onRightClicked: Core.Actions.networkManager()
 
-            // The DropDown content is lazy, so its persistent parent owns scan
-            // demand. Closing the menu immediately releases the Wi-Fi scanner.
+            // Keep scan data until the closing popup has finished revealing it.
+            // The host releases the loaded content after the exit animation.
             Binding {
                 target: Core.Network
                 property: "discoveryActive"
-                value: nwManager.isOpen
+                value: nwManager.contentActive
             }
 
             DropDown {
                 id: nwManager
+                wantsKeyboardFocus: Core.Network.passwordPromptActive
 
                 // ChevronButton hands its children to the Chevron's content row, so
                 // the popup has to be pointed back at the button itself.

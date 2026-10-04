@@ -142,7 +142,7 @@ Chevron {
     Binding {
         target: Core.Audio
         property: "discoveryActive"
-        value: volumeManager.isOpen
+        value: volumeManager.contentActive
     }
 
     DropDown {

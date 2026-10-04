@@ -20,8 +20,8 @@ Pane {
         + root.topPadding + root.bottomPadding
 
     padding: WidgetConfiguration.dropDownWindowPadding
-    // Entry heights already contain the transition. Propagate that same
-    // intermediate value to PopupWindow instead of easing it a second time.
+    // Entry heights already contain the transition. The shared host keeps
+    // its window size fixed while its clipped panel follows this height.
     implicitHeight: root.targetImplicitHeight
     clip: true
 

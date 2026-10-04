@@ -259,6 +259,7 @@ Singleton {
 
     // The popup owns discovery demand. No scans are requested by the bar.
     property bool discoveryActive: false
+    readonly property bool passwordPromptActive: priv.operationStatus === "PasswordRequired"
     readonly property bool scanning: root.wifiDevice !== null
         && root.wifiDevice.scannerEnabled
     readonly property bool refreshing: visibleQuery.running

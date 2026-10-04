@@ -37,7 +37,7 @@ ChevronButton {
 
         Behavior on rotation {
             NumberAnimation {
-                duration: Settings.dropDownTransitionMs
+                duration: Motion.fastMs
                 easing.type: Easing.InOutCubic
             }
         }

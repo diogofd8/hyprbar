@@ -101,23 +101,4 @@ PanelWindow {
             }
         }
     }
-
-    // DEBUG: central line guides
-    Rectangle {
-    //     anchors.horizontalCenter: parent.horizontalCenter
-    //     anchors.top: parent.top
-    //     anchors.bottom: parent.bottom
-
-    //     width: 1
-    //     color: "cyan"
-    // }
-
-    // Rectangle {
-    //     anchors.left: parent.left
-    //     anchors.right: parent.right
-    //     anchors.verticalCenter: parent.verticalCenter
-
-    //     height: 1
-    //     color: "cyan"
-    }
 }

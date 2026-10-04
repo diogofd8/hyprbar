@@ -232,8 +232,11 @@ PanelWindow {
         required property var host
         property var owner: null
 
+        // Natural size, centred in the panel. A morph moves the shared
+        // background and the clip; it never re-lays out the widget itself.
         anchors.top: parent.top
-        width: parent.width
+        anchors.horizontalCenter: parent.horizontalCenter
+        width: implicitWidth
         height: implicitHeight
         active: owner !== null
         asynchronous: true
@@ -290,6 +293,28 @@ PanelWindow {
             width: parent.width
             height: parent.height * root.reveal
             clip: true
+
+            // One background for every widget. It follows the panel geometry,
+            // so a switch morphs a single surface instead of crossfading two
+            // translucent ones.
+            Rectangle {
+                width: parent.width
+                height: panel.height
+                color: Qt.alpha(Settings.colors.bgMain, Settings.colors.bgOpacity)
+
+                border.width: 1
+                border.color: Qt.alpha(Settings.colors.fgMain, Settings.colors.hoverOpacity)
+
+                // Hide the top border so the panel joins the bar
+                Rectangle {
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+
+                    height: parent.border.width
+                    color: Settings.colors.bgMain
+                }
+            }
 
             ContentSlot {
                 id: first

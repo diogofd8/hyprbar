@@ -25,22 +25,9 @@ Pane {
     implicitHeight: root.targetImplicitHeight
     clip: true
 
-    background: Rectangle {
-        color: Qt.alpha(root.panelBackgroundColor, Settings.colors.bgOpacity)
-
-        border.width: 1
-        border.color: Qt.alpha(Settings.colors.fgMain, Settings.colors.hoverOpacity)
-
-        // Hide the top border
-        Rectangle {
-            anchors.top: parent.top
-            anchors.left: parent.left
-            anchors.right: parent.right
-
-            height: parent.border.width
-            color: root.panelBackgroundColor
-        }
-    }
+    // PopoutHost draws the panel background shared by every widget. Null, not
+    // omitted, so the Controls style doesn't add a default one.
+    background: null
 
     contentItem: ColumnLayout {
         id: panelContent

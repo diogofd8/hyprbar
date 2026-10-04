@@ -243,12 +243,7 @@ Pane {
 
                             onLeftClicked: root.showAllPaired = !root.showAllPaired
 
-                            Behavior on rotation {
-                                NumberAnimation {
-                                    duration: WidgetConfiguration.transitionMs
-                                    easing.type: Easing.InOutCubic
-                                }
-                            }
+                            Behavior on rotation { Anim {} }
                         }
                     }
 

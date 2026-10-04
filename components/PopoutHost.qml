@@ -47,9 +47,8 @@ PanelWindow {
     mask: Region { item: inputArea }
 
     Behavior on reveal {
-        NumberAnimation {
+        Anim {
             duration: root.current ? Motion.popoutOpenMs : Motion.popoutCloseMs
-            easing.type: Easing.BezierSpline
             easing.bezierCurve: root.current ? Motion.enterCurve : Motion.exitCurve
         }
     }
@@ -203,15 +202,14 @@ PanelWindow {
         }
     }
 
-    NumberAnimation {
+    Anim {
         id: morph
         target: root
         property: "morphProgress"
         from: 0
         to: 1
         duration: Motion.popoutMorphMs
-        easing.type: Easing.BezierSpline
-        easing.bezierCurve: Motion.morphCurve
+        easing.bezierCurve: Motion.standardCurve
         onFinished: {
             root.morphing = false
             root.releaseUnused()
@@ -270,7 +268,7 @@ PanelWindow {
         x: root.morphing
             ? root.fromX + (root.targetX - root.fromX) * root.morphProgress
             : root.targetX
-        y: root.targetY - Settings.popoutTransitionOffset * (1 - root.reveal)
+        y: root.targetY - Motion.popoutOffset * (1 - root.reveal)
         width: root.morphing
             ? root.fromWidth + (root.targetWidth - root.fromWidth) * root.morphProgress
             : root.targetWidth

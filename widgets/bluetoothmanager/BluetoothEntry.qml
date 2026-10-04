@@ -60,12 +60,7 @@ Controls.Pane {
                 Layout.preferredHeight: WidgetConfiguration.entryRowMainIconSz
                 spacing: WidgetConfiguration.entryTitleRowHSpacing
 
-                Behavior on Layout.topMargin {
-                    NumberAnimation {
-                        duration: Motion.rowExpandMs
-                        easing.type: Easing.InOutCubic
-                    }
-                }
+                Behavior on Layout.topMargin { Anim {} }
 
                 Text {
                     id: deviceName
@@ -147,12 +142,7 @@ Controls.Pane {
                         root.expanded = !wasOpen
                     }
 
-                    Behavior on rotation {
-                        NumberAnimation {
-                            duration: Motion.rowExpandMs
-                            easing.type: Easing.InOutCubic
-                        }
-                    }
+                    Behavior on rotation { Anim {} }
                 }
             }
 
@@ -218,12 +208,7 @@ Controls.Pane {
 
                     onLeftClicked: Core.Bluetooth.clearEntryError(root.model.address)
 
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: Motion.rowExpandMs
-                            easing.type: Easing.InOutCubic
-                        }
-                    }
+                    Behavior on opacity { Anim {} }
                 }
             }
 

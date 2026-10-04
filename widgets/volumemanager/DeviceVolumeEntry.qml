@@ -20,13 +20,7 @@ Controls.Pane {
     implicitHeight: mainContent.implicitHeight + root.topPadding + root.bottomPadding
     clip: true
 
-    Behavior on implicitHeight {
-        SmoothedAnimation {
-            duration: WidgetConfiguration.transitionMs
-            velocity: -1
-            reversingMode: SmoothedAnimation.Eased
-        }
-    }
+    Behavior on implicitHeight { Anim {} }
 
     background: Rectangle {
         color: Settings.colors.bgTint2

@@ -3,9 +3,6 @@ pragma Singleton
 import Quickshell
 
 Singleton {
-    // ────── Animation ──────
-    readonly property int transitionMs: 100
-
     // The laptop's built-in PipeWire nodes. These are deliberately names,
     // rather than numeric IDs, because PipeWire object IDs are session-local.
     readonly property string defaultInput:

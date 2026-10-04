@@ -35,12 +35,7 @@ ChevronButton {
         useMetrics: true
         rotation: sysTray.isOpen ? 180 : 0
 
-        Behavior on rotation {
-            NumberAnimation {
-                duration: Motion.fastMs
-                easing.type: Easing.InOutCubic
-            }
-        }
+        Behavior on rotation { Anim { duration: Motion.fastMs } }
 
         NotificationDot {
             visible: sysTray.isOpen? 0 : root.trayHasContent

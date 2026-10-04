@@ -1,8 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
 
-import qs
-
 // Keep the contents laid out while the visible height opens or closes.
 Item {
     id: root
@@ -17,13 +15,7 @@ Item {
     enabled: root.shown
     clip: true
 
-    Behavior on implicitHeight {
-        SmoothedAnimation {
-            duration: Motion.rowExpandMs
-            velocity: -1
-            reversingMode: SmoothedAnimation.Eased
-        }
-    }
+    Behavior on implicitHeight { Anim {} }
 
     RowLayout {
         id: row

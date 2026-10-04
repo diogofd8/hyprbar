@@ -219,12 +219,7 @@ Pane {
                     implicitHeight: deviceSections.implicitHeight
                     x: (0 - root.activeMixerMode) * contents.width
 
-                    Behavior on x {
-                        NumberAnimation {
-                            duration: VolumeUI.Configuration.transitionMs
-                            easing.type: Easing.OutCubic
-                        }
-                    }
+                    Behavior on x { Anim { easing.bezierCurve: Motion.standardCurve } }
 
                     ColumnLayout {
                         id: deviceSections
@@ -291,12 +286,7 @@ Pane {
                     implicitHeight: appVolumeSection.implicitHeight
                     x: (1 - root.activeMixerMode) * contents.width
 
-                    Behavior on x {
-                        NumberAnimation {
-                            duration: WidgetConfiguration.transitionMs
-                            easing.type: Easing.OutCubic
-                        }
-                    }
+                    Behavior on x { Anim { easing.bezierCurve: Motion.standardCurve } }
 
                     ColumnLayout {
                         id: appVolumeSection

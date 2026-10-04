@@ -46,7 +46,4 @@ Singleton {
     readonly property real entryRowMainIconSz: 18
     readonly property real entryRowSecondaryIconSz: 16
     readonly property real entryRowDefaultFontSz: 11
-
-    // ────── Animation Properties ──────
-    readonly property int transitionMs: 100
 }

@@ -20,9 +20,9 @@ Chevron {
         Item {
             id: pip
 
-            required property var modelData
-            readonly property int state: modelData.state
-            readonly property bool active: state === Core.WorkspaceModel.State.Active
+            required property int slotId
+            required property int slotState
+            readonly property bool active: slotState === Core.WorkspaceModel.State.Active
 
             height: root.height
             implicitWidth: icon.implicitWidth + Settings.workspaceSpacing
@@ -40,7 +40,7 @@ Chevron {
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 text: {
-                    switch (pip.state) {
+                    switch (pip.slotState) {
                         case Core.WorkspaceModel.State.Active:
                             return Settings.activeWorkspaceIcon;
                         case Core.WorkspaceModel.State.Urgent:
@@ -53,7 +53,7 @@ Chevron {
                 }
 
                 color: {
-                    switch (pip.state) {
+                    switch (pip.slotState) {
                         case Core.WorkspaceModel.State.Active:
                             return Settings.colors.accentMain;
                         case Core.WorkspaceModel.State.Urgent:
@@ -66,7 +66,7 @@ Chevron {
                 useMetrics: pip.active? true : false
                 font.pixelSize: pip.active ? Settings.activeWorkspaceIconSize : Settings.workspaceIconSize
                 verticalOffset: {
-                    switch (pip.state) {
+                    switch (pip.slotState) {
                         case Core.WorkspaceModel.State.Active:
                         case Core.WorkspaceModel.State.Urgent:
                             return -Settings.inducedVerticalOffset;
@@ -84,7 +84,7 @@ Chevron {
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
 
-                onClicked: Core.WorkspaceModel.activate(pip.modelData)
+                onClicked: Core.WorkspaceModel.activate(pip.slotId)
             }
         }
     }

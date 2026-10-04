@@ -7,13 +7,17 @@ import qs
 
 // One layer surface for all bar dropdowns. Its fixed buffer never follows row
 // animations; the mask makes the unused transparent area click-through.
+// Each dropdown gets its own content slot, created the first time it's shown.
 PanelWindow {
     id: root
 
     required property PanelWindow bar
     property DropDown current: null
     property int interactionSerial: 0
-    property int displayedSlot: -1
+    // The content slot on screen (it stays there while the panel closes)
+    property Loader displayedSlot: null
+    // One ContentSlot per dropdown shown so far (see slotFor)
+    property var slots: []
     property bool mapped: false
     property bool waitingToReveal: false
     property bool morphing: false
@@ -55,10 +59,23 @@ PanelWindow {
         }
     }
 
-    function slot(index) { return index === 0 ? first : second }
-
+    // True while the dropdown's content is loaded, from show() until it has
+    // faded out. Bindings re-run when `slots` is reassigned or a slot's
+    // `active` changes.
     function retains(dropdown) {
-        return first.owner === dropdown || second.owner === dropdown
+        const slot = root.slots.find(s => s.owner === dropdown)
+        return slot !== undefined && slot.active
+    }
+
+    function slotFor(dropdown) {
+        let slot = root.slots.find(s => s.owner === dropdown)
+        if (!slot) {
+            slot = contentSlot.createObject(revealClip, { host: root, owner: dropdown })
+            // Reassign (not push) so retains() bindings notice. Slots whose
+            // dropdown was destroyed are destroyed too (destroy() is falsy).
+            root.slots = root.slots.filter(s => s.owner !== null || s.destroy()).concat([slot])
+        }
+        return slot
     }
 
     function show(dropdown) {
@@ -68,18 +85,18 @@ PanelWindow {
         ++root.interactionSerial
         root.current = dropdown
 
-        if (root.displayedSlot >= 0 && root.slot(root.displayedSlot).owner === dropdown) {
-            root.slot(1 - root.displayedSlot).owner = null
+        // Reopened during its own close: reverse the reveal
+        const slot = root.slotFor(dropdown)
+        if (root.displayedSlot === slot) {
             root.reveal = 1
             root.updateTarget()
             return
         }
 
-        const next = root.displayedSlot === 0 ? second : first
-        if (next.owner === dropdown && next.status === Loader.Ready)
-            root.ready(next)
-        else
-            next.owner = dropdown
+        // Still loaded (fading out after a switch): switch back at once.
+        // Otherwise it's loading now that it's current, and calls ready().
+        if (slot.status === Loader.Ready)
+            root.ready(slot)
     }
 
     function dismiss(dropdown) {
@@ -90,7 +107,7 @@ PanelWindow {
         root.current = null
         root.waitingToReveal = false
         root.reveal = 0
-        if (root.displayedSlot < 0 || root.reveal <= 0)
+        if (!root.displayedSlot || root.reveal <= 0)
             root.finishClose()
     }
 
@@ -149,7 +166,7 @@ PanelWindow {
             root.morphing = true
         }
 
-        root.displayedSlot = loader === first ? 0 : 1
+        root.displayedSlot = loader
         root.updateTarget()
         root.waitingToReveal = firstOpen
         root.mapped = true
@@ -162,10 +179,10 @@ PanelWindow {
     }
 
     function updateTarget() {
-        if (!root.current || root.displayedSlot < 0 || !root.bar)
+        const loader = root.displayedSlot
+        if (!root.current || !loader || !root.bar)
             return
 
-        const loader = root.slot(root.displayedSlot)
         if (loader.owner !== root.current || loader.status !== Loader.Ready
                 || !root.current.anchorItem)
             return
@@ -189,13 +206,6 @@ PanelWindow {
             rect.y + rect.height + root.current.spacing - root.bar.height))
     }
 
-    function releaseUnused() {
-        if (root.displayedSlot !== 0 && first.opacity === 0 && first.owner !== root.current)
-            first.owner = null
-        if (root.displayedSlot !== 1 && second.opacity === 0 && second.owner !== root.current)
-            second.owner = null
-    }
-
     function finishClose() {
         if (root.current || root.reveal > 0)
             return
@@ -204,9 +214,8 @@ PanelWindow {
         root.mapped = false
         morph.stop()
         root.morphing = false
-        root.displayedSlot = -1
-        first.owner = null
-        second.owner = null
+        // With no slot on screen and no morph, every slot unloads at once
+        root.displayedSlot = null
     }
 
     onRevealChanged: if (root.reveal <= 0 && !root.current) root.finishClose()
@@ -242,10 +251,7 @@ PanelWindow {
         to: 1
         duration: Motion.popoutMorphMs
         easing.bezierCurve: Motion.standardCurve
-        onFinished: {
-            root.morphing = false
-            root.releaseUnused()
-        }
+        onFinished: root.morphing = false
     }
 
     HyprlandFocusGrab {
@@ -254,13 +260,14 @@ PanelWindow {
         onCleared: if (root.current && !root.current.holdOpen) root.dismiss(root.current)
     }
 
-    // Keep loading, focus, and cleanup identical for both crossfade slots.
+    // A dropdown's content. It loads while its dropdown is current or it's on
+    // screen, stays loaded until it has faded out, then unloads itself.
     component ContentSlot: Loader {
         id: slotLoader
 
-        required property int slotIndex
         required property PopoutHost host
-        property DropDown owner: null
+        required property DropDown owner
+        readonly property bool shown: host.displayedSlot === slotLoader
 
         // Natural size, centred in the panel. A morph moves the shared
         // background and the clip; it never re-lays out the widget itself.
@@ -268,21 +275,26 @@ PanelWindow {
         anchors.horizontalCenter: parent.horizontalCenter
         width: implicitWidth
         height: implicitHeight
-        active: owner !== null
+        active: owner !== null && (host.current === owner || shown || opacity > 0)
         asynchronous: true
         sourceComponent: owner ? owner.menuContent : null
-        focus: host.displayedSlot === slotIndex
-        enabled: host.current === owner && host.displayedSlot === slotIndex
-        opacity: host.displayedSlot === slotIndex ? 1 : 0
-        onOpacityChanged: if (opacity === 0) host.releaseUnused()
+        focus: shown
+        enabled: shown && host.current === owner
+        opacity: shown ? 1 : 0
         onStatusChanged: if (status === Loader.Ready) host.ready(slotLoader)
-        onImplicitWidthChanged: if (host.displayedSlot === slotIndex) host.updateTarget()
-        onImplicitHeightChanged: if (host.displayedSlot === slotIndex) host.updateTarget()
+        onImplicitWidthChanged: if (shown) host.updateTarget()
+        onImplicitHeightChanged: if (shown) host.updateTarget()
 
+        // Crossfade only during a switch; open and close use the reveal
         Behavior on opacity {
             enabled: slotLoader.host.morphing
             NumberAnimation { duration: Motion.popoutCrossfadeMs }
         }
+    }
+
+    Component {
+        id: contentSlot
+        ContentSlot {}
     }
 
     // Stop intercepting clicks as soon as closing starts, even while the
@@ -339,18 +351,6 @@ PanelWindow {
                     height: parent.border.width
                     color: Settings.colors.bgMain
                 }
-            }
-
-            ContentSlot {
-                id: first
-                slotIndex: 0
-                host: root
-            }
-
-            ContentSlot {
-                id: second
-                slotIndex: 1
-                host: root
             }
         }
     }

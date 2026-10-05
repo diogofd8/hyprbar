@@ -168,7 +168,7 @@ Controls.Pane {
                         Layout.alignment: Qt.AlignCenter
 
                         visible: model.batteryAvailable
-                        diameter: 2
+                        diameter: Settings.separatorDotSize
                         color: Settings.colors.fgMain
                     }
 

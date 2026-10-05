@@ -157,7 +157,7 @@ Controls.Pane {
                     Circle {
                         anchors.verticalCenter: parent.verticalCenter
                         opacity: keyboardModeIconOpacity()
-                        diameter: 5
+                        diameter: Configuration.keyboardBrightnessIndicatorSz
                         color: Settings.colors.fgMain
                     }
 

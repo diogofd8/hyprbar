@@ -61,7 +61,7 @@ Row {
             }
 
             Circle {
-                diameter: 2
+                diameter: Settings.separatorDotSize
                 color: Settings.colors.fgMain
                 anchors.verticalCenter: parent.verticalCenter
             }

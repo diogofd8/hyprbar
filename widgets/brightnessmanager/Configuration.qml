@@ -11,6 +11,7 @@ Singleton {
     readonly property string nightModeIcon: "󰥟"
     readonly property string displayEntryIcon: "󰍹"
     readonly property string keyboardEntryIcon: "󰥻"
+    readonly property real keyboardBrightnessIndicatorSz: 5
 
     readonly property int contentWidth: 250
 }

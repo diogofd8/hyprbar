@@ -42,6 +42,7 @@ Singleton {
     readonly property real chevronAngle: 105
     readonly property int moduleSpacing: 6
     readonly property real inducedVerticalOffset: 0.5
+    readonly property real separatorDotSize: 2
 
     // ────── Input Rules ──────
     readonly property int actionScrollDelta: 25

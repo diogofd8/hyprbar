@@ -206,6 +206,7 @@ Controls.Pane {
                     Layout.preferredWidth: expandBtn.implicitWidth
 
                     // dismissBtn doubles as empty padding aligned with expandBtn
+                    enabled: root.hasError
                     opacity: root.hasError ? 1 : 0
 
                     glyph: Configuration.nwDismissIcon

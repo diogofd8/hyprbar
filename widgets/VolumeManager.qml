@@ -69,7 +69,6 @@ Pane {
                         HexagonButton {
                             id: mixerDevicesBtn
 
-                            enabled: true // PLACEBO
                             bgFill: root.activeMixerMode === 0
                                 ? Settings.colors.accentMain : Settings.colors.bgTint3
                             glyph: VolumeUI.Configuration.volMixerMode["devices"]

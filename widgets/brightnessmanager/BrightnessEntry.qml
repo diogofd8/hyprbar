@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls as Controls
-import Quickshell.Widgets
 
 import qs
 import qs.components

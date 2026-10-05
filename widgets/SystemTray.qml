@@ -5,8 +5,6 @@ import QtQuick.Controls
 import Quickshell.Services.SystemTray as TrayService
 
 import qs
-import qs.components
-import qs.core as Core
 
 import "systemtray" as SysTrayUI
 

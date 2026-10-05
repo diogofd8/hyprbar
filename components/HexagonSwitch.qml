@@ -2,7 +2,6 @@ import QtQuick
 
 import qs
 import qs.components
-import qs.core as Core
 
 Item {
     id: root

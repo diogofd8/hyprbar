@@ -33,7 +33,7 @@ Pane {
 
         Text {
             Layout.fillWidth: true
-            visible: root.visibleItems.length === 0
+            visible: root.isEmpty
 
             text: "EMPTY TRAY"
             color: Settings.colors.fgMain
@@ -49,7 +49,7 @@ Pane {
 
             Layout.fillWidth: true
             spacing: WidgetConfiguration.sectionContentVSpacing
-            visible: root.visibleItems.length > 0
+            visible: !root.isEmpty
 
             Repeater {
                 model: TrayService.SystemTray.items

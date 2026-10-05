@@ -147,7 +147,6 @@ Chevron {
 
     DropDown {
         id: volumeManager
-        spacing: 1
         anchorItem: root
 
         VolumeManager {

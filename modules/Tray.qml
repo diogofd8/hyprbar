@@ -46,7 +46,6 @@ ChevronButton {
 
     DropDown {
         id: sysTray
-        spacing: 1
         anchorItem: root
 
         SystemTray {

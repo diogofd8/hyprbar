@@ -36,7 +36,6 @@ Singleton {
     readonly property int barPaddingBottom: 2
     readonly property int barPaddingRight: 10
     readonly property int barPaddingLeft: 10
-    readonly property int dropDownPadding: barPaddingBottom + 1
     readonly property int popoutHostHeight: 600
 
     readonly property real chevronAngle: 105

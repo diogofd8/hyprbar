@@ -54,7 +54,6 @@ Row {
 
     DropDown {
         id: brightnessManager
-        spacing: 1
         anchorItem: root
 
         BrightnessManager {

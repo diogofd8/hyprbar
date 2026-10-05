@@ -27,7 +27,6 @@ PanelWindow {
     property real fromHeight: 0
     property real reveal: 0
     property real targetX: 0
-    property real targetY: 0
     property real targetWidth: 0
     property real targetHeight: 0
     // The last popout whose content didn't fit, so the warning prints once
@@ -202,8 +201,6 @@ PanelWindow {
         root.targetHeight = height
         root.targetX = Math.max(0, Math.min(root.width - width,
             rect.x + rect.width / 2 - width / 2))
-        root.targetY = Math.max(0, Math.min(root.height - height,
-            rect.y + rect.height + root.current.spacing - root.bar.height))
     }
 
     function finishClose() {
@@ -312,7 +309,8 @@ PanelWindow {
         x: root.morphing
             ? root.fromX + (root.targetX - root.fromX) * root.morphProgress
             : root.targetX
-        y: root.targetY - Motion.popoutOffset * (1 - root.reveal)
+        // The host starts at the bar's bottom edge. Anchors select only X.
+        y: -Motion.popoutOffset * (1 - root.reveal)
         width: root.morphing
             ? root.fromWidth + (root.targetWidth - root.fromWidth) * root.morphProgress
             : root.targetWidth
@@ -334,22 +332,40 @@ PanelWindow {
             // One background for every widget. It follows the panel geometry,
             // so a switch morphs a single surface instead of crossfading two
             // translucent ones.
-            Rectangle {
+            Item {
+                id: panelBackground
                 width: parent.width
                 height: panel.height
-                color: Qt.alpha(Settings.colors.bgMain, Settings.colors.bgOpacity)
+                readonly property real edgeWidth: 1 / root.devicePixelRatio
+                readonly property color edgeColor:
+                    Qt.alpha(Settings.colors.fgMain, Settings.colors.hoverOpacity)
 
-                border.width: 1
-                border.color: Qt.alpha(Settings.colors.fgMain, Settings.colors.hoverOpacity)
-
-                // Hide the top border so the panel joins the bar
+                // Open top edge; the three border strips meet at both lower corners.
                 Rectangle {
-                    anchors.top: parent.top
-                    anchors.left: parent.left
-                    anchors.right: parent.right
+                    x: panelBackground.edgeWidth
+                    width: Math.max(0, panelBackground.width - 2 * panelBackground.edgeWidth)
+                    height: Math.max(0, panelBackground.height - panelBackground.edgeWidth)
+                    color: Qt.alpha(Settings.colors.bgMain, Settings.colors.bgOpacity)
+                }
 
-                    height: parent.border.width
-                    color: Settings.colors.bgMain
+                Rectangle {
+                    width: panelBackground.edgeWidth
+                    height: parent.height
+                    color: panelBackground.edgeColor
+                }
+
+                Rectangle {
+                    anchors.right: parent.right
+                    width: panelBackground.edgeWidth
+                    height: parent.height
+                    color: panelBackground.edgeColor
+                }
+
+                Rectangle {
+                    anchors.bottom: parent.bottom
+                    width: parent.width
+                    height: panelBackground.edgeWidth
+                    color: panelBackground.edgeColor
                 }
             }
         }

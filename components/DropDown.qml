@@ -15,7 +15,6 @@ Item {
     visible: false
 
     property Item anchorItem: root.parent
-    property real spacing: Settings.dropDownPadding
     property var closeKeys: Settings.popupCloseKeys
     property bool holdOpen: false
     property bool wantsKeyboardFocus: false

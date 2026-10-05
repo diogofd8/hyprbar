@@ -145,6 +145,7 @@ Controls.Pane {
 
             Item {
                 id: fuzzyBrightness
+                // Percentage is measured with 4 characters, so we use the same width for the fuzzy brightness text
                 width: 4 * fontMetrics.averageCharacterWidth
                 height: parent.height
 

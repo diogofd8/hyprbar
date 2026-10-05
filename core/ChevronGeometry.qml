@@ -61,12 +61,4 @@ Singleton {
 
         return 0;
     }
-
-    // Content is offset by half the height for notch or pointy caps, but not for flat or pointy caps
-    function calcContentOffset(height, cap) {
-        if (cap === ChevronGeometry.Cap.Notch || cap === ChevronGeometry.Cap.Point)
-            return calcCapWidth(height);
-
-        return 0;
-    }
 }

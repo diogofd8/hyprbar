@@ -14,11 +14,11 @@ Singleton {
     readonly property string externalBat: "01AV427"
 
     // ────── Icons ──────
-    readonly property var powerMode: [
-        { icon: "󰌪", mode: "powersave" },
-        { icon: "󰗑", mode: "balanced" },
-        { icon: "", mode: "performance" },
-    ]
+    readonly property var powerMode: ({
+        "power-saver": "󰌪",
+        "balanced": "󰗑",
+        "performance": "",
+    })
     readonly property var restoreTlpButton: "󰁯"
 
     readonly property int contentWidth: 275

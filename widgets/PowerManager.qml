@@ -93,7 +93,7 @@ Pane {
                             enabled: root.powerModesAvailable
                             bgFill: root.activePowerMode === "power-saver"
                                 ? Settings.colors.accentMain : Settings.colors.bgTint3
-                            glyph: PowerUI.Configuration.powerMode[0].icon
+                            glyph: PowerUI.Configuration.powerMode["power-saver"]
                             glyphSize: WidgetConfiguration.widgetEmbeddedIconSz
                             glyphColor: root.activePowerMode === "power-saver"
                                 ? Settings.colors.fgDark
@@ -108,7 +108,7 @@ Pane {
                             enabled: root.powerModesAvailable
                             bgFill: root.activePowerMode === "balanced"
                                 ? Settings.colors.accentMain : Settings.colors.bgTint3
-                            glyph: PowerUI.Configuration.powerMode[1].icon
+                            glyph: PowerUI.Configuration.powerMode["balanced"]
                             glyphSize: WidgetConfiguration.widgetEmbeddedIconSz
                             glyphColor: root.activePowerMode === "balanced"
                                 ? Settings.colors.fgDark
@@ -126,7 +126,7 @@ Pane {
                                     || Core.PowerProfiles.hasPerformanceProfile)
                             bgFill: root.activePowerMode === "performance"
                                 ? Settings.colors.accentMain : Settings.colors.bgTint3
-                            glyph: PowerUI.Configuration.powerMode[2].icon
+                            glyph: PowerUI.Configuration.powerMode["performance"]
                             glyphSize: WidgetConfiguration.widgetEmbeddedIconSz - 3
                             paddingOffset: 3
                             glyphColor: root.activePowerMode === "performance"

@@ -135,7 +135,7 @@ Controls.Pane {
                         id: volumeSlider
                         Layout.fillWidth: true
 
-                        backgroundColor: Settings.colors.bgTint2
+                        bgFill: Settings.colors.bgTint2
 
                         from: 0
                         to: 100

@@ -126,7 +126,7 @@ Controls.Pane {
                         to: 100
                         value: root.model.value
                         actionable: true
-                        backgroundColor: Settings.colors.bgTint2
+                        bgFill: Settings.colors.bgTint2
 
                         onMoved: Core.Audio.setEntryVolume(root.model.id, value)
                     }

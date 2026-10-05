@@ -10,9 +10,6 @@ Item {
     property alias glyphSize: glyphItem.iconSize
     property alias glyphColor: glyphItem.iconColor
 
-    // Keep both names so this component fits the conventions used by the
-    // existing Hexagon and Chevron components.
-    property alias backgroundColor: hexagon.fillColor
     property alias bgFill: hexagon.fillColor
     property alias outlineColor: hexagon.outlineColor
     property alias outlineWidth: hexagon.outlineWidth

@@ -49,7 +49,7 @@ Pane {
                     HexagonSwitch {
                         actionable: Core.Backlight.nightLightLoaded && !Core.Backlight.nightLightBusy
                         checked: Core.Backlight.nightLightEnabled
-                        backgroundColor: root.panelBackgroundColor
+                        bgFill: root.panelBackgroundColor
                         onClicked: BrightnessUI.BrightnessActions.toggleNightLight()
                     }
                 }

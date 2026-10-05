@@ -12,7 +12,7 @@ Item {
     required property real glyphSize
     property color color: Settings.colors.fgMain
 
-    property color backgroundColor: "transparent"
+    property color bgFill: "transparent"
     property color hoverColor: Settings.colors.fgMain
     property real hoverOpacity: Settings.colors.hoverOpacity
 
@@ -41,7 +41,7 @@ Item {
     Rectangle {
         anchors.fill: parent
 
-        color: root.backgroundColor
+        color: root.bgFill
         border.width: root.borderWidth
         border.color: root.borderColor
     }

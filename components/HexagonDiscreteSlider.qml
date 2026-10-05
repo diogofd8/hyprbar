@@ -8,7 +8,7 @@ Slider {
     id: root
 
     // ────── Appearance ──────
-    property color backgroundColor: Settings.colors.bgTint1
+    property color bgFill: Settings.colors.bgTint1
     property color inactiveColor: Settings.colors.fgMain
     property color activeColor: Settings.colors.accentMain
     property color hoverColor: Settings.colors.fgMain
@@ -148,7 +148,7 @@ Slider {
             height: parent.height
 
             separation: 0
-            fillColor: root.backgroundColor
+            fillColor: root.bgFill
         }
 
         HexagonThumb {

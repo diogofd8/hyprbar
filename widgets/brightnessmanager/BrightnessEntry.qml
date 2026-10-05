@@ -101,7 +101,7 @@ Controls.Pane {
                 to: 100
                 value: root.model.value
                 actionable: root.canChange
-                backgroundColor: Settings.colors.bgTint2
+                bgFill: Settings.colors.bgTint2
 
                 onMoved: {
                     if (!root.commitOnRelease)
@@ -137,7 +137,7 @@ Controls.Pane {
                 stepCount: root.model.max + 1
                 value: root.model.value
                 actionable: root.canChange
-                backgroundColor: Settings.colors.bgTint2
+                bgFill: Settings.colors.bgTint2
 
                 onPressedChanged: {
                     if (!pressed && Math.round(value) !== root.model.value)

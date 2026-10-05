@@ -127,7 +127,7 @@ Pane {
                         checked: !Core.Audio.sink.muted
                         onClicked: Core.Audio.toggleMute()
 
-                        backgroundColor: root.panelBackgroundColor
+                        bgFill: root.panelBackgroundColor
                     }
                 }
 
@@ -163,7 +163,7 @@ Pane {
                         checked: !Core.Audio.source.muted
                         onClicked: Core.Audio.toggleSourceMute()
 
-                        backgroundColor: root.panelBackgroundColor
+                        bgFill: root.panelBackgroundColor
                     }
                 }
 

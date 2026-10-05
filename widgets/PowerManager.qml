@@ -309,7 +309,7 @@ Pane {
                 checked: Core.Caffeine.enabled
                 onClicked: Core.Caffeine.toggle()
 
-                backgroundColor: root.panelBackgroundColor
+                bgFill: root.panelBackgroundColor
             }
         }
     }

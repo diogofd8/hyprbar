@@ -56,7 +56,7 @@ Pane {
                         checked: Network.wifiEnabled
                         onClicked: Network.toggleWifi()
 
-                        backgroundColor: root.panelBackgroundColor
+                        bgFill: root.panelBackgroundColor
                     }
                 }
 

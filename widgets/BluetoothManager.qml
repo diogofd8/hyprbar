@@ -56,7 +56,7 @@ Pane {
                         checked: Bluetooth.bluetoothEnabled
                         onClicked: Bluetooth.toggleBluetooth()
 
-                        backgroundColor: root.panelBackgroundColor
+                        bgFill: root.panelBackgroundColor
                     }
                 }
 

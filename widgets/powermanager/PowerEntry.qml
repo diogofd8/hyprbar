@@ -49,7 +49,6 @@ Controls.Pane {
                 id: mainRow
 
                 Layout.fillWidth: true
-                Layout.topMargin: root.hasDetails ? 0.5 * WidgetConfiguration.entryIconHPadding : 0
                 Layout.preferredHeight: WidgetConfiguration.entryRowMainIconSz
                 spacing: WidgetConfiguration.entryTitleRowHSpacing
 

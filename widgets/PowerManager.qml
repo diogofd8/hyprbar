@@ -214,7 +214,6 @@ Pane {
                     id: batterySection
 
                     Layout.fillWidth: true
-                    visible: true
                     spacing: WidgetConfiguration.sectionContentVSpacing
 
                     RowLayout {

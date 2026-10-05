@@ -38,7 +38,7 @@ ChevronButton {
         Behavior on rotation { Anim { duration: Motion.fastMs } }
 
         NotificationDot {
-            visible: sysTray.isOpen? 0 : root.trayHasContent
+            visible: !sysTray.isOpen && root.trayHasContent
             dotColor: Settings.colors.accentAlert
             dotBgColor: Settings.colors.bgTint1
         }

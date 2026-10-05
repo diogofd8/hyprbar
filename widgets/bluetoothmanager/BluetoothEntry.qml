@@ -77,7 +77,6 @@ Controls.Pane {
                     id: pairBtn
 
                     visible: root.model.canPair
-                    enabled: root.model.canPair
 
                     glyph: Configuration.btPairIcon
                     glyphSize: WidgetConfiguration.entryRowSecondaryIconSz
@@ -90,7 +89,6 @@ Controls.Pane {
                     id: cancelBtn
 
                     visible: root.model.canCancel
-                    enabled: root.model.canCancel
 
                     glyph: Configuration.btCancelIcon
                     glyphSize: WidgetConfiguration.entryRowSecondaryIconSz
@@ -103,7 +101,6 @@ Controls.Pane {
                     id: connectionBtn
 
                     visible: root.model.canConnect || root.model.canDisconnect
-                    enabled: root.model.canConnect || root.model.canDisconnect
 
                     glyph: root.model.canDisconnect
                         ? Configuration.btDisconnectIcon
@@ -118,7 +115,6 @@ Controls.Pane {
                     id: forgetBtn
 
                     visible: root.model.canForget
-                    enabled: root.model.canForget
 
                     glyph: Configuration.btForgetIcon
                     glyphSize: WidgetConfiguration.entryRowSecondaryIconSz
@@ -193,13 +189,12 @@ Controls.Pane {
                     visible: !root.canExpand
                 }
 
-                // dismissBtn doubles as empty padding aligned with expandBtn
                 SquaredButton {
                     id: dismissBtn
                     Layout.fillHeight: true
                     Layout.preferredWidth: expandBtn.implicitWidth
 
-                    enabled: root.hasError
+                    // dismissBtn doubles as empty padding aligned with expandBtn
                     opacity: root.hasError ? 1 : 0
 
                     glyph: Configuration.btDismissIcon

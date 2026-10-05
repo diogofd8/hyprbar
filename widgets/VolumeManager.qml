@@ -236,7 +236,6 @@ Pane {
                             id: outputVolumeSection
 
                             Layout.fillWidth: true
-                            visible: true
                             spacing: WidgetConfiguration.sectionContentVSpacing
 
                             Text {
@@ -261,7 +260,6 @@ Pane {
                             id: inputVolumeSection
 
                             Layout.fillWidth: true
-                            visible: true
                             spacing: WidgetConfiguration.sectionContentVSpacing
 
                             Text {

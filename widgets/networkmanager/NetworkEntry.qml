@@ -82,7 +82,6 @@ Controls.Pane {
                     id: compactConnectionBtn
 
                     visible: root.isActionable
-                    enabled: root.isActionable
 
                     glyph: root.model.state === "Connected"
                         ? Configuration.nwDisconnectIcon
@@ -97,7 +96,6 @@ Controls.Pane {
                     id: settingsBtn
 
                     visible: root.model.canEdit
-                    enabled: root.model.canEdit
                     glyph: Configuration.nwEditConnectionIcon
                     glyphSize: WidgetConfiguration.entryRowSecondaryIconSz
                     color: Settings.colors.fgMain
@@ -202,13 +200,12 @@ Controls.Pane {
                     onLeftClicked: root.joinNetwork()
                 }
 
-                // dismissBtn doubles as empty padding aligned with expandBtn
                 SquaredButton {
                     id: dismissBtn
                     Layout.fillHeight: true
                     Layout.preferredWidth: expandBtn.implicitWidth
 
-                    enabled: root.hasError
+                    // dismissBtn doubles as empty padding aligned with expandBtn
                     opacity: root.hasError ? 1 : 0
 
                     glyph: Configuration.nwDismissIcon

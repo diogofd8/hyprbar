@@ -63,7 +63,7 @@ Chevron {
                     }
                 }
 
-                useMetrics: pip.active? true : false
+                useMetrics: pip.active
                 font.pixelSize: pip.active ? Settings.activeWorkspaceIconSize : Settings.workspaceIconSize
                 verticalOffset: {
                     switch (pip.slotState) {

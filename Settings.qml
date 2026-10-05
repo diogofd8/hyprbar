@@ -69,8 +69,11 @@ Singleton {
     readonly property var urgentWorkspaceIcon: ""
     readonly property var ramStressIcon: "󰘚"
     readonly property var cpuStressIcon: ""
-    readonly property var cpuTempIcon:
-        ["󱃃", "󰔏", "󱃂"]
+    readonly property var cpuTempIcon: ({
+        normal: "󱃃",
+        warning: "󰔏",
+        critical: "󱃂"
+    })
     readonly property var notificationIcon: "󰂚"
     readonly property var bluetoothOffIcon: "󰂲"
     readonly property var bluetoothOnIcon: "󰂯"

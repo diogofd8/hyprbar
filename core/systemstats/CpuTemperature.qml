@@ -200,15 +200,18 @@ Singleton {
         root._overallValue = overall.value
         root._overallState = overall.state
 
-        // console.log(
-        //     "TEMP:",
-        //     root._overallValue.toFixed(1) + "°C",
-        //     root._overallState,
-        //     "| Cores:",
-        //     root._cores.map(core =>
-        //         core.value.toFixed(1) + "°C (" + core.state + ")"
-        //     ).join(" | ")
-        // )
+        // ────── Debug Trace ──────
+        if (Settings.bDebugTrace) {
+            console.log(
+                "TEMP:",
+                root._overallValue.toFixed(1) + "°C",
+                root._overallState,
+                "| Cores:",
+                root._cores.map(core =>
+                    core.value.toFixed(1) + "°C (" + core.state + ")"
+                ).join(" | ")
+            )
+        }
     }
 
     function makeReading(celsius) {

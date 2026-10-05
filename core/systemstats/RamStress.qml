@@ -88,15 +88,18 @@ Singleton {
             Settings.ramStressThresholds
         )
 
-        // console.log(
-        //     "RAM:",
-        //     root._overallValue.toFixed(1) + "%",
-        //     root._overallState,
-        //     "|",
-        //     (root._usedBytes / (1024 * 1024 * 1024)).toFixed(2) + " GiB used /",
-        //     (root._totalBytes / (1024 * 1024 * 1024)).toFixed(2) + " GiB total |",
-        //     (root._availableBytes / (1024 * 1024 * 1024)).toFixed(2) + " GiB available"
-        // )
+        // ────── Debug Trace ──────
+        if (Settings.bDebugTrace) {
+            console.log(
+                "RAM:",
+                root._overallValue.toFixed(1) + "%",
+                root._overallState,
+                "|",
+                (root._usedBytes / (1024 * 1024 * 1024)).toFixed(2) + " GiB used /",
+                (root._totalBytes / (1024 * 1024 * 1024)).toFixed(2) + " GiB total |",
+                (root._availableBytes / (1024 * 1024 * 1024)).toFixed(2) + " GiB available"
+            )
+        }
     }
 
     function resolveState(value, thresholds) {

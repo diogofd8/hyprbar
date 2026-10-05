@@ -547,9 +547,11 @@ Singleton {
     }
 
     // ────── Debug Trace ──────
-    // readonly property string logLine:
-    //     "BACKLIGHT: " + value + "% " + level + " " + icon
-    //     + " (" + targetRaw + "/" + maxRaw + " on " + deviceName + ")"
+    readonly property string logLine: {
+        if (!Settings.bDebugTrace) return ""
+        return "BACKLIGHT: " + value + "% " + level + " " + icon
+            + " (" + targetRaw + "/" + maxRaw + " on " + deviceName + ")"
+    }
 
-    // onLogLineChanged: if (available) console.log(logLine)
+    onLogLineChanged: if (Settings.bDebugTrace && available) console.log(logLine)
 }

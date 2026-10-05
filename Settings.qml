@@ -4,6 +4,9 @@ import Quickshell
 import QtQuick
 
 Singleton {
+    // ────── Debug Tools ──────
+    readonly property bool bDebugTrace: false
+
     // ────── Theme Selection ──────
     PersistentProperties {
         id: persist

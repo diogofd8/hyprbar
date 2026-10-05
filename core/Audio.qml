@@ -19,8 +19,6 @@ Singleton {
     readonly property var sink: reading(Pipewire.defaultAudioSink, false)
     readonly property var source: reading(Pipewire.defaultAudioSource, true)
 
-    readonly property bool ready: Pipewire.ready
-
     // The bar needs only the two defaults above. The manager enables this
     // while its popup is open so the larger device/stream model is bound only
     // on demand.
@@ -652,12 +650,14 @@ Singleton {
     }
 
     // ────── Debug Trace ──────
-    // readonly property string logLine:
-    //     "AUDIO: sink " + sink.value + "% " + sink.state
-    //     + " level=" + sink.level + " " + sink.icon
-    //     + (sink.headphones ? " [headphones]" : "") + " port=" + activePort
-    //     + " <" + sink.description + ">"
-    //     + " | source " + source.value + "% " + source.state + " " + source.icon
+    readonly property string logLine: {
+        if (!Settings.bDebugTrace) return ""
+        return "AUDIO: sink " + sink.value + "% " + sink.state
+            + " level=" + sink.level + " " + sink.icon
+            + (sink.headphones ? " [headphones]" : "") + " port=" + activePort
+            + " <" + sink.description + ">"
+            + " | source " + source.value + "% " + source.state + " " + source.icon
+    }
 
-    // onLogLineChanged: if (ready) console.log(logLine)
+    onLogLineChanged: if (Settings.bDebugTrace && Pipewire.ready) console.log(logLine)
 }

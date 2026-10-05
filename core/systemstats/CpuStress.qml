@@ -115,17 +115,20 @@ Singleton {
         if (root.detailActive || root._threads.length > 0)
             root._threads = threadValues
 
-        // console.log(
-        //     "CPU:",
-        //     root._overallValue.toFixed(1) + "%",
-        //     root._overallState,
-        //     "| Threads:",
-        //     threadValues.map(thread =>
-        //         thread
-        //             ? thread.value.toFixed(1) + "% (" + thread.state + ")"
-        //             : "N/A"
-        //     ).join(" | ")
-        // )
+        // ────── Debug Trace ──────
+        if (Settings.bDebugTrace) {
+            console.log(
+                "CPU:",
+                root._overallValue.toFixed(1) + "%",
+                root._overallState,
+                "| Threads:",
+                threadValues.map(thread =>
+                    thread
+                        ? thread.value.toFixed(1) + "% (" + thread.state + ")"
+                        : "N/A"
+                ).join(" | ")
+            )
+        }
     }
 
     function parseCounters(fields) {

@@ -29,7 +29,6 @@ Singleton {
     readonly property var display: reading(UPower.displayDevice)
 
     readonly property bool onAc: !UPower.onBattery
-    readonly property bool ready: batteries.length > 0
 
     // ────── Active Pack Detection ──────
     // Power Bridge moves exactly one pack in or out at a time and parks the
@@ -295,15 +294,20 @@ Singleton {
     }
 
     // ────── Debug Trace ──────
-    // readonly property string logLine:
-    //     "BATTERY: " + active.value + "% (" + active.state
-    //     + (active.charging ? ", charging" : "") + ")"
-    //     + " active=" + (activePath || "none")
-    //     + " | internal " + internal.value + "% " + internal.state
-    //     + (internal.active ? " *" : "") + " " + internal.icon
-    //     + " | external " + external.value + "% " + external.state
-    //     + (external.active ? " *" : "") + " " + external.icon
-    //     + " | onAc=" + onAc
+    readonly property string logLine: {
+        if (!Settings.bDebugTrace) return ""
+        return "BATTERY: " + active.value + "% (" + active.state
+            + (active.charging ? ", charging" : "") + ")"
+            + " active=" + (activePath || "none")
+            + " | internal " + internal.value + "% " + internal.state
+            + (internal.active ? " *" : "") + " " + internal.icon
+            + " | external " + external.value + "% " + external.state
+            + (external.active ? " *" : "") + " " + external.icon
+            + " | onAc=" + onAc
+    }
 
-    // onLogLineChanged: if (ready) console.log(logLine)
+    onLogLineChanged: {
+        if (Settings.bDebugTrace && batteries.length > 0)
+            console.log(logLine)
+    }
 }

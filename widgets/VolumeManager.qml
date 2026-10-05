@@ -72,7 +72,7 @@ Pane {
                             enabled: true // PLACEBO
                             bgFill: root.activeMixerMode === 0
                                 ? Settings.colors.accentMain : Settings.colors.bgTint3
-                            glyph: VolumeUI.Configuration.volMixerMode[0].icon
+                            glyph: VolumeUI.Configuration.volMixerMode["devices"]
                             glyphSize: WidgetConfiguration.widgetEmbeddedIconSz
                             glyphColor: root.activeMixerMode === 0
                                 ? Settings.colors.fgDark : Settings.colors.fgMain
@@ -85,7 +85,7 @@ Pane {
 
                             bgFill: root.activeMixerMode === 1
                                 ? Settings.colors.accentMain : Settings.colors.bgTint3
-                            glyph: VolumeUI.Configuration.volMixerMode[1].icon
+                            glyph: VolumeUI.Configuration.volMixerMode["applications"]
                             glyphSize: WidgetConfiguration.widgetEmbeddedIconSz
                             glyphColor: root.activeMixerMode === 1
                                 ? Settings.colors.fgDark : Settings.colors.fgMain

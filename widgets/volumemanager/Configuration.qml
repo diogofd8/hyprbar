@@ -14,10 +14,10 @@ Singleton {
     readonly property var outputMuteState: ["󰕾", "󰖁"]
     readonly property var inputMuteState: ["", ""]
     readonly property var deviceSelectedState: ["", ""]
-    readonly property var volMixerMode: [
-        { icon: "󱡫", mode: "devices" },
-        { icon: "", mode: "applications" }
-    ]
+    readonly property var volMixerMode: ({
+        "devices": "󱡫",
+        "applications": ""
+    })
     readonly property string volumeSettingsIcon: ""
     readonly property string volEntrySettingsIcon: ""
     readonly property string applicationFallbackIcon: ""

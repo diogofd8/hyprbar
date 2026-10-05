@@ -10,7 +10,6 @@ import "systemtray" as SysTrayUI
 
 Pane {
     id: root
-    signal dismissRequested()
     signal platformMenuOpened()
     signal platformMenuClosed()
 

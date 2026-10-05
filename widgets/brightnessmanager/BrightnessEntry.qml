@@ -10,7 +10,6 @@ import qs.core as Core
 Controls.Pane {
     id: root
     required property var model
-    signal dismissRequested()
 
     readonly property bool isKeyboard: root.model.kind === "keyboard"
     readonly property bool canChange: root.model.available && !root.model.busy

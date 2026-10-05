@@ -10,7 +10,6 @@ import "brightnessmanager" as BrightnessUI
 
 Pane {
     id: root
-    signal dismissRequested()
 
     readonly property string panelBackgroundColor: Settings.colors.bgMain
 

@@ -10,7 +10,6 @@ import "powermanager" as PowerUI
 
 Pane {
     id: root
-    signal dismissRequested()
 
     readonly property string panelBackgroundColor: Settings.colors.bgMain
     property string requestedPowerMode: ""
@@ -244,8 +243,6 @@ Pane {
                         model: Core.PowerSupply.batteryEntryModel
                         delegate: PowerUI.PowerEntry {
                             Layout.fillWidth: true
-
-                            onDismissRequested: root.dismissRequested()
                         }
                     }
 
@@ -278,8 +275,6 @@ Pane {
                         model: Core.PowerSupply.peripheralEntryModel
                         delegate: PowerUI.PowerEntry {
                             Layout.fillWidth: true
-
-                            onDismissRequested: root.dismissRequested()
                         }
                     }
                 }

@@ -115,8 +115,6 @@ Chevron {
 
         PowerManager {
             anchors.fill: parent
-
-            onDismissRequested: powerManager.close()
         }
     }
 }

@@ -10,7 +10,6 @@ import qs.core as Core
 Controls.Pane {
     id: root
     required property var model
-    signal dismissRequested()
 
     property bool expanded: false
     readonly property bool hasError: root.model.errorMessage.length > 0

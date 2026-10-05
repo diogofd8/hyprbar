@@ -9,7 +9,6 @@ import qs.components
 Controls.Pane {
     id: root
     required property var model
-    signal dismissRequested()
 
     readonly property bool hasDetails: shouldShowBatteryDetails()
 

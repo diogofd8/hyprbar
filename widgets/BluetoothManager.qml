@@ -204,8 +204,6 @@ Pane {
                         model: Bluetooth.connectedDevices
                         delegate: BluetoothUI.BluetoothEntry {
                             Layout.fillWidth: true
-
-                            onDismissRequested: root.dismissRequested()
                         }
                     }
                 }
@@ -253,8 +251,6 @@ Pane {
 
                             Layout.fillWidth: true
                             visible: root.showAllPaired || index < BluetoothUI.Configuration.pairedVisibleMax
-
-                            onDismissRequested: root.dismissRequested()
                         }
                     }
                 }
@@ -278,7 +274,6 @@ Pane {
                         model: Bluetooth.discoveredDevices
                         delegate: BluetoothUI.BluetoothEntry {
                             Layout.fillWidth: true
-                            onDismissRequested: root.dismissRequested()
                         }
                     }
 

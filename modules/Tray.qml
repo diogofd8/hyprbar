@@ -55,10 +55,6 @@ ChevronButton {
 
             onPlatformMenuOpened: sysTray.holdOpen = true
             onPlatformMenuClosed: sysTray.holdOpen = false
-
-            onDismissRequested: {
-                sysTray.close()
-            }
         }
     }
 }

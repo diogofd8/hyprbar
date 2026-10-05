@@ -38,7 +38,6 @@ Singleton {
 
     readonly property real chevronAngle: 105
     readonly property int moduleSpacing: 6
-    readonly property int buttonClickableArea: 34
     readonly property real inducedVerticalOffset: 0.5
 
     // ────── Input Rules ──────
@@ -81,8 +80,6 @@ Singleton {
     readonly property var networkWifiOffIcon: "󰤮"
     readonly property var networkWiFiOnIcon:
         ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"]
-    readonly property var networkWifiOpenIcon: "󰤨"
-    readonly property var networkWifiProtectedIcon: "󰤪"
     readonly property var networkEthIcon: "󰈁"
     readonly property var clipboardIcon: ""
     readonly property var updateNotifierIcon:

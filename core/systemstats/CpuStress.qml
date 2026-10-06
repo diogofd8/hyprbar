@@ -107,7 +107,7 @@ Singleton {
                 root._overallValue = result.value
                 root._overallState = result.state
             } else {
-                threadValues[Number(name.substring(3))] = result
+                threadValues[Number(name.substring("cpu".length))] = result
             }
         }
 

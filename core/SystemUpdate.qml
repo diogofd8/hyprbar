@@ -64,6 +64,8 @@ Singleton {
 
     // ────── Internals ──────
     readonly property string scriptPath: Quickshell.shellPath("scripts/sys_update.sh")
+    // scripts/sys_update.sh check: 0 = updates, 1 = none, 2 = error.
+    readonly property int checkErrorExitCode: 2
     property bool requested: false
 
     PersistentProperties {
@@ -130,7 +132,7 @@ Singleton {
         root.requested = false
         persist.lastCheckedMs = Date.now()
 
-        if (!reading || exitCode === 2) {
+        if (!reading || exitCode === root.checkErrorExitCode) {
             persist.failed = true
             return
         }

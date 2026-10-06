@@ -120,7 +120,7 @@ Singleton {
     readonly property var systemTrayIcon: "󰬦"
 
     // ────── System Statistics API Configuration ──────
-    readonly property int systemStatsPollingIntervalMs: 2000
+    readonly property int systemStatsPollingIntervalMs: 3000
     readonly property var cpuStressThresholds: [
         {state: "idle", threshold: 0},
         {state: "low", threshold: 10},

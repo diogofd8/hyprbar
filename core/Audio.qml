@@ -336,10 +336,6 @@ Singleton {
 
     function deviceReading(node, isInput, port, activePort) {
         const audio = audioOf(node)
-        const headphones = !isInput && (port
-            ? /headphone|headset/i.test(port.type)
-                || /headphone|headset/i.test(port.name)
-            : isHeadphoneNode(node))
         const deviceName = node.nickname || node.description || node.name
         const properties = node.properties || ({})
         const internal = (properties["device.form_factor"]
@@ -354,19 +350,11 @@ Singleton {
 
         return {
             id: String(node.id) + (port ? ":" + port.name : ""),
-            nodeId: String(node.id),
             portName: port ? port.name : "",
             name: name,
             nodeName: node.name,
-            description: node.description || node.name,
-            icon: resolveIcon(audio ? resolveLevelIndex(
-                Math.round(audio.volume * 100), Settings.volumeLevelThresholds)
-                : 0, audio ? audio.muted : true,
-                headphones, isInput),
-            iconName: deviceIconName(node, isInput),
             value: audio ? Math.round(audio.volume * 100) : 0,
             muted: audio ? audio.muted : true,
-            state: audio && !audio.muted ? "default" : "muted",
             canSelect: node.ready && (!port || port.availability !== "not available"),
             isDefault: node === (isInput
                 ? Pipewire.defaultAudioSource : Pipewire.defaultAudioSink)
@@ -379,19 +367,14 @@ Singleton {
         const audio = audioOf(node)
         const properties = node.properties || ({})
         const name = properties["application.name"] || node.description || node.name
-        const icon = root.applicationIcon(properties, player)
 
         return {
             id: String(node.id),
             name: name,
-            iconName: icon.name,
-            iconSource: icon.source,
+            iconSource: root.applicationIconSource(properties, player),
             hasStream: true,
-            isInput: false,
-            isOutput: true,
             value: audio ? Math.round(audio.volume * 100) : 0,
-            muted: audio ? audio.muted : true,
-            state: audio && !audio.muted ? "default" : "muted"
+            muted: audio ? audio.muted : true
         }
     }
 
@@ -421,24 +404,19 @@ Singleton {
         for (const player of root.mediaPlayers) {
             if (!player.identity || matchedPlayers.has(player.dbusName))
                 continue
-            const icon = root.applicationIcon({}, player)
             entries.push({
                 id: "player:" + player.dbusName,
                 name: player.identity,
-                iconName: icon.name,
-                iconSource: icon.source,
+                iconSource: root.applicationIconSource({}, player),
                 hasStream: false,
-                isInput: false,
-                isOutput: true,
                 value: 0,
-                muted: false,
-                state: "default"
+                muted: false
             })
         }
         return entries
     }
 
-    function applicationIcon(properties, player) {
+    function applicationIconSource(properties, player) {
         // Desktop entries provide the real installed icon even when stream
         // metadata is absent (Spotify) or uses a different property spelling.
         const ids = [player ? player.desktopEntry : "",
@@ -452,7 +430,7 @@ Singleton {
             if (entry && entry.icon) {
                 const source = Quickshell.iconPath(entry.icon, true)
                 if (source)
-                    return { name: entry.icon, source: source }
+                    return source
             }
         }
         for (const name of [properties["application.icon-name"],
@@ -460,19 +438,10 @@ Singleton {
             if (name) {
                 const source = Quickshell.iconPath(String(name), true)
                 if (source)
-                    return { name: String(name), source: source }
+                    return source
             }
         }
-        return { name: "", source: "" }
-    }
-
-    function deviceIconName(node, isInput) {
-        const properties = node.properties || ({})
-        if (isInput)
-            return properties["device.icon-name"] || "audio-input-microphone"
-
-        return properties["device.icon-name"] || (isHeadphoneNode(node)
-            ? "audio-headphones" : "audio-speakers")
+        return ""
     }
 
     // ────── Internals ──────

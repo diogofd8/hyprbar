@@ -263,8 +263,6 @@ Singleton {
     // The popup owns discovery demand. No scans are requested by the bar.
     property bool discoveryActive: false
     readonly property bool passwordPromptActive: priv.operationStatus === "PasswordRequired"
-    readonly property bool scanning: root.wifiDevice !== null
-        && root.wifiDevice.scannerEnabled
     // The user's explicit refresh, separate from Quickshell's live scanner
     // that keeps available network objects actionable while the popup is open.
     property bool scanRequested: false

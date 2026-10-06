@@ -54,6 +54,7 @@ Item {
         anchors.centerIn: parent
         text: root.glyph
         font.pixelSize: root.glyphSize
+        font.family: root.fontFamily
 
         useMetrics: root.useMetrics
         verticalOffset: root.verticalOffset

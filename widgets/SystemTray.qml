@@ -13,7 +13,6 @@ Pane {
     signal platformMenuOpened()
     signal platformMenuClosed()
 
-    readonly property string panelBackgroundColor: Settings.colors.bgMain
     readonly property var visibleItems: TrayService.SystemTray.items.values.filter(
         item => SysTrayUI.Configuration.isVisible(item)
     )

@@ -23,9 +23,7 @@ Singleton {
     readonly property string level:
         Settings.brightnessLevelThresholds[levelIndex].state
 
-    readonly property string icon:
-        Settings.brightnessCtrlIcon[
-            Math.min(levelIndex, Settings.brightnessCtrlIcon.length - 1)]
+    readonly property string icon: Settings.brightnessCtrlIcon[level]
 
     // The bar uses the internal panel continuously. Popup discovery and its
     // periodic reads run only while the brightness manager is open.

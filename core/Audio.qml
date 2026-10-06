@@ -519,9 +519,8 @@ Singleton {
         }
     }
 
-    // Returns the index rather than the state name, so volumeCtrlIcon and
-    // volumeLevelThresholds stay locked together — add a threshold and you
-    // must add the icon that goes with it.
+    // Callers use the index to read the threshold state; icon lookup uses
+    // that state rather than the icon's position in an array.
     function resolveLevelIndex(value, thresholds) {
         let index = 0
 
@@ -545,7 +544,8 @@ Singleton {
         if (muted)
             return Settings.volumeMutedIcon
 
-        return Settings.volumeCtrlIcon[Math.min(levelIndex, Settings.volumeCtrlIcon.length - 1)]
+        const level = Settings.volumeLevelThresholds[levelIndex].state
+        return Settings.volumeCtrlIcon[level]
     }
 
     // Bluetooth and USB headsets say so on the node itself.

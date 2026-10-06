@@ -14,8 +14,10 @@ Pane {
 
     readonly property string panelBackgroundColor: Settings.colors.bgMain
 
-    // 0 shows physical input/output devices; 1 shows application streams.
-    property int activeMixerMode: 0
+    // Mode values also give each page its horizontal slide position.
+    readonly property int devicesMode: 0
+    readonly property int applicationsMode: 1
+    property int activeMixerMode: devicesMode
 
     padding: WidgetConfiguration.dropDownWindowPadding
     implicitHeight: panelContent.implicitHeight + root.topPadding + root.bottomPadding
@@ -69,27 +71,27 @@ Pane {
                         HexagonButton {
                             id: mixerDevicesBtn
 
-                            bgFill: root.activeMixerMode === 0
+                            bgFill: root.activeMixerMode === root.devicesMode
                                 ? Settings.colors.accentMain : Settings.colors.bgTint3
                             glyph: VolumeUI.Configuration.volMixerMode["devices"]
                             glyphSize: WidgetConfiguration.widgetEmbeddedIconSz
-                            glyphColor: root.activeMixerMode === 0
+                            glyphColor: root.activeMixerMode === root.devicesMode
                                 ? Settings.colors.fgDark : Settings.colors.fgMain
                             glyphHorizontalOffset: -0.5
-                            onLeftClicked: root.activeMixerMode = 0
+                            onLeftClicked: root.activeMixerMode = root.devicesMode
                         }
 
                         HexagonButton {
                             id: mixerStreamsBtn
 
-                            bgFill: root.activeMixerMode === 1
+                            bgFill: root.activeMixerMode === root.applicationsMode
                                 ? Settings.colors.accentMain : Settings.colors.bgTint3
                             glyph: VolumeUI.Configuration.volMixerMode["applications"]
                             glyphSize: WidgetConfiguration.widgetEmbeddedIconSz
-                            glyphColor: root.activeMixerMode === 1
+                            glyphColor: root.activeMixerMode === root.applicationsMode
                                 ? Settings.colors.fgDark : Settings.colors.fgMain
                             glyphHorizontalOffset: -0.5
-                            onLeftClicked: root.activeMixerMode = 1
+                            onLeftClicked: root.activeMixerMode = root.applicationsMode
                         }
                     }
                 }
@@ -111,8 +113,9 @@ Pane {
                         Glyph {
                             id: outputGlyph
                             anchors.horizontalCenter: parent.horizontalCenter
-                            icon: VolumeUI.Configuration.outputMuteState[
-                                Core.Audio.sink.muted ? 1 : 0]
+                            icon: Core.Audio.sink.muted
+                                ? VolumeUI.Configuration.outputMutedIcon
+                                : VolumeUI.Configuration.outputUnmutedIcon
                             iconSize: WidgetConfiguration.widgetMainIconSz
                             iconColor: Settings.colors.fgMain
                             useMetrics: true
@@ -147,8 +150,9 @@ Pane {
                         Glyph {
                             id: inputGlyph
                             anchors.horizontalCenter: parent.horizontalCenter
-                            icon: VolumeUI.Configuration.inputMuteState[
-                                Core.Audio.source.muted ? 1 : 0]
+                            icon: Core.Audio.source.muted
+                                ? VolumeUI.Configuration.inputMutedIcon
+                                : VolumeUI.Configuration.inputUnmutedIcon
                             iconSize: WidgetConfiguration.widgetMainIconSz
                             iconColor: Settings.colors.fgMain
                             useMetrics: true
@@ -222,7 +226,7 @@ Pane {
                     id: devicePage
                     width: contents.width
                     implicitHeight: deviceSections.implicitHeight
-                    x: (0 - root.activeMixerMode) * contents.width
+                    x: (root.devicesMode - root.activeMixerMode) * contents.width
 
                     Behavior on x { Anim { easing.bezierCurve: Motion.standardCurve } }
 
@@ -287,7 +291,7 @@ Pane {
                     id: streamPage
                     width: contents.width
                     implicitHeight: appVolumeSection.implicitHeight
-                    x: (1 - root.activeMixerMode) * contents.width
+                    x: (root.applicationsMode - root.activeMixerMode) * contents.width
 
                     Behavior on x { Anim { easing.bezierCurve: Motion.standardCurve } }
 

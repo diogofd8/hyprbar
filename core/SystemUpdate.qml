@@ -39,9 +39,9 @@ Singleton {
         case "error":
             return Settings.updateNotifierErrorIcon
         case "available":
-            return Settings.updateNotifierIcon[1]
+            return Settings.updateNotifierIcon.available
         default:
-            return Settings.updateNotifierIcon[0]
+            return Settings.updateNotifierIcon.updated
         }
     }
 

@@ -8,9 +8,12 @@ Singleton {
     readonly property string internalMicrophoneLabel: "Internal Microphone"
 
     // ────── Icons ──────
-    readonly property var outputMuteState: ["󰕾", "󰖁"]
-    readonly property var inputMuteState: ["", ""]
-    readonly property var deviceSelectedState: ["", ""]
+    readonly property string outputUnmutedIcon: "󰕾"
+    readonly property string outputMutedIcon: "󰖁"
+    readonly property string inputUnmutedIcon: ""
+    readonly property string inputMutedIcon: ""
+    readonly property string deviceSelectedIcon: ""
+    readonly property string deviceUnselectedIcon: ""
     readonly property var volMixerMode: ({
         "devices": "󱡫",
         "applications": ""

@@ -81,22 +81,37 @@ Singleton {
     readonly property var bluetoothOnIcon: "󰂯"
     readonly property var bluetoothConnectedIcon: "󰂰"
     readonly property var networkWifiOffIcon: "󰤮"
-    readonly property var networkWiFiOnIcon:
-        ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"]
+    readonly property var networkWifiDisconnectedIcon: "󰤫"
+    readonly property var networkWifiSignalIcons: ({
+        weak: "󰤯",
+        poor: "󰤟",
+        fair: "󰤢",
+        good: "󰤥",
+        excellent: "󰤨"
+    })
     readonly property var networkEthIcon: "󰈁"
     readonly property var clipboardIcon: ""
-    readonly property var updateNotifierIcon:
-        ["󰄴", "󱤧"]
+    readonly property var updateNotifierIcon: ({
+        updated: "󰄴",
+        available: "󱤧"
+    })
     readonly property var updateNotifierSyncIcon: "󰓦"
     readonly property var updateNotifierErrorIcon: "󰅤"
-    readonly property var brightnessCtrlIcon:
-        ["󰃞", "󰃟", "󰃠"]
+    readonly property var brightnessCtrlIcon: ({
+        low: "󰃞",
+        medium: "󰃟",
+        high: "󰃠"
+    })
     readonly property var batteryCtrlIcon:
         ["󰂎", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
     readonly property var batteryChargingIcon: "󰂄"
     readonly property var batteryOffIcon: "󱟩"
-    readonly property var volumeCtrlIcon:
-        ["", "", "", ""]
+    readonly property var volumeCtrlIcon: ({
+        off: "",
+        low: "",
+        medium: "",
+        high: ""
+    })
     readonly property var volumeMutedIcon: ""
     readonly property var volumeHeadphoneIcon: "󰋋"
     readonly property var volumeHeadphoneMutedIcon: "󰟎"

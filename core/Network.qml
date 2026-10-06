@@ -90,11 +90,11 @@ Singleton {
         if (root.ethernetConnected) return Settings.networkEthIcon
         if (!root.wifiAvailable || !root.wifiEnabled)
             return Settings.networkWifiOffIcon
-        if (!root.wifiConnected) return Settings.networkWiFiOnIcon[0]
+        if (!root.wifiConnected) return Settings.networkWifiDisconnectedIcon
 
         const level = root.wifiSignalLevel(root.wifiStrength)
-        return Settings.networkWiFiOnIcon[
-            Math.min(level + 1, Settings.networkWiFiOnIcon.length - 1)]
+        const state = Settings.wifiSignalThresholds[level].state
+        return Settings.networkWifiSignalIcons[state]
     }
 
     // One active-connection lookup fills the profile identity Quickshell 0.3.1

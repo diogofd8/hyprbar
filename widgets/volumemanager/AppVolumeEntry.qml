@@ -113,8 +113,8 @@ Controls.Pane {
                     opacity: enabled ? 1 : Settings.colors.disabledOpacity
 
                     glyph: root.model.muted
-                        ? Configuration.outputMuteState[1]
-                        : Configuration.outputMuteState[0]
+                        ? Configuration.outputMutedIcon
+                        : Configuration.outputUnmutedIcon
                     glyphSize: WidgetConfiguration.widgetSecondaryIconSz
                     color: Settings.colors.fgMain
 

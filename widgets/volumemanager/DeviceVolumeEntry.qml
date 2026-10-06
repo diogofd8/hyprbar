@@ -39,8 +39,8 @@ Controls.Pane {
             Layout.rightMargin: WidgetConfiguration.entryIconHPadding
 
             icon: root.model.isDefault
-                ? Configuration.deviceSelectedState[0]
-                : Configuration.deviceSelectedState[1]
+                ? Configuration.deviceSelectedIcon
+                : Configuration.deviceUnselectedIcon
             iconSize: WidgetConfiguration.entryRowMainIconSz
             useMetrics: false
             iconColor: root.model.isDefault
@@ -100,8 +100,10 @@ Controls.Pane {
                     id: muteBtn
 
                     glyph: root.model.isInput
-                        ? Configuration.inputMuteState[root.model.muted ? 1 : 0]
-                        : Configuration.outputMuteState[root.model.muted ? 1 : 0]
+                        ? (root.model.muted
+                            ? Configuration.inputMutedIcon : Configuration.inputUnmutedIcon)
+                        : (root.model.muted
+                            ? Configuration.outputMutedIcon : Configuration.outputUnmutedIcon)
                     glyphSize: WidgetConfiguration.widgetSecondaryIconSz
                     color: Settings.colors.fgMain
 

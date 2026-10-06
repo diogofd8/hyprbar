@@ -145,13 +145,13 @@ Controls.Pane {
     // ────── Row logic ──────
     function deviceLabel() {
         const configuredName = root.model.isInput
-            ? Configuration.defaultInput : Configuration.defaultOuput
+            ? Settings.volumeBuiltInInputNodeName : Settings.volumeBuiltInOutputNodeName
 
         if (root.model.nodeName === configuredName) {
-            if (root.model.portName === "analog-output-speaker")
-                return "Built-in Speakers"
-            if (root.model.portName === "analog-input-internal-mic")
-                return "Internal Microphone"
+            if (root.model.portName === Settings.volumeBuiltInSpeakerPortName)
+                return Configuration.builtInSpeakersLabel
+            if (root.model.portName === Settings.volumeInternalMicPortName)
+                return Configuration.internalMicrophoneLabel
         }
 
         return root.model.name

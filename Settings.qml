@@ -165,6 +165,13 @@ Singleton {
 
     // ────── Volume API Configuration ──────
     readonly property int volumeStepPercentage: 1
+    // Built-in PipeWire nodes and ports; object IDs are session-local.
+    readonly property string volumeBuiltInInputNodeName:
+        "alsa_input.pci-0000_00_1f.3.analog-stereo"
+    readonly property string volumeBuiltInOutputNodeName:
+        "alsa_output.pci-0000_00_1f.3.analog-stereo"
+    readonly property string volumeBuiltInSpeakerPortName: "analog-output-speaker"
+    readonly property string volumeInternalMicPortName: "analog-input-internal-mic"
     readonly property var volumeLevelThresholds: [
         {state: "off", threshold: 0},
         {state: "low", threshold: 1},

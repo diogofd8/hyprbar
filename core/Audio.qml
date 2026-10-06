@@ -600,7 +600,7 @@ Singleton {
 
     Timer {
         id: portDebounce
-        interval: 150
+        interval: Settings.audioPortQueryDebounceMs
         onTriggered: {
             if (portDemand.outputs && !sinkPortReader.running) {
                 portDemand.outputs = false

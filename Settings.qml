@@ -170,4 +170,28 @@ Singleton {
         {state: "medium", threshold: 34},
         {state: "high", threshold: 67},
     ]
+
+    // ---- Core Audio Tweaks ----
+    readonly property int audioPortQueryDebounceMs: 150
+
+    // ---- Core Backlight Tweaks ----
+    readonly property int backlightNightLightRefreshIntervalMs: 60000
+    readonly property int backlightKeyboardPollIntervalMs: 1000
+    readonly property int backlightMonitorHotplugDebounceMs: 150
+
+    // ---- Core Bluetooth Tweaks ----
+    readonly property int bluetoothScanStartTimeoutMs: 4000
+    readonly property int bluetoothPairTimeoutMs: 60000
+    readonly property int bluetoothConnectTimeoutMs: 30000
+    readonly property int bluetoothDisconnectTimeoutMs: 15000
+    readonly property int bluetoothForgetTimeoutMs: 15000
+    readonly property int bluetoothPairSettleDelayMs: 250
+
+    // ---- Core Network Tweaks ----
+    readonly property int networkConnectTimeoutMs: 90000
+    readonly property int networkDisconnectTimeoutMs: 15000
+    readonly property int networkWifiToggleConfirmationTimeoutMs: 5000
+
+    // ---- Core WeatherParse Tweaks ----
+    readonly property int weatherParseStalenessTickIntervalMs: 20000
 }

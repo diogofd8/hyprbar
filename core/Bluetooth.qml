@@ -231,7 +231,7 @@ Singleton {
 
     Timer {
         id: scanStartTimeout
-        interval: 4000
+        interval: Settings.bluetoothScanStartTimeoutMs
 
         onTriggered: {
             if (root.scanning || !root.scanRequested)
@@ -444,28 +444,28 @@ Singleton {
     function pair(address) {
         const device = root.findDevice(address)
         if (!device || device.paired || device.bonded) return
-        if (!root.beginOperation(address, device, "pair", 60000)) return
+        if (!root.beginOperation(address, device, "pair", Settings.bluetoothPairTimeoutMs)) return
         device.pair()
     }
 
     function connect(address) {
         const device = root.findDevice(address)
         if (!device || device.connected) return
-        if (!root.beginOperation(address, device, "connect", 30000)) return
+        if (!root.beginOperation(address, device, "connect", Settings.bluetoothConnectTimeoutMs)) return
         device.connect()
     }
 
     function disconnect(address) {
         const device = root.findDevice(address)
         if (!device || !device.connected) return
-        if (!root.beginOperation(address, device, "disconnect", 15000)) return
+        if (!root.beginOperation(address, device, "disconnect", Settings.bluetoothDisconnectTimeoutMs)) return
         device.disconnect()
     }
 
     function forget(address) {
         const device = root.findDevice(address)
         if (!device) return
-        if (!root.beginOperation(address, device, "forget", 15000)) return
+        if (!root.beginOperation(address, device, "forget", Settings.bluetoothForgetTimeoutMs)) return
         device.forget()
     }
 
@@ -543,7 +543,7 @@ Singleton {
 
     Timer {
         id: pairSettle
-        interval: 250
+        interval: Settings.bluetoothPairSettleDelayMs
         onTriggered: {
             const device = priv.operationDevice
             if (!device || priv.operationMode !== "pair") return

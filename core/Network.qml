@@ -470,7 +470,7 @@ Singleton {
             priv.operationStatus = "PasswordRequired"
             return
         }
-        operationTimeout.interval = 90000
+        operationTimeout.interval = Settings.networkConnectTimeoutMs
         operationTimeout.restart()
         if (entry.profileUuid) {
             const profile = network.nmSettings.find(p => p !== null
@@ -493,7 +493,7 @@ Singleton {
         setEntryError(entryId, "")
         priv.passwordSubmitted = true
         priv.operationStatus = ""
-        operationTimeout.interval = 90000
+        operationTimeout.interval = Settings.networkConnectTimeoutMs
         operationTimeout.restart()
         network.connectWithPsk(password)
         password = ""
@@ -506,7 +506,7 @@ Singleton {
         const network = nativeNetwork(entry)
         if (!network || !network.connected) return
         if (!beginOperation(entryId, network, "disconnect")) return
-        operationTimeout.interval = 15000
+        operationTimeout.interval = Settings.networkDisconnectTimeoutMs
         operationTimeout.restart()
         network.disconnect()
     }
@@ -593,7 +593,7 @@ Singleton {
     }
     Timer {
         id: wifiTimeout
-        interval: 5000
+        interval: Settings.networkWifiToggleConfirmationTimeoutMs
         onTriggered: {
             priv.wifiRequested = false
             priv.wifiError = "NetworkManager did not confirm the Wi-Fi change."

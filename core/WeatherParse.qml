@@ -647,7 +647,7 @@ Singleton {
     }
 
     Timer {
-        interval: 20000
+        interval: Settings.weatherParseStalenessTickIntervalMs
         running: true
         repeat: true
         onTriggered: internal.tick()

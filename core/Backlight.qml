@@ -240,7 +240,7 @@ Singleton {
     }
 
     Timer {
-        interval: 60000
+        interval: Settings.backlightNightLightRefreshIntervalMs
         repeat: true
         running: root.discoveryActive
         onTriggered: root.refreshNightLight()
@@ -250,7 +250,7 @@ Singleton {
     // the brightness sysfs watcher. Read this one file only while the popup is
     // open, and read immediately after our own writes below.
     Timer {
-        interval: 1000
+        interval: Settings.backlightKeyboardPollIntervalMs
         repeat: true
         running: root.discoveryActive && root.keyboardMax === 2
         onTriggered: keyboardValue.reload()
@@ -268,7 +268,7 @@ Singleton {
 
     Timer {
         id: hotplugDelay
-        interval: 150
+        interval: Settings.backlightMonitorHotplugDebounceMs
         onTriggered: root.discoverDisplays()
     }
 

@@ -26,6 +26,7 @@ Item {
     property bool useMetrics
 
     property bool rotateOnClick: false
+    property alias glyphRotation: glyphItem.rotation
 
     // ────── Interaction ──────
     signal leftClicked()
@@ -76,8 +77,8 @@ Item {
         NumberAnimation {
             target: glyphItem
             property: "rotation"
-            to: -45
-            duration: 200
+            to: Motion.squaredButtonPressAngle
+            duration: Motion.squaredButtonPressMs
             easing.type: Easing.OutCubic
         }
 
@@ -85,7 +86,7 @@ Item {
             target: glyphItem
             property: "rotation"
             to: 0
-            duration: 300
+            duration: Motion.squaredButtonReleaseMs
             easing.type: Easing.InOutCubic
         }
     }

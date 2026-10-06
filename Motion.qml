@@ -14,6 +14,12 @@ Singleton {
     readonly property int popoutCloseMs: 210
     readonly property int popoutMorphMs: 300
     readonly property int popoutCrossfadeMs: 150
+    readonly property int squaredButtonPressMs: 200
+    readonly property int squaredButtonReleaseMs: 300
+    readonly property int activitySpinMs: 1500
+
+    // ────── Angles ──────
+    readonly property real squaredButtonPressAngle: -45
 
     // ────── Distances ──────
     readonly property real popoutOffset: 8          // slide of the open/close reveal

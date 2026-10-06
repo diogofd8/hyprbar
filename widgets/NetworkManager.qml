@@ -65,7 +65,9 @@ Pane {
                 }
 
                 SquaredButton {
-                    enabled: Network.discoveryActive && Network.wifiAvailable && Network.wifiEnabled
+                    id: networkScanButton
+                    enabled: Network.discoveryActive && Network.wifiAvailable
+                        && Network.wifiEnabled && !Network.scanRequested
 
                     glyph: NetworkUI.Configuration.nmConnectionRefreshIcon
                     glyphSize: WidgetConfiguration.widgetMainIconSz
@@ -73,7 +75,16 @@ Pane {
                     color: Settings.colors.fgMain
 
                     onLeftClicked: Network.forceWifiScan()
-                    rotateOnClick: true
+
+                    NumberAnimation on glyphRotation {
+                        from: 360
+                        to: 0
+                        duration: Motion.activitySpinMs
+                        loops: Animation.Infinite
+                        running: Network.scanRequested
+
+                        onStopped: networkScanButton.glyphRotation = 0
+                    }
                 }
 
                 SquaredButton {

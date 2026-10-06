@@ -78,7 +78,7 @@ Pane {
                     NumberAnimation on rotation {
                         from: 360
                         to: 0
-                        duration: 1500
+                        duration: Motion.activitySpinMs
                         loops: Animation.Infinite
                         running: isScanningBt.visible
 

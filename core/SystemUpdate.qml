@@ -19,6 +19,9 @@ Singleton {
     readonly property real lastCheckedMs: persist.lastCheckedMs
 
     readonly property string state: {
+        if (root.updating)
+            return "updating"
+
         if (root.checking)
             return "checking"
 
@@ -30,6 +33,7 @@ Singleton {
 
     readonly property string icon: {
         switch (root.state) {
+        case "updating":
         case "checking":
             return Settings.updateNotifierSyncIcon
         case "error":

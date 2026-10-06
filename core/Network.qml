@@ -265,6 +265,9 @@ Singleton {
     readonly property bool passwordPromptActive: priv.operationStatus === "PasswordRequired"
     readonly property bool scanning: root.wifiDevice !== null
         && root.wifiDevice.scannerEnabled
+    // The user's explicit refresh, separate from Quickshell's live scanner
+    // that keeps available network objects actionable while the popup is open.
+    property bool scanRequested: false
     readonly property bool refreshing: visibleQuery.running
     readonly property string scanErrorMessage: priv.scanError
     Binding {
@@ -275,7 +278,13 @@ Singleton {
     }
     onDiscoveryActiveChanged: {
         if (root.discoveryActive) Qt.callLater(root.refreshVisibleNetworks)
-        else priv.visibleSsids = null
+        else {
+            root.scanRequested = false
+            priv.visibleQueryAgain = false
+            priv.forceVisibleQueryAgain = false
+            priv.visibleQueryForced = false
+            priv.visibleSsids = null
+        }
     }
     function escapedFields(line) {
         const fields = []
@@ -301,19 +310,25 @@ Singleton {
         visibleQuery.command = ["nmcli", "--colors", "no", "--terse", "--escape", "yes",
             "--fields", "SSID", "device", "wifi", "list", "ifname",
             root.wifiInterface, "--rescan", forceScan ? "yes" : "no"]
+        priv.visibleQueryForced = forceScan
         visibleQuery.running = true
     }
     function forceWifiScan() {
-        if (!root.discoveryActive || !root.wifiAvailable || !root.wifiEnabled)
+        if (!root.discoveryActive || !root.wifiAvailable || !root.wifiEnabled
+                || root.scanRequested)
             return
         priv.scanError = ""
+        root.scanRequested = true
         root.refreshVisibleNetworks(true)
     }
     Process {
         id: visibleQuery
         stdout: StdioCollector { id: visibleOutput }
         onExited: (code, status) => {
+            const forced = priv.visibleQueryForced
+            priv.visibleQueryForced = false
             if (!root.discoveryActive) {
+                root.scanRequested = false
                 priv.visibleQueryAgain = false
                 priv.forceVisibleQueryAgain = false
                 return
@@ -330,11 +345,12 @@ Singleton {
                 }
                 priv.visibleSsids = names
             }
+            if (forced) root.scanRequested = false
             if (priv.visibleQueryAgain) {
                 const forceScan = priv.forceVisibleQueryAgain
                 priv.visibleQueryAgain = false
                 priv.forceVisibleQueryAgain = false
-                Qt.callLater(() => root.refreshVisibleNetworks(forceScan))
+                Qt.callLater(() => root.refreshVisibleNetworks(forceScan && root.scanRequested))
             }
         }
     }
@@ -561,6 +577,7 @@ Singleton {
         property var visibleSsids: null
         property bool visibleQueryAgain: false
         property bool forceVisibleQueryAgain: false
+        property bool visibleQueryForced: false
         property string scanError: ""
         property string operationId: ""
         property string operationMode: ""

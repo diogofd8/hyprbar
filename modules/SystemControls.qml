@@ -31,6 +31,7 @@ Chevron {
         }
 
         GlyphButton {
+            id: systemUpdateButton
             contentLeftPadding: 6
             contentRightPadding: 6
 
@@ -49,6 +50,16 @@ Chevron {
 
             onLeftClicked: Core.Actions.sysUpdateCheck()
             onRightClicked: Core.Actions.sysUpdate()
+
+            NumberAnimation on iconRotation {
+                from: 360
+                to: 0
+                duration: Motion.activitySpinMs
+                loops: Animation.Infinite
+                running: Core.SystemUpdate.checking || Core.SystemUpdate.updating
+
+                onStopped: systemUpdateButton.iconRotation = 0
+            }
         }
 
         GlyphButton {

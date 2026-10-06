@@ -149,19 +149,19 @@ Pane {
 
                     glyph: PowerUI.Configuration.restoreTlpButton
                     glyphSize: WidgetConfiguration.widgetMainIconSz
-                    useMetrics: true
+                    useMetrics: false
                     color: Settings.colors.fgMain
 
                     onLeftClicked: root.setPowerMode("auto")
 
-                    NumberAnimation on rotation {
-                        from: 0
-                        to: 360
-                        duration: 1500
+                    NumberAnimation on glyphRotation {
+                        from: 360
+                        to: 0
+                        duration: Motion.activitySpinMs
                         loops: Animation.Infinite
                         running: PowerUI.PowerActions.resettingTlpProfile
 
-                        onStopped: restoreTlpButton.rotation = 0
+                        onStopped: restoreTlpButton.glyphRotation = 0
                     }
                 }
 

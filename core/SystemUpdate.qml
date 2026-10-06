@@ -16,7 +16,6 @@ Singleton {
     readonly property bool available: root.count > 0
     readonly property bool checking: root.requested || checker.running
     property bool updating: false
-    readonly property real lastCheckedMs: persist.lastCheckedMs
 
     readonly property string state: {
         if (root.updating)

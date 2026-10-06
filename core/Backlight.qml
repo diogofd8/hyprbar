@@ -47,6 +47,7 @@ Singleton {
 
     property string screenError: ""
     property bool ddcBusy: false
+    readonly property string ddcBrightnessVcpCode: "10" // MCCS brightness feature (0x10)
 
     ListModel {
         id: screenEntries
@@ -387,18 +388,23 @@ Singleton {
         }
     }
 
+    function shouldIncludeDdcDisplay(display) {
+        if (!display || display.bus < 0 || !display.name)
+            return false
+        return !Settings.brightnessInternalConnectorPrefixes.some(
+            prefix => display.connector.startsWith(prefix))
+    }
+
     function parseDisplays(output) {
         const displays = []
         let display = null
         for (const line of output.split(/\r?\n/)) {
             if (/^Display\s+\d+\s*$/.test(line)) {
-                if (display && display.bus >= 0 && display.name
-                        && !display.connector.includes("eDP-"))
+                if (shouldIncludeDdcDisplay(display))
                     displays.push(display)
                 display = {bus: -1, connector: "", name: ""}
             } else if (/^Invalid display/.test(line)) {
-                if (display && display.bus >= 0 && display.name
-                        && !display.connector.includes("eDP-"))
+                if (shouldIncludeDdcDisplay(display))
                     displays.push(display)
                 display = null
             } else if (display) {
@@ -413,8 +419,7 @@ Singleton {
                 }
             }
         }
-        if (display && display.bus >= 0 && display.name
-                && !display.connector.includes("eDP-"))
+        if (shouldIncludeDdcDisplay(display))
             displays.push(display)
         return displays
     }
@@ -440,11 +445,11 @@ Singleton {
             break
         case "get":
             ddcProcess.command = ["ddcutil", "--bus", String(operation.bus),
-                "getvcp", "10", "--terse"]
+                "getvcp", ddcBrightnessVcpCode, "--terse"]
             break
         case "set":
             ddcProcess.command = ["ddcutil", "--bus", String(operation.bus),
-                "setvcp", "10", String(operation.raw)]
+                "setvcp", ddcBrightnessVcpCode, String(operation.raw)]
             break
         }
         ddcProcess.running = true
@@ -508,12 +513,12 @@ Singleton {
                     root.screenError = "Unable to discover external displays."
             } else if (op.kind === "get") {
                 const match = code === 0
-                    ? /^VCP\s+10\s+C\s+(\d+)\s+(\d+)\s*$/m.exec(ddcOutput.text)
+                    ? /^VCP\s+([0-9A-Fa-f]{2})\s+C\s+(\d+)\s+(\d+)\s*$/m.exec(ddcOutput.text)
                     : null
                 const rowIndex = root.rowForBus(op.bus)
-                if (match && Number(match[2]) > 0) {
-                    const maximum = Number(match[2])
-                    const percentage = Math.round(Number(match[1]) / maximum * 100)
+                if (match && match[1] === root.ddcBrightnessVcpCode && Number(match[3]) > 0) {
+                    const maximum = Number(match[3])
+                    const percentage = Math.round(Number(match[2]) / maximum * 100)
                     if (rowIndex >= 0) {
                         screenEntries.setProperty(rowIndex, "value", percentage)
                         screenEntries.setProperty(rowIndex, "max", maximum)

@@ -135,6 +135,7 @@ Singleton {
     readonly property int brightnessStepPercentage: 1
     readonly property int brightnessMinPercentage: 0
     readonly property string keyboardBacklightDevice: "tpacpi::kbd_backlight"
+    readonly property var brightnessInternalConnectorPrefixes: ["eDP-"]
     readonly property var brightnessLevelThresholds: [
         {state: "low", threshold: 0},
         {state: "medium", threshold: 34},

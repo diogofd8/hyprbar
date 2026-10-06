@@ -8,7 +8,11 @@ Item {
     property real thickness: 1
 
     readonly property real dpr: root.Window.window ? root.Window.window.devicePixelRatio : 1
-    readonly property int devicePixels: Math.max(1, Math.ceil(root.thickness * root.dpr - 0.01))
+    // Fractional scaling can put the computed thickness just above a whole
+    // device pixel; tolerate that small overshoot before rounding up.
+    readonly property real devicePixelRoundingTolerance: 0.01
+    readonly property int devicePixels: Math.max(1,
+        Math.ceil(root.thickness * root.dpr - root.devicePixelRoundingTolerance))
 
     readonly property real windowY: {
         let y = 0

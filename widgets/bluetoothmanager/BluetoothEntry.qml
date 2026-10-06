@@ -15,7 +15,7 @@ Controls.Pane {
     readonly property bool hasError: root.model.errorMessage.length > 0
 
     readonly property bool canExpand: BluetoothActions.canExpand(root.model)
-    readonly property bool bottomShown: (root.expanded && root.canExpand) || root.hasError
+    readonly property bool bottomShown: root.expanded && root.canExpand
 
     readonly property string entryIcon: BluetoothActions.entryIcon(root.model)
     readonly property string statusText: BluetoothActions.statusText(root.model)
@@ -181,43 +181,41 @@ Controls.Pane {
                         font.pixelSize: WidgetConfiguration.entryRowDefaultFontSz
                     }
                 }
+            }
 
-                Item {
+            // ────── Status Row ──────
+            RowLayout {
+                id: statusRow
+
+                Layout.fillWidth: true
+                visible: root.statusText.length > 0 || root.hasError
+                spacing: WidgetConfiguration.entryExtendedRowHSpacing
+
+                Text {
                     Layout.fillWidth: true
-                    visible: !root.canExpand
+                    Layout.minimumWidth: 0
+                    Layout.preferredWidth: 0
+                    visible: root.statusText.length > 0
+
+                    text: root.statusText
+                    wrapMode: Text.Wrap
+                    color: root.hasError ? Settings.colors.accentError : Settings.colors.fgMain
+                    opacity: root.hasError ? 1 : 0.7
+                    font.family: Settings.labelFontFamily
+                    font.pixelSize: WidgetConfiguration.widgetMsgFieldFontSz
                 }
 
                 SquaredButton {
                     id: dismissBtn
-                    Layout.fillHeight: true
-                    Layout.preferredWidth: expandBtn.implicitWidth
 
-                    // dismissBtn doubles as empty padding aligned with expandBtn
-                    enabled: root.hasError
-                    opacity: root.hasError ? 1 : 0
+                    visible: root.hasError
 
                     glyph: Configuration.btDismissIcon
                     glyphSize: WidgetConfiguration.entryRowSecondaryIconSz
                     color: Settings.colors.fgMain
 
                     onLeftClicked: Core.Bluetooth.clearEntryError(root.model.address)
-
-                    Behavior on opacity { Anim {} }
                 }
-            }
-
-            // ────── Status Row ──────
-            Text {
-                Layout.fillWidth: true
-                horizontalAlignment: Text.AlignRight
-                visible: root.statusText.length > 0
-
-                text: root.statusText
-                wrapMode: Text.Wrap
-                color: root.hasError ? Settings.colors.accentError : Settings.colors.fgMain
-                opacity: root.hasError ? 1 : 0.7
-                font.family: Settings.labelFontFamily
-                font.pixelSize: WidgetConfiguration.widgetMsgFieldFontSz
             }
         }
     }

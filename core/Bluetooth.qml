@@ -549,7 +549,7 @@ Singleton {
             if (!device || priv.operationMode !== "pair") return
             if (device.paired || device.bonded) root.checkOperation()
             else if (!device.pairing)
-                root.failPairing("Pairing failed or was rejected.")
+                root.failPairing("Pairing failed or rejected.")
         }
     }
 

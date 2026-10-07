@@ -4,6 +4,7 @@ import QtQuick.Controls as Controls
 
 import qs
 import qs.components
+import qs.widgets
 import qs.core as Core
 
 Controls.Pane {
@@ -11,17 +12,15 @@ Controls.Pane {
     required property var model
     signal dismissRequested()
 
-    padding: Configuration.volEntryPadding
+    // ────── Dimensioning ──────
+    leftPadding: WidgetConfiguration.entryHPadding
+    rightPadding: WidgetConfiguration.entryHPadding
+    topPadding: WidgetConfiguration.entryVPadding
+    bottomPadding: WidgetConfiguration.entryVPadding
     implicitHeight: mainContent.implicitHeight + root.topPadding + root.bottomPadding
     clip: true
 
-    Behavior on implicitHeight {
-        SmoothedAnimation {
-            duration: Configuration.transitionMs
-            velocity: -1
-            reversingMode: SmoothedAnimation.Eased
-        }
-    }
+    Behavior on implicitHeight { Anim {} }
 
     background: Rectangle {
         color: Settings.colors.bgTint2
@@ -29,20 +28,20 @@ Controls.Pane {
 
     contentItem: RowLayout {
         id: mainContent
-        spacing: Configuration.volEntryPadding
+        spacing: WidgetConfiguration.entryHPadding
 
         GlyphButton {
             id: volEntryBtn
             enabled: root.model.canSelect
-            opacity: enabled ? 1 : 0.4
+            opacity: enabled ? 1 : Settings.colors.disabledOpacity
             Layout.alignment: Qt.AlignVCenter
-            Layout.leftMargin: 6
-            Layout.rightMargin: 6
+            Layout.leftMargin: WidgetConfiguration.entryIconHPadding
+            Layout.rightMargin: WidgetConfiguration.entryIconHPadding
 
             icon: root.model.isDefault
-                ? Configuration.deviceSelectedState[0]
-                : Configuration.deviceSelectedState[1]
-            iconSize: Configuration.mainButtonSize
+                ? Configuration.deviceSelectedIcon
+                : Configuration.deviceUnselectedIcon
+            iconSize: WidgetConfiguration.entryRowMainIconSz
             useMetrics: false
             iconColor: root.model.isDefault
                 ? Settings.colors.accentMain : Settings.colors.fgMain
@@ -56,11 +55,13 @@ Controls.Pane {
         }
 
         ColumnLayout {
-            spacing: 0
+            spacing: WidgetConfiguration.entryRowVSpacing
 
             RowLayout {
+                id: mainRow
                 Layout.fillWidth: true
-                spacing: Configuration.volEntryPadding
+                Layout.preferredHeight: WidgetConfiguration.entryRowMainIconSz
+                spacing: WidgetConfiguration.entryTitleRowHSpacing
 
                 Text {
                     id: volEntryName
@@ -70,20 +71,18 @@ Controls.Pane {
                     elide: Text.ElideRight
                     color: Settings.colors.fgMain
                     font.family: Settings.labelFontFamily
-                    font.pixelSize: Configuration.volEntryNameFontSize
+                    font.pixelSize: WidgetConfiguration.entryRowTitleFontSz
                 }
 
-                Rectangle {
+                Item {
                     Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    color: "transparent"
                 }
 
                 SquaredButton {
                     id: settingsBtn
 
                     glyph: Configuration.volEntrySettingsIcon
-                    glyphSize: Configuration.secondaryButtonSize
+                    glyphSize: WidgetConfiguration.widgetSecondaryIconSz
                     color: Settings.colors.fgMain
 
                     onLeftClicked: {
@@ -96,41 +95,50 @@ Controls.Pane {
             RowLayout {
                 Layout.fillWidth: true
                 spacing: 0
-                clip: true
 
                 SquaredButton {
                     id: muteBtn
 
                     glyph: root.model.isInput
-                        ? Configuration.inputMuteState[root.model.muted ? 1 : 0]
-                        : Configuration.outputMuteState[root.model.muted ? 1 : 0]
-                    glyphSize: Configuration.secondaryButtonSize
+                        ? (root.model.muted
+                            ? Configuration.inputMutedIcon : Configuration.inputUnmutedIcon)
+                        : (root.model.muted
+                            ? Configuration.outputMutedIcon : Configuration.outputUnmutedIcon)
+                    glyphSize: WidgetConfiguration.widgetSecondaryIconSz
                     color: Settings.colors.fgMain
 
                     onLeftClicked: Core.Audio.setEntryMuted(
                         root.model.id, !root.model.muted)
                 }
 
-                HexagonSlider {
-                    id: volumeSlider
-                    Layout.fillWidth: true
+                RowLayout {
+                    id: volumeSliderContainer
+                    spacing: WidgetConfiguration.entryExtendedRowHSpacing
+                    Layout.topMargin: WidgetConfiguration.sliderExtraSpacing
+                    Layout.bottomMargin: WidgetConfiguration.sliderExtraSpacing
 
-                    from: 0
-                    to: 100
-                    value: root.model.value
-                    actionable: true
-                    backgroundColor: Settings.colors.bgTint2
+                    clip: true
 
-                    onMoved: Core.Audio.setEntryVolume(root.model.id, value)
-                }
+                    HexagonSlider {
+                        id: volumeSlider
+                        Layout.fillWidth: true
 
-                Percentage {
-                    Layout.leftMargin: Configuration.volEntryRowSpacing
-                    height: parent.height
-                    value: String(root.model.value)
+                        from: 0
+                        to: 100
+                        value: root.model.value
+                        actionable: true
+                        bgFill: Settings.colors.bgTint2
 
-                    fontFamily: Settings.labelFontFamily
-                    fontSize: Configuration.volEntryNameFontSize
+                        onMoved: Core.Audio.setEntryVolume(root.model.id, value)
+                    }
+
+                    Percentage {
+                        height: parent.height
+                        value: String(root.model.value)
+
+                        fontFamily: Settings.labelFontFamily
+                        fontSize: WidgetConfiguration.entryRowDefaultFontSz
+                    }
                 }
             }
         }
@@ -139,13 +147,13 @@ Controls.Pane {
     // ────── Row logic ──────
     function deviceLabel() {
         const configuredName = root.model.isInput
-            ? Configuration.defaultInput : Configuration.defaultOuput
+            ? Settings.volumeBuiltInInputNodeName : Settings.volumeBuiltInOutputNodeName
 
         if (root.model.nodeName === configuredName) {
-            if (root.model.portName === "analog-output-speaker")
-                return "Built-in Speakers"
-            if (root.model.portName === "analog-input-internal-mic")
-                return "Internal Microphone"
+            if (root.model.portName === Settings.volumeBuiltInSpeakerPortName)
+                return Configuration.builtInSpeakersLabel
+            if (root.model.portName === Settings.volumeInternalMicPortName)
+                return Configuration.internalMicrophoneLabel
         }
 
         return root.model.name

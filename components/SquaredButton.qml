@@ -12,7 +12,7 @@ Item {
     required property real glyphSize
     property color color: Settings.colors.fgMain
 
-    property color backgroundColor: "transparent"
+    property color bgFill: "transparent"
     property color hoverColor: Settings.colors.fgMain
     property real hoverOpacity: Settings.colors.hoverOpacity
 
@@ -26,6 +26,7 @@ Item {
     property bool useMetrics
 
     property bool rotateOnClick: false
+    property alias glyphRotation: glyphItem.rotation
 
     // ────── Interaction ──────
     signal leftClicked()
@@ -41,7 +42,7 @@ Item {
     Rectangle {
         anchors.fill: parent
 
-        color: root.backgroundColor
+        color: root.bgFill
         border.width: root.borderWidth
         border.color: root.borderColor
     }
@@ -53,6 +54,7 @@ Item {
         anchors.centerIn: parent
         text: root.glyph
         font.pixelSize: root.glyphSize
+        font.family: root.fontFamily
 
         useMetrics: root.useMetrics
         verticalOffset: root.verticalOffset
@@ -76,8 +78,8 @@ Item {
         NumberAnimation {
             target: glyphItem
             property: "rotation"
-            to: -45
-            duration: 200
+            to: Motion.squaredButtonPressAngle
+            duration: Motion.squaredButtonPressMs
             easing.type: Easing.OutCubic
         }
 
@@ -85,7 +87,7 @@ Item {
             target: glyphItem
             property: "rotation"
             to: 0
-            duration: 300
+            duration: Motion.squaredButtonReleaseMs
             easing.type: Easing.InOutCubic
         }
     }

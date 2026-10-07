@@ -1,5 +1,6 @@
 pragma Singleton
 
+import QtQuick
 import Quickshell
 import Quickshell.Hyprland
 
@@ -17,9 +18,9 @@ import qs.core as Core
 // demand — the next-workspace gesture past the last one spawns a new one, and
 // the bar grows a pip for it without anything being reconfigured.
 //
-// Consumers get a plain-object list (`slots`) and one verb (`activate`).
-// Nothing here knows what a workspace looks like — icons and colours are the
-// module's business, keyed off `state`.
+// Consumers get a ListModel (`slots`) and one verb (`activate`). Nothing here
+// knows what a workspace looks like — icons and colours are the module's
+// business, keyed off `slotState`.
 //
 Singleton {
     id: root
@@ -34,11 +35,11 @@ Singleton {
         Empty     // no windows, or no compositor object yet
     }
 
-    // One snapshot per slot: { id, name, state, workspace }.
+    // One snapshot per slot: { slotId, name, slotState }.
     //
     // Reading the workspace properties inside this binding is what subscribes
     // it to them — the list re-evaluates whenever any workspace changes.
-    readonly property var slots: {
+    readonly property var slotSnapshots: {
         const live = {};
         for (const ws of Hyprland.workspaces.values) {
             // Special workspaces (scratchpads) carry negative ids and are not
@@ -61,25 +62,34 @@ Singleton {
         for (const id of Object.keys(ids).map(Number).sort((a, b) => a - b)) {
             const ws = live[id] ?? null;
             out.push({
-                id: id,
+                slotId: id,
                 name: ws ? ws.name : String(id),
-                state: root.stateOf(ws),
-                // The live object, when the compositor has one.
-                workspace: ws
+                slotState: root.stateOf(ws)
             });
         }
         return out;
     }
 
-    // Focus a slot, as handed out by `slots`.
-    function activate(slot): void {
+    // What the module draws. Updated in place, so a workspace switch changes
+    // two rows instead of recreating every pip: delegates keep their hover
+    // state and can animate from one state to the next.
+    readonly property ListModel slots: slotModel
+
+    ListModel { id: slotModel }
+
+    onSlotSnapshotsChanged: Core.Helpers.syncModel(slotModel, root.slotSnapshots, "slotId")
+    Component.onCompleted: Core.Helpers.syncModel(slotModel, root.slotSnapshots, "slotId")
+
+    // Focus a slot by its workspace id.
+    function activate(slotId: int): void {
         // activate() is the native path and needs no dispatcher string, which
         // matters here: hyprland.lua hijacks Hyprland's string dispatchers, so
-        // only the lua form works when we have to fall back.
-        if (slot.workspace)
-            slot.workspace.activate();
+        // only the lua form works when the compositor has no object for it.
+        const ws = Hyprland.workspaces.values.find(ws => ws.id === slotId);
+        if (ws)
+            ws.activate();
         else
-            Core.Actions.focusWorkspace(String(slot.id));
+            Core.Actions.focusWorkspace(String(slotId));
     }
 
     // `ws` is a HyprlandWorkspace, or null when the compositor has no object

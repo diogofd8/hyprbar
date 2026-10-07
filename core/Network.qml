@@ -62,13 +62,16 @@ Singleton {
         }
         return null
     }
+    // Only needed while the popup is loaded: it re-runs on every access
+    // point's signal change. Opening the popup changes it too, so both
+    // handlers defer the refresh and Qt.callLater runs nmcli once.
     readonly property string wifiVisibilitySignature: {
-        if (!root.wifiDevice) return ""
+        if (!root.discoveryActive || !root.wifiDevice) return ""
         return root.wifiDevice.networks.values.map(network =>
             network.name + ":" + (network.signalStrength > 0)).sort().join("\n")
     }
     onWifiVisibilitySignatureChanged: {
-        if (root.discoveryActive) refreshVisibleNetworks()
+        if (root.discoveryActive) Qt.callLater(root.refreshVisibleNetworks)
     }
     readonly property int wifiStrength: root.connectedWifiNetwork
         ? Math.round(root.connectedWifiNetwork.signalStrength * 100) : 0
@@ -76,22 +79,17 @@ Singleton {
     readonly property bool ethernetConnected: root.ethernetDevice !== null
         && root.ethernetDevice.connected
     function wifiSignalLevel(strength) {
-        let level = 0
-        for (let i = 0; i < Settings.wifiSignalThresholds.length; ++i) {
-            if (strength >= Settings.wifiSignalThresholds[i].threshold)
-                level = i
-        }
-        return level
+        return Helpers.thresholdIndex(strength, Settings.wifiSignalThresholds)
     }
     readonly property string icon: {
         if (root.ethernetConnected) return Settings.networkEthIcon
         if (!root.wifiAvailable || !root.wifiEnabled)
             return Settings.networkWifiOffIcon
-        if (!root.wifiConnected) return Settings.networkWiFiOnIcon[0]
+        if (!root.wifiConnected) return Settings.networkWifiDisconnectedIcon
 
         const level = root.wifiSignalLevel(root.wifiStrength)
-        return Settings.networkWiFiOnIcon[
-            Math.min(level + 1, Settings.networkWiFiOnIcon.length - 1)]
+        const state = Settings.wifiSignalThresholds[level].state
+        return Settings.networkWifiSignalIcons[state]
     }
 
     // One active-connection lookup fills the profile identity Quickshell 0.3.1
@@ -172,8 +170,8 @@ Singleton {
     readonly property var activeConnections: activeModel
     readonly property var availableConnections: availableModel
     onEntrySnapshotsChanged: {
-        syncModel(activeModel, root.entrySnapshots.active)
-        syncModel(availableModel, root.entrySnapshots.available)
+        Helpers.syncModel(activeModel, root.entrySnapshots.active, "entryId")
+        Helpers.syncModel(availableModel, root.entrySnapshots.available, "entryId")
     }
     ListModel { id: activeModel }
     ListModel { id: availableModel }
@@ -237,30 +235,12 @@ Singleton {
             canEdit: uuid !== ""
         }
     }
-    function syncModel(model, entries) {
-        const ids = new Set(entries.map(entry => entry.entryId))
-        for (let i = model.count - 1; i >= 0; --i) {
-            if (!ids.has(model.get(i).entryId)) model.remove(i)
-        }
-        for (let i = 0; i < entries.length; ++i) {
-            const row = entries[i]
-            let existing = i
-            while (existing < model.count && model.get(existing).entryId !== row.entryId)
-                ++existing
-            if (existing === model.count) model.insert(i, row)
-            else {
-                if (existing !== i) model.move(existing, i, 1)
-                for (const key of Object.keys(row)) {
-                    if (model.get(i)[key] !== row[key]) model.setProperty(i, key, row[key])
-                }
-            }
-        }
-    }
-
     // The popup owns discovery demand. No scans are requested by the bar.
     property bool discoveryActive: false
-    readonly property bool scanning: root.wifiDevice !== null
-        && root.wifiDevice.scannerEnabled
+    readonly property bool passwordPromptActive: priv.operationStatus === "PasswordRequired"
+    // The user's explicit refresh, separate from Quickshell's live scanner
+    // that keeps available network objects actionable while the popup is open.
+    property bool scanRequested: false
     readonly property bool refreshing: visibleQuery.running
     readonly property string scanErrorMessage: priv.scanError
     Binding {
@@ -270,8 +250,14 @@ Singleton {
         when: root.wifiDevice !== null
     }
     onDiscoveryActiveChanged: {
-        if (root.discoveryActive) refreshVisibleNetworks()
-        else priv.visibleSsids = null
+        if (root.discoveryActive) Qt.callLater(root.refreshVisibleNetworks)
+        else {
+            root.scanRequested = false
+            priv.visibleQueryAgain = false
+            priv.forceVisibleQueryAgain = false
+            priv.visibleQueryForced = false
+            priv.visibleSsids = null
+        }
     }
     function escapedFields(line) {
         const fields = []
@@ -297,19 +283,25 @@ Singleton {
         visibleQuery.command = ["nmcli", "--colors", "no", "--terse", "--escape", "yes",
             "--fields", "SSID", "device", "wifi", "list", "ifname",
             root.wifiInterface, "--rescan", forceScan ? "yes" : "no"]
+        priv.visibleQueryForced = forceScan
         visibleQuery.running = true
     }
     function forceWifiScan() {
-        if (!root.discoveryActive || !root.wifiAvailable || !root.wifiEnabled)
+        if (!root.discoveryActive || !root.wifiAvailable || !root.wifiEnabled
+                || root.scanRequested)
             return
         priv.scanError = ""
+        root.scanRequested = true
         root.refreshVisibleNetworks(true)
     }
     Process {
         id: visibleQuery
         stdout: StdioCollector { id: visibleOutput }
         onExited: (code, status) => {
+            const forced = priv.visibleQueryForced
+            priv.visibleQueryForced = false
             if (!root.discoveryActive) {
+                root.scanRequested = false
                 priv.visibleQueryAgain = false
                 priv.forceVisibleQueryAgain = false
                 return
@@ -326,11 +318,12 @@ Singleton {
                 }
                 priv.visibleSsids = names
             }
+            if (forced) root.scanRequested = false
             if (priv.visibleQueryAgain) {
                 const forceScan = priv.forceVisibleQueryAgain
                 priv.visibleQueryAgain = false
                 priv.forceVisibleQueryAgain = false
-                Qt.callLater(() => root.refreshVisibleNetworks(forceScan))
+                Qt.callLater(() => root.refreshVisibleNetworks(forceScan && root.scanRequested))
             }
         }
     }
@@ -450,7 +443,7 @@ Singleton {
             priv.operationStatus = "PasswordRequired"
             return
         }
-        operationTimeout.interval = 90000
+        operationTimeout.interval = Settings.networkConnectTimeoutMs
         operationTimeout.restart()
         if (entry.profileUuid) {
             const profile = network.nmSettings.find(p => p !== null
@@ -473,7 +466,7 @@ Singleton {
         setEntryError(entryId, "")
         priv.passwordSubmitted = true
         priv.operationStatus = ""
-        operationTimeout.interval = 90000
+        operationTimeout.interval = Settings.networkConnectTimeoutMs
         operationTimeout.restart()
         network.connectWithPsk(password)
         password = ""
@@ -486,7 +479,7 @@ Singleton {
         const network = nativeNetwork(entry)
         if (!network || !network.connected) return
         if (!beginOperation(entryId, network, "disconnect")) return
-        operationTimeout.interval = 15000
+        operationTimeout.interval = Settings.networkDisconnectTimeoutMs
         operationTimeout.restart()
         network.disconnect()
     }
@@ -557,6 +550,7 @@ Singleton {
         property var visibleSsids: null
         property bool visibleQueryAgain: false
         property bool forceVisibleQueryAgain: false
+        property bool visibleQueryForced: false
         property string scanError: ""
         property string operationId: ""
         property string operationMode: ""
@@ -572,7 +566,7 @@ Singleton {
     }
     Timer {
         id: wifiTimeout
-        interval: 5000
+        interval: Settings.networkWifiToggleConfirmationTimeoutMs
         onTriggered: {
             priv.wifiRequested = false
             priv.wifiError = "NetworkManager did not confirm the Wi-Fi change."

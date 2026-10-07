@@ -15,6 +15,15 @@ Singleton {
     readonly property bool hasPerformanceProfile:
         UPowerService.PowerProfiles.hasPerformanceProfile
     readonly property string activeProfile: root.profileName(root.profile)
+    property string settingMode: "auto"
+
+    function setSettingMode(mode: string): bool {
+        if (mode !== "auto" && mode !== "manual")
+            return false
+
+        root.settingMode = mode
+        return true
+    }
 
     function setProfile(profile) {
         if (!root.available)

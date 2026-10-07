@@ -2,7 +2,6 @@ pragma Singleton
 
 import Quickshell
 
-import qs
 import qs.core as Core
 
 Singleton {

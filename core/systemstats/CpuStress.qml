@@ -5,6 +5,7 @@ import Quickshell
 import Quickshell.Io
 
 import qs
+import qs.core as Core
 
 Singleton {
     id: root
@@ -15,6 +16,10 @@ Singleton {
     })
 
     readonly property var threads: _threads
+
+    // Set by SystemStats. Without it only the aggregate line is parsed and
+    // `threads` stays empty.
+    property bool detailActive: false
 
     property real _overallValue: 0
     property string _overallState: "idle"
@@ -43,7 +48,11 @@ Singleton {
         if (!text)
             return
 
-        const lines = text.split("\n")
+        // The aggregate is the first line. Most of the file is the interrupt
+        // counters, so without detail the rest isn't even split.
+        const lines = root.detailActive
+            ? text.split("\n")
+            : [text.substring(0, text.indexOf("\n"))]
         const currentCounters = {}
 
         for (const line of lines) {
@@ -99,23 +108,28 @@ Singleton {
                 root._overallValue = result.value
                 root._overallState = result.state
             } else {
-                threadValues[Number(name.substring(3))] = result
+                threadValues[Number(name.substring("cpu".length))] = result
             }
         }
 
-        root._threads = threadValues
+        // Without detail this is empty: assign it once to clear, not every tick
+        if (root.detailActive || root._threads.length > 0)
+            root._threads = threadValues
 
-        // console.log(
-        //     "CPU:",
-        //     root._overallValue.toFixed(1) + "%",
-        //     root._overallState,
-        //     "| Threads:",
-        //     threadValues.map(thread =>
-        //         thread
-        //             ? thread.value.toFixed(1) + "% (" + thread.state + ")"
-        //             : "N/A"
-        //     ).join(" | ")
-        // )
+        // ────── Debug Trace ──────
+        if (Settings.bDebugTrace) {
+            console.log(
+                "CPU:",
+                root._overallValue.toFixed(1) + "%",
+                root._overallState,
+                "| Threads:",
+                threadValues.map(thread =>
+                    thread
+                        ? thread.value.toFixed(1) + "% (" + thread.state + ")"
+                        : "N/A"
+                ).join(" | ")
+            )
+        }
     }
 
     function parseCounters(fields) {
@@ -162,15 +176,6 @@ Singleton {
     }
 
     function resolveState(value, thresholds) {
-        let state = "idle"
-
-        for (const entry of thresholds) {
-            if (value >= entry.threshold)
-                state = entry.state
-            else
-                break
-        }
-
-        return state
+        return thresholds[Core.Helpers.thresholdIndex(value, thresholds)].state
     }
 }

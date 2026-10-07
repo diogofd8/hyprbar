@@ -8,11 +8,12 @@ Slider {
     id: root
 
     // ────── Appearance ──────
-    property color backgroundColor: Settings.colors.bgTint1
+    property color bgFill: Settings.colors.bgTint1
     property color inactiveColor: Settings.colors.fgMain
     property color activeColor: Settings.colors.accentMain
     property color hoverColor: Settings.colors.fgMain
     property real hoverOpacity: Settings.colors.hoverOpacity
+    property real dimOpacity: Settings.colors.dimOpacity
 
     // Preferred track length only; the actual track follows the assigned width.
     property real trackWidth: 100
@@ -20,7 +21,7 @@ Slider {
     property real activeTrackHeight: root.trackHeight + 1
     property real thumbHeight: 10
     property real thumbSeparation: 1
-    property real tickHeight: 7
+    property real tickHeight: 4
     property int transitionDuration: 150
 
     property int stepCount: 3
@@ -85,26 +86,6 @@ Slider {
             }
         }
 
-        // Ticks follow the track in paint order, while the handle is drawn
-        // above the background. Keep centering subpixel-accurate at fractional
-        // display scales, just like the horizontal track rectangles.
-        Repeater {
-            model: root.effectiveStepCount
-
-            delegate: Rectangle {
-                required property int index
-                opacity: 0.5
-
-                width: 1.6
-                height: root.tickHeight
-                x: root.calcStepLocation(index, width)
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.alignWhenCentered: false
-                color: root.inactiveColor
-                antialiasing: true
-            }
-        }
-
         Rectangle {
             id: activeTrack
 
@@ -128,6 +109,25 @@ Slider {
                 color: trackContainer.hoverOverlayColor
             }
         }
+
+        // Ticks follow the track in paint order, while the handle is drawn
+        // above the background. Keep centering subpixel-accurate at fractional
+        // display scales, just like the horizontal track rectangles.
+        Repeater {
+            model: root.effectiveStepCount
+
+            delegate: Rectangle {
+                required property int index
+                opacity: root.dimOpacity
+
+                width: 2
+                height: root.tickHeight
+                x: root.calcStepLocation(index, width)
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.alignWhenCentered: false
+                color: root.inactiveColor
+            }
+        }
     }
 
     // ────── Thumb ──────
@@ -148,7 +148,7 @@ Slider {
             height: parent.height
 
             separation: 0
-            fillColor: root.backgroundColor
+            fillColor: root.bgFill
         }
 
         HexagonThumb {

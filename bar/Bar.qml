@@ -3,11 +3,16 @@ import Quickshell
 import Quickshell.Wayland
 
 import qs
+import qs.components
 import qs.core as Core
 
 PanelWindow {
     id: root
     WlrLayershell.namespace: Settings.wlrLayerShellNamespace
+
+    // The shared host is a sibling window, supplied by shell.qml. DropDown
+    // controllers find it through their QsWindow attached property.
+    property PopoutHost popoutHost: null
 
     anchors {
         top: true
@@ -31,6 +36,12 @@ PanelWindow {
     // ────── Content ──────
     Item {
         id: contentBox
+
+        // While a popout is open, close keys usually arrive here, not in the
+        // popout (it takes keyboard focus only for the Wi-Fi password). The
+        // host decides what they do.
+        focus: root.popoutHost !== null && root.popoutHost.current !== null
+        Keys.onPressed: event => root.popoutHost?.handleKey(event)
 
         anchors.fill: parent
         anchors.topMargin: Settings.barPaddingTop
@@ -69,22 +80,25 @@ PanelWindow {
         }
     }
 
-    // DEBUG: central line guides
-    Rectangle {
-    //     anchors.horizontalCenter: parent.horizontalCenter
-    //     anchors.top: parent.top
-    //     anchors.bottom: parent.bottom
+    // ────── Popout Dismissal ──────
+    // Stacked above the content, so its handler is offered every press before
+    // the controls are. A PointHandler only ever takes a passive grab, so the
+    // controls still get their clicks (a TapHandler here blocked them). The
+    // host closes the popout on any bar tap that didn't change it
+    // (PopoutHost.barTapped).
+    Item {
+        anchors.fill: parent
 
-    //     width: 1
-    //     color: "cyan"
-    // }
+        PointHandler {
+            enabled: root.popoutHost !== null && root.popoutHost.current !== null
+            acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
 
-    // Rectangle {
-    //     anchors.left: parent.left
-    //     anchors.right: parent.right
-    //     anchors.verticalCenter: parent.verticalCenter
-
-    //     height: 1
-    //     color: "cyan"
+            onActiveChanged: {
+                if (active)
+                    root.popoutHost.barPressed()
+                else
+                    root.popoutHost.barTapped()
+            }
+        }
     }
 }

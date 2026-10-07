@@ -2,13 +2,12 @@ import QtQuick
 
 import qs
 import qs.components
-import qs.core as Core
 
 Item {
     id: root
 
     // ────── Appearance ──────
-    property color backgroundColor: Settings.colors.bgTint1
+    property color bgFill: Settings.colors.bgTint1
     property color inactiveColor: Settings.colors.fgMain
     property color activeColor: Settings.colors.accentMain
     property color hoverColor: Settings.colors.fgMain
@@ -51,7 +50,7 @@ Item {
             width: root.trackWidth
             height: root.trackHeight
 
-            fillColor: root.backgroundColor
+            fillColor: root.bgFill
             outlineColor: root.switchColor
             outlineWidth: root.trackOutlineWidth
             colorAnimationDuration: root.transitionDuration
@@ -74,7 +73,7 @@ Item {
             height: root.thumbHeight
 
             separation: root.thumbSeparation
-            separationColor: root.backgroundColor
+            separationColor: root.bgFill
             fillColor: root.switchColor
             colorAnimationDuration: root.transitionDuration
 

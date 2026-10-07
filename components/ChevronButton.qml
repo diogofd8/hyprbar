@@ -92,10 +92,11 @@ Item {
         // row overlap by a full cap width.
         propagateComposedEvents: true
 
-        onPressed: mouse => mouse.accepted = root.hovered
+        // Hit-test input at the event position; hover is only visual state.
+        onPressed: mouse => mouse.accepted = chevron.containsPoint(mouse.x, mouse.y)
 
         onClicked: mouse => {
-            if (!root.hovered)
+            if (!chevron.containsPoint(mouse.x, mouse.y))
                 return
 
             switch (mouse.button) {
@@ -107,7 +108,7 @@ Item {
         }
 
         onWheel: wheel => {
-            if (!root.hovered) {
+            if (!chevron.containsPoint(wheel.x, wheel.y)) {
                 wheel.accepted = false
                 return
             }

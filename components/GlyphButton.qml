@@ -16,6 +16,7 @@ Item {
     property alias useMetrics: glyph.useMetrics
     property alias verticalOffset: glyph.verticalOffset
     property alias font: glyph.font
+    property alias iconRotation: glyph.rotation
 
     property color hoverColor: Settings.colors.fgMain
     property real hoverOpacity: Settings.colors.hoverOpacity

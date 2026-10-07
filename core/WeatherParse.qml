@@ -165,12 +165,14 @@ Singleton {
         return isNumber(value) ? Math.round(value) + " " + getWindSpeedUnitLabel() : unknownText;
     }
 
-    // Degrees clockwise from north to a 16-point compass label.
+    // Degrees clockwise from north to the nearest compass label.
     function formatBearing(degrees: real): string {
         if (!isNumber(degrees))
             return unknownText;
 
-        return compassPoints[Math.round(degrees / 22.5) % 16];
+        const sectorCount = compassPoints.length;
+        const sectorDegrees = 360 / sectorCount;
+        return compassPoints[Math.round(degrees / sectorDegrees) % sectorCount];
     }
 
     function formatVisibility(metres: real): string {
@@ -300,12 +302,14 @@ Singleton {
         return typeof value === "number" && isFinite(value);
     }
 
+    readonly property real hPaToInHgFactor: 0.0295299830714
+
     function toConfiguredPressure(hectopascal: real): real {
         if (!isNumber(hectopascal))
             return NaN;
 
         return WeatherConfig.pressureUnit === WeatherConfig.PressureUnit.InchesOfMercury
-            ? hectopascal * 0.0295299830714
+            ? hectopascal * hPaToInHgFactor
             : hectopascal;
     }
 
@@ -356,8 +360,9 @@ Singleton {
             root.refresh();
         }
 
-        // ────── Timing ──────
-        readonly property int forecastDays: Math.max(1, Math.min(16, WeatherConfig.forecastDays))
+        // ────── Forecast and timing ──────
+        readonly property int maxForecastRequestDays: 16
+        readonly property int forecastDays: Math.max(1, Math.min(maxForecastRequestDays, WeatherConfig.forecastDays))
         readonly property int refreshMs: Math.max(1, WeatherConfig.refreshIntervalMinutes) * 60000
         readonly property int retryMs: 60000
         readonly property int requestTimeoutMs: 30000
@@ -647,7 +652,7 @@ Singleton {
     }
 
     Timer {
-        interval: 20000
+        interval: Settings.weatherParseStalenessTickIntervalMs
         running: true
         repeat: true
         onTriggered: internal.tick()

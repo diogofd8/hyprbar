@@ -4,6 +4,9 @@ import Quickshell
 import QtQuick
 
 Singleton {
+    // ────── Debug Tools ──────
+    readonly property bool bDebugTrace: false
+
     // ────── Theme Selection ──────
     PersistentProperties {
         id: persist
@@ -33,14 +36,12 @@ Singleton {
     readonly property int barPaddingBottom: 2
     readonly property int barPaddingRight: 10
     readonly property int barPaddingLeft: 10
-    readonly property int dropDownPadding: barPaddingBottom + 1
-    readonly property int dropDownTransitionMs: 120
-    readonly property real dropDownTransitionOffset: 10
+    readonly property int popoutHostHeight: 600
 
     readonly property real chevronAngle: 105
     readonly property int moduleSpacing: 6
-    readonly property int buttonClickableArea: 34
     readonly property real inducedVerticalOffset: 0.5
+    readonly property real separatorDotSize: 2
 
     // ────── Input Rules ──────
     readonly property int actionScrollDelta: 25
@@ -70,31 +71,47 @@ Singleton {
     readonly property var urgentWorkspaceIcon: ""
     readonly property var ramStressIcon: "󰘚"
     readonly property var cpuStressIcon: ""
-    readonly property var cpuTempIcon:
-        ["󱃃", "󰔏", "󱃂"]
+    readonly property var cpuTempIcon: ({
+        normal: "󱃃",
+        warning: "󰔏",
+        critical: "󱃂"
+    })
     readonly property var notificationIcon: "󰂚"
     readonly property var bluetoothOffIcon: "󰂲"
     readonly property var bluetoothOnIcon: "󰂯"
     readonly property var bluetoothConnectedIcon: "󰂰"
     readonly property var networkWifiOffIcon: "󰤮"
-    readonly property var networkWiFiOnIcon:
-        ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"]
-    readonly property var networkWifiOpenIcon: "󰤨"
-    readonly property var networkWifiProtectedIcon: "󰤪"
+    readonly property var networkWifiDisconnectedIcon: "󰤫"
+    readonly property var networkWifiSignalIcons: ({
+        weak: "󰤯",
+        poor: "󰤟",
+        fair: "󰤢",
+        good: "󰤥",
+        excellent: "󰤨"
+    })
     readonly property var networkEthIcon: "󰈁"
     readonly property var clipboardIcon: ""
-    readonly property var updateNotifierIcon:
-        ["󰄴", "󱤧"]
+    readonly property var updateNotifierIcon: ({
+        updated: "󰄴",
+        available: "󱤧"
+    })
     readonly property var updateNotifierSyncIcon: "󰓦"
     readonly property var updateNotifierErrorIcon: "󰅤"
-    readonly property var brightnessCtrlIcon:
-        ["󰃞", "󰃟", "󰃠"]
+    readonly property var brightnessCtrlIcon: ({
+        low: "󰃞",
+        medium: "󰃟",
+        high: "󰃠"
+    })
     readonly property var batteryCtrlIcon:
         ["󰂎", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
     readonly property var batteryChargingIcon: "󰂄"
     readonly property var batteryOffIcon: "󱟩"
-    readonly property var volumeCtrlIcon:
-        ["", "", "", ""]
+    readonly property var volumeCtrlIcon: ({
+        off: "",
+        low: "",
+        medium: "",
+        high: ""
+    })
     readonly property var volumeMutedIcon: ""
     readonly property var volumeHeadphoneIcon: "󰋋"
     readonly property var volumeHeadphoneMutedIcon: "󰟎"
@@ -103,7 +120,7 @@ Singleton {
     readonly property var systemTrayIcon: "󰬦"
 
     // ────── System Statistics API Configuration ──────
-    readonly property int systemStatsPollingIntervalMs: 2000
+    readonly property int systemStatsPollingIntervalMs: 3000
     readonly property var cpuStressThresholds: [
         {state: "idle", threshold: 0},
         {state: "low", threshold: 10},
@@ -133,6 +150,7 @@ Singleton {
     readonly property int brightnessStepPercentage: 1
     readonly property int brightnessMinPercentage: 0
     readonly property string keyboardBacklightDevice: "tpacpi::kbd_backlight"
+    readonly property var brightnessInternalConnectorPrefixes: ["eDP-"]
     readonly property var brightnessLevelThresholds: [
         {state: "low", threshold: 0},
         {state: "medium", threshold: 34},
@@ -162,10 +180,41 @@ Singleton {
 
     // ────── Volume API Configuration ──────
     readonly property int volumeStepPercentage: 1
+    // Built-in PipeWire nodes and ports; object IDs are session-local.
+    readonly property string volumeBuiltInInputNodeName:
+        "alsa_input.pci-0000_00_1f.3.analog-stereo"
+    readonly property string volumeBuiltInOutputNodeName:
+        "alsa_output.pci-0000_00_1f.3.analog-stereo"
+    readonly property string volumeBuiltInSpeakerPortName: "analog-output-speaker"
+    readonly property string volumeInternalMicPortName: "analog-input-internal-mic"
     readonly property var volumeLevelThresholds: [
         {state: "off", threshold: 0},
         {state: "low", threshold: 1},
         {state: "medium", threshold: 34},
         {state: "high", threshold: 67},
     ]
+
+    // ---- Core Audio Tweaks ----
+    readonly property int audioPortQueryDebounceMs: 150
+
+    // ---- Core Backlight Tweaks ----
+    readonly property int backlightNightLightRefreshIntervalMs: 60000
+    readonly property int backlightKeyboardPollIntervalMs: 1000
+    readonly property int backlightMonitorHotplugDebounceMs: 150
+
+    // ---- Core Bluetooth Tweaks ----
+    readonly property int bluetoothScanStartTimeoutMs: 4000
+    readonly property int bluetoothPairTimeoutMs: 60000
+    readonly property int bluetoothConnectTimeoutMs: 30000
+    readonly property int bluetoothDisconnectTimeoutMs: 15000
+    readonly property int bluetoothForgetTimeoutMs: 15000
+    readonly property int bluetoothPairSettleDelayMs: 250
+
+    // ---- Core Network Tweaks ----
+    readonly property int networkConnectTimeoutMs: 90000
+    readonly property int networkDisconnectTimeoutMs: 15000
+    readonly property int networkWifiToggleConfirmationTimeoutMs: 5000
+
+    // ---- Core WeatherParse Tweaks ----
+    readonly property int weatherParseStalenessTickIntervalMs: 20000
 }

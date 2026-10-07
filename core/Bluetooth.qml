@@ -231,7 +231,7 @@ Singleton {
 
     Timer {
         id: scanStartTimeout
-        interval: 4000
+        interval: Settings.bluetoothScanStartTimeoutMs
 
         onTriggered: {
             if (root.scanning || !root.scanRequested)
@@ -257,7 +257,13 @@ Singleton {
     }
 
     // ────── Device models ──────
+    // Built only while the popup's content is loaded. Otherwise every device
+    // change, a headset's battery level included, would rebuild all three
+    // lists for nobody. The bar icon reads deviceList directly.
     readonly property var entrySnapshots: {
+        if (!root.discoveryActive)
+            return {connected: [], paired: [], discovered: []}
+
         const connected = []
         const paired = []
         const discovered = []
@@ -293,9 +299,9 @@ Singleton {
     readonly property var discoveredDevices: discoveredModel
 
     onEntrySnapshotsChanged: {
-        syncModel(connectedModel, root.entrySnapshots.connected)
-        syncModel(pairedModel, root.entrySnapshots.paired)
-        syncModel(discoveredModel, root.entrySnapshots.discovered)
+        Helpers.syncModel(connectedModel, root.entrySnapshots.connected, "address")
+        Helpers.syncModel(pairedModel, root.entrySnapshots.paired, "address")
+        Helpers.syncModel(discoveredModel, root.entrySnapshots.discovered, "address")
     }
 
     ListModel { id: connectedModel }
@@ -350,32 +356,6 @@ Singleton {
             canDisconnect: !busy && device.connected && state === "Connected",
             canForget: !busy && (known || device.connected),
             canCancel: mine && (priv.operationMode === "pair" || priv.operationMode === "connect")
-        }
-    }
-
-    function syncModel(model, entries) {
-        const addresses = new Set(entries.map(entry => entry.address))
-        for (let i = model.count - 1; i >= 0; --i) {
-            if (!addresses.has(model.get(i).address))
-                model.remove(i)
-        }
-
-        for (let i = 0; i < entries.length; ++i) {
-            const row = entries[i]
-            let existing = i
-            while (existing < model.count && model.get(existing).address !== row.address)
-                ++existing
-
-            if (existing === model.count)
-                model.insert(i, row)
-            else {
-                if (existing !== i)
-                    model.move(existing, i, 1)
-                for (const key of Object.keys(row)) {
-                    if (model.get(i)[key] !== row[key])
-                        model.setProperty(i, key, row[key])
-                }
-            }
         }
     }
 
@@ -438,28 +418,28 @@ Singleton {
     function pair(address) {
         const device = root.findDevice(address)
         if (!device || device.paired || device.bonded) return
-        if (!root.beginOperation(address, device, "pair", 60000)) return
+        if (!root.beginOperation(address, device, "pair", Settings.bluetoothPairTimeoutMs)) return
         device.pair()
     }
 
     function connect(address) {
         const device = root.findDevice(address)
         if (!device || device.connected) return
-        if (!root.beginOperation(address, device, "connect", 30000)) return
+        if (!root.beginOperation(address, device, "connect", Settings.bluetoothConnectTimeoutMs)) return
         device.connect()
     }
 
     function disconnect(address) {
         const device = root.findDevice(address)
         if (!device || !device.connected) return
-        if (!root.beginOperation(address, device, "disconnect", 15000)) return
+        if (!root.beginOperation(address, device, "disconnect", Settings.bluetoothDisconnectTimeoutMs)) return
         device.disconnect()
     }
 
     function forget(address) {
         const device = root.findDevice(address)
         if (!device) return
-        if (!root.beginOperation(address, device, "forget", 15000)) return
+        if (!root.beginOperation(address, device, "forget", Settings.bluetoothForgetTimeoutMs)) return
         device.forget()
     }
 
@@ -537,13 +517,13 @@ Singleton {
 
     Timer {
         id: pairSettle
-        interval: 250
+        interval: Settings.bluetoothPairSettleDelayMs
         onTriggered: {
             const device = priv.operationDevice
             if (!device || priv.operationMode !== "pair") return
             if (device.paired || device.bonded) root.checkOperation()
             else if (!device.pairing)
-                root.failPairing("Pairing failed or was rejected.")
+                root.failPairing("Pairing failed or rejected.")
         }
     }
 

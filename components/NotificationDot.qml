@@ -1,6 +1,5 @@
 import QtQuick
 
-import qs
 import qs.components
 
 Circle {

@@ -16,9 +16,11 @@ Singleton {
     readonly property bool available: root.count > 0
     readonly property bool checking: root.requested || checker.running
     property bool updating: false
-    readonly property real lastCheckedMs: persist.lastCheckedMs
 
     readonly property string state: {
+        if (root.updating)
+            return "updating"
+
         if (root.checking)
             return "checking"
 
@@ -30,14 +32,15 @@ Singleton {
 
     readonly property string icon: {
         switch (root.state) {
+        case "updating":
         case "checking":
             return Settings.updateNotifierSyncIcon
         case "error":
             return Settings.updateNotifierErrorIcon
         case "available":
-            return Settings.updateNotifierIcon[1]
+            return Settings.updateNotifierIcon.available
         default:
-            return Settings.updateNotifierIcon[0]
+            return Settings.updateNotifierIcon.updated
         }
     }
 
@@ -60,6 +63,8 @@ Singleton {
 
     // ────── Internals ──────
     readonly property string scriptPath: Quickshell.shellPath("scripts/sys_update.sh")
+    // scripts/sys_update.sh check: 0 = updates, 1 = none, 2 = error.
+    readonly property int checkErrorExitCode: 2
     property bool requested: false
 
     PersistentProperties {
@@ -73,18 +78,19 @@ Singleton {
         property real lastCheckedMs: 0
     }
 
-    readonly property bool due:
-        Date.now() - persist.lastCheckedMs >= Settings.updateCheckIntervalMs
+    function isDue(): bool {
+        return Date.now() - persist.lastCheckedMs >= Settings.updateCheckIntervalMs
+    }
 
     Timer {
         interval: Settings.updateCheckHeartbeatMs
         running: true
         repeat: true
 
-        onTriggered: if (root.due) root.check()
+        onTriggered: if (root.isDue()) root.check()
     }
 
-    Component.onCompleted: if (root.due) root.check()
+    Component.onCompleted: if (root.isDue()) root.check()
 
     Process {
         id: checker
@@ -125,7 +131,7 @@ Singleton {
         root.requested = false
         persist.lastCheckedMs = Date.now()
 
-        if (!reading || exitCode === 2) {
+        if (!reading || exitCode === root.checkErrorExitCode) {
             persist.failed = true
             return
         }

@@ -2,8 +2,9 @@ pragma Singleton
 
 import QtQuick
 import Quickshell
-import Quickshell.Io
 import Quickshell.Services.Mpris
+
+import qs
 
 //
 // Spotify back end.
@@ -12,40 +13,21 @@ import Quickshell.Services.Mpris
 // player is already on the bus, so nothing has to be shelled out to find out
 // what it is doing or to tell it what to do next.
 //
-// The one thing MPRIS has no notion of is the marquee, so that stays the job
-// of the scripts/spotify_module binary — consumed here purely as a source of
-// text, with the glyphs it can also emit left unused.
+// The marquee uses that same player state. Its timer runs only while a long
+// title is playing; the bar module only draws the resulting text.
 //
 // Closing is MPRIS as well — Spotify reports CanQuit — and launching goes
-// through its desktop entry, so neither needs a script. 
+// through its desktop entry, so neither needs a script.
 //
 Singleton {
     id: root
-
-    // ────── Configuration ──────
-    // Deliberately here rather than in Settings: this module is meant to be
-    // self-contained, so deleting core/Spotify.qml and modules/Spotify.qml
-    // takes every trace of it with them.
-    readonly property string playerName: "spotify"
-    readonly property string desktopEntry: "spotify"
-
-    readonly property string metadataFormat: "%title%%song_separator%%artist%%suffix%"
-    readonly property int scrollerWindowSize: 8
-    readonly property int scrollerIntervalMs: 200
-    readonly property bool scrollerCapsLock: true
-
-    // Spotify starts playing whenever it changes track, even from a pause.
-    // Skipping should not start the music, so the player is put back on pause
-    // when this is on. The guard is how long that correction stays armed.
-    readonly property bool keepPausedOnSkip: true
-    readonly property int skipPauseGuardMs: 2000
 
     // ────── Player ──────
     // Null whenever Spotify is closed, which is most of the time — every
     // reader below has to tolerate that.
     readonly property var player: {
         const players = Mpris.players.values
-        const busName = "org.mpris.MediaPlayer2." + root.playerName
+        const busName = "org.mpris.MediaPlayer2." + SpotifyConfig.playerName
 
         for (let i = 0; i < players.length; i++) {
             if (players[i].dbusName === busName)
@@ -58,16 +40,89 @@ Singleton {
     readonly property bool running: root.player !== null
     readonly property bool playing: root.running && root.player.isPlaying
 
-    // Raw fields, for anything that wants the untrimmed text later.
+    // MPRIS properties update when the player reports new metadata. The
+    // formatter below selects the fields named by the configured format.
     readonly property string title: root.running ? root.player.trackTitle : ""
     readonly property string artist: root.running ? root.player.trackArtist : ""
+    readonly property string album: root.running ? root.player.trackAlbum : ""
+    readonly property string albumArtist: root.running ? root.player.trackAlbumArtist : ""
 
     // ────── Metadata Marquee ──────
-    // Last frame the scroller printed. Blanked through `metadata` rather than
-    // here, so a closed player cannot leave its final frame on the bar.
-    property string scrollFrame: ""
+    // Treat the format as a string so separators and other literal text can
+    // sit anywhere among placeholders. Keep unknown placeholders intact so
+    // a typo in the configuration is visible rather than silently lost.
+    function formatMetadata(format) {
+        return format.replace(/%%|%([A-Za-z][A-Za-z0-9_]*)%/g, (token, key) => {
+            if (token === "%%")
+                return "%"
 
-    readonly property string metadata: root.running ? root.scrollFrame : ""
+            switch (key) {
+            case "title": return root.title
+            case "artist": return root.artist
+            case "song_separator": return root.title && root.artist
+                ? SpotifyConfig.songSeparator : ""
+            case "album": return root.album
+            case "albumArtist": return root.albumArtist
+            default: return token
+            }
+        })
+    }
+
+    readonly property int windowSize: Math.max(1, SpotifyConfig.metadataWindowSize)
+    readonly property string formattedMetadata: {
+        if (!root.running)
+            return ""
+
+        const text = root.formatMetadata(SpotifyConfig.metadataFormat)
+        return SpotifyConfig.metadataUppercase ? text.toUpperCase() : text
+    }
+
+    // Array.from keeps surrogate pairs together. Build the character array
+    // only when metadata changes; each timer tick assembles one small window.
+    readonly property var metadataCharacters: Array.from(root.formattedMetadata)
+    readonly property bool needsScroll: root.metadataCharacters.length > root.windowSize
+    readonly property var scrollCharacters: root.needsScroll
+        ? root.metadataCharacters.concat(Array(Math.max(0, SpotifyConfig.metadataScrollGap)).fill(" "))
+        : []
+
+    property int scrollOffset: 0
+
+    readonly property string metadata: {
+        if (!root.needsScroll)
+            return root.formattedMetadata
+
+        const characters = root.scrollCharacters
+        const start = root.scrollOffset % characters.length
+        const frame = []
+        for (let i = 0; i < root.windowSize; i++)
+            frame.push(characters[(start + i) % characters.length])
+        return frame.join("")
+    }
+
+    onFormattedMetadataChanged: {
+        if (SpotifyConfig.resetScrollOnTrackOrPlaybackChange)
+            root.scrollOffset = 0
+    }
+
+    onPlayingChanged: {
+        if (SpotifyConfig.resetScrollOnTrackOrPlaybackChange)
+            root.scrollOffset = 0
+    }
+
+    // A newly opened player starts a fresh scroll even if the optional
+    // reset-on-change behavior is disabled.
+    onRunningChanged: {
+        if (!root.running)
+            root.scrollOffset = 0
+    }
+
+    Timer {
+        interval: Math.max(1, SpotifyConfig.metadataScrollIntervalMs)
+        repeat: true
+        running: root.playing && root.needsScroll
+
+        onTriggered: root.scrollOffset = (root.scrollOffset + 1) % root.scrollCharacters.length
+    }
 
     // ────── Transport ──────
     // Guarded rather than disabled at the call site: a click landing in the
@@ -112,7 +167,7 @@ Singleton {
     property bool holdPaused: false
 
     function armSkipPause() {
-        if (!root.keepPausedOnSkip || root.playing)
+        if (!SpotifyConfig.keepPausedOnSkip || root.playing)
             return
 
         root.holdPaused = true
@@ -131,6 +186,11 @@ Singleton {
             if (root.holdPaused && root.player.isPlaying)
                 root.player.pause()
         }
+
+        function onTrackChanged() {
+            if (SpotifyConfig.resetScrollOnTrackOrPlaybackChange)
+                root.scrollOffset = 0
+        }
     }
 
     // Without this the correction would outlive the skip that armed it, and
@@ -138,7 +198,7 @@ Singleton {
     Timer {
         id: skipPauseGuard
 
-        interval: root.skipPauseGuardMs
+        interval: SpotifyConfig.skipPauseGuardMs
 
         onTriggered: root.holdPaused = false
     }
@@ -147,36 +207,16 @@ Singleton {
     // action that has to go outside: the desktop entry, with gtk-launch as a
     // fallback if the entry ever goes missing.
     function launch() {
-        const entry = DesktopEntries.byId(root.desktopEntry)
+        const entry = DesktopEntries.byId(SpotifyConfig.desktopEntry)
 
         if (entry)
             entry.execute()
         else
-            Quickshell.execDetached(["gtk-launch", root.desktopEntry])
+            Quickshell.execDetached(["gtk-launch", SpotifyConfig.desktopEntry])
     }
 
     function close() {
         if (root.running)
             root.player.quit()
-    }
-
-    // The scroller is a long-lived MPRIS listener in its own right: it prints
-    // nothing until a player appears and picks straight back up when one
-    // does, so it runs for the life of the shell rather than being started
-    // and stopped alongside Spotify.
-    Process {
-        running: true
-
-        command: [
-            Quickshell.shellPath("scripts/spotify_module"),
-            "--player", root.playerName,
-            "--metadata-format", root.metadataFormat,
-            "--window-size", String(root.scrollerWindowSize),
-            "--scroller-interval", String(root.scrollerIntervalMs)
-        ].concat(root.scrollerCapsLock ? ["--capslock-mode"] : [])
-
-        stdout: SplitParser {
-            onRead: data => root.scrollFrame = data
-        }
     }
 }

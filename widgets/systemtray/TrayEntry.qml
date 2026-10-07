@@ -19,11 +19,11 @@ Item {
     IconImage {
         anchors.centerIn: parent
 
-        implicitSize: 16
+        implicitSize: Settings.iconFontSize
         source: root.trayItem.icon
 
         // Render high resolution
-        backer.sourceSize: Qt.size(256, 256)
+        backer.sourceSize: Qt.size(2 * Settings.iconFontSize, 2 * Settings.iconFontSize)
     }
 
     Rectangle {

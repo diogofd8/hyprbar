@@ -9,7 +9,7 @@ import qs
 Singleton {
     id: root
 
-    // The popup owns discovery demand. No scans are requested by the bar.
+    // Set while the popup's content is loaded; the entry models follow it.
     property bool discoveryActive: false
 
     // ────── Public API ──────
@@ -29,7 +29,6 @@ Singleton {
     readonly property var display: reading(UPower.displayDevice)
 
     readonly property bool onAc: !UPower.onBattery
-    readonly property bool ready: batteries.length > 0
 
     // ────── Active Pack Detection ──────
     // Power Bridge moves exactly one pack in or out at a time and parks the
@@ -95,36 +94,22 @@ Singleton {
         return found
     }
 
-    readonly property string entrySignature: {
-        const devices = UPower.devices.values
-        return devices.map(device => [
-            device.nativePath, device.ready, device.isPresent,
-            device.powerSupply, device.isLaptopBattery, device.type,
-            device.model, device.percentage, device.state,
-            device.changeRate, device.timeToEmpty, device.timeToFull,
-            device.healthPercentage, device.healthSupported
-        ].join(":")).join("\n")
-    }
+    // Only the popup shows the entries, so they are built only while it is
+    // loaded. UPower updates every pack every few seconds while discharging,
+    // and each update would otherwise rebuild both lists.
+    readonly property var batteryEntrySnapshots: root.discoveryActive
+        ? makeEntries(batteries, "battery") : []
+    readonly property var peripheralEntrySnapshots: root.discoveryActive
+        ? makeEntries(peripheralBatteries, "device") : []
 
-    readonly property var batteryEntrySnapshots: makeEntries(batteries, "battery")
-    readonly property var peripheralEntrySnapshots: makeEntries(peripheralBatteries, "device")
-
-    onEntrySignatureChanged: {
-        root.refreshEntryModels()
-    }
-
-    Component.onCompleted: root.refreshEntryModels()
+    onBatteryEntrySnapshotsChanged: Helpers.syncModel(batteryEntries, root.batteryEntrySnapshots, "id")
+    onPeripheralEntrySnapshotsChanged: Helpers.syncModel(peripheralEntries, root.peripheralEntrySnapshots, "id")
 
     ListModel { id: batteryEntries }
     ListModel { id: peripheralEntries }
 
     readonly property var batteryEntryModel: batteryEntries
     readonly property var peripheralEntryModel: peripheralEntries
-
-    function refreshEntryModels() {
-        syncModel(batteryEntries, root.batteryEntrySnapshots)
-        syncModel(peripheralEntries, root.peripheralEntrySnapshots)
-    }
 
     function deviceFor(nativePath) {
         for (const battery of batteries) {
@@ -193,42 +178,14 @@ Singleton {
                     ? value.icon : peripheralIcon(device.type),
                 value: value.value,
                 state: value.state,
-                status: value.status,
                 statusText: value.statusText,
                 charging: value.charging,
-                active: value.active,
                 autonomy: value.autonomy,
                 fullIn: value.fullIn,
                 health: value.health,
                 healthSupported: value.healthSupported
             }
         })
-    }
-
-    function syncModel(model, entries) {
-        const ids = new Set(entries.map(entry => entry.id))
-        for (let i = model.count - 1; i >= 0; --i) {
-            if (!ids.has(model.get(i).id))
-                model.remove(i)
-        }
-
-        for (let i = 0; i < entries.length; ++i) {
-            const entry = entries[i]
-            let existing = i
-            while (existing < model.count && model.get(existing).id !== entry.id)
-                ++existing
-
-            if (existing === model.count)
-                model.insert(i, entry)
-            else {
-                if (existing !== i)
-                    model.move(existing, i, 1)
-                for (const key of Object.keys(entry)) {
-                    if (model.get(i)[key] !== entry[key])
-                        model.setProperty(i, key, entry[key])
-                }
-            }
-        }
     }
 
     function statusName(state) {
@@ -296,28 +253,24 @@ Singleton {
     }
 
     function resolveState(value, thresholds) {
-        let state = "empty"
-
-        for (const entry of thresholds) {
-            if (value >= entry.threshold)
-                state = entry.state
-            else
-                break
-        }
-
-        return state
+        return thresholds[Helpers.thresholdIndex(value, thresholds)].state
     }
 
     // ────── Debug Trace ──────
-    // readonly property string logLine:
-    //     "BATTERY: " + active.value + "% (" + active.state
-    //     + (active.charging ? ", charging" : "") + ")"
-    //     + " active=" + (activePath || "none")
-    //     + " | internal " + internal.value + "% " + internal.state
-    //     + (internal.active ? " *" : "") + " " + internal.icon
-    //     + " | external " + external.value + "% " + external.state
-    //     + (external.active ? " *" : "") + " " + external.icon
-    //     + " | onAc=" + onAc
+    readonly property string logLine: {
+        if (!Settings.bDebugTrace) return ""
+        return "BATTERY: " + active.value + "% (" + active.state
+            + (active.charging ? ", charging" : "") + ")"
+            + " active=" + (activePath || "none")
+            + " | internal " + internal.value + "% " + internal.state
+            + (internal.active ? " *" : "") + " " + internal.icon
+            + " | external " + external.value + "% " + external.state
+            + (external.active ? " *" : "") + " " + external.icon
+            + " | onAc=" + onAc
+    }
 
-    // onLogLineChanged: if (ready) console.log(logLine)
+    onLogLineChanged: {
+        if (Settings.bDebugTrace && batteries.length > 0)
+            console.log(logLine)
+    }
 }

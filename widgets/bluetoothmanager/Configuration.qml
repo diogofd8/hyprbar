@@ -3,26 +3,6 @@ pragma Singleton
 import Quickshell
 
 Singleton {
-    // ────── General ──────
-    readonly property int widgetBoxPadding: 8
-
-    readonly property int topBarPadding: 6
-    readonly property int mainColumnGap: 12
-    readonly property int sectionSpacing: 16
-
-    readonly property real mainButtonSize: 18
-    readonly property real secondaryButtonSize: 16
-    readonly property real columnLabelFontSize: 11
-    readonly property real subTextFontSize: 11
-    readonly property real btNameFontSize: 12
-    readonly property int transitionMs: 100
-
-    // ------- Blueman Entries -------
-    readonly property int btEntryRowSpacing: 3
-    readonly property int btEntryExpandedRowSpacing: 0
-    readonly property int btEntryPadding: 3
-    readonly property int btScanningIconSpacing: 2
-
     // Remembered devices past this count stay hidden behind showAllBtn.
     readonly property int pairedVisibleMax: 5
 
@@ -54,16 +34,13 @@ Singleton {
     readonly property string bmIsScanningIcon: "󰑥"
     readonly property string bmClearScanIcon: "󰃢"
     readonly property string bmBluetoothIcon: "󰂯"
-    readonly property string btEditConnectionIcon: ""
     readonly property string btPairIcon: "󰌷"
     readonly property string btForgetIcon: "󰩹"
     readonly property string btCancelIcon: "󰜺"
     readonly property string btConnectIcon: ""
     readonly property string btDisconnectIcon: ""
     readonly property string btExpandIcon: ""
-    readonly property string btSendIcon: "󰒊"
     readonly property string btDismissIcon: "󰅖"
 
     readonly property int contentWidth: 250
-    readonly property int listMaxHeight: 440
 }

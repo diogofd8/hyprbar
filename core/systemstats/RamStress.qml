@@ -5,6 +5,7 @@ import Quickshell
 import Quickshell.Io
 
 import qs
+import qs.core as Core
 
 Singleton {
     id: root
@@ -55,6 +56,12 @@ Singleton {
 
             if (match)
                 fields[match[1]] = Number(match[2]) * 1024
+
+            // Both come within the first three lines; nothing reads the
+            // other ~55 yet. Without MemAvailable this reads on, for the
+            // fallback below.
+            if (fields.MemTotal !== undefined && fields.MemAvailable !== undefined)
+                break
         }
 
         const total = fields.MemTotal
@@ -82,27 +89,21 @@ Singleton {
             Settings.ramStressThresholds
         )
 
-        // console.log(
-        //     "RAM:",
-        //     root._overallValue.toFixed(1) + "%",
-        //     root._overallState,
-        //     "|",
-        //     (root._usedBytes / (1024 * 1024 * 1024)).toFixed(2) + " GiB used /",
-        //     (root._totalBytes / (1024 * 1024 * 1024)).toFixed(2) + " GiB total |",
-        //     (root._availableBytes / (1024 * 1024 * 1024)).toFixed(2) + " GiB available"
-        // )
+        // ────── Debug Trace ──────
+        if (Settings.bDebugTrace) {
+            console.log(
+                "RAM:",
+                root._overallValue.toFixed(1) + "%",
+                root._overallState,
+                "|",
+                (root._usedBytes / (1024 * 1024 * 1024)).toFixed(2) + " GiB used /",
+                (root._totalBytes / (1024 * 1024 * 1024)).toFixed(2) + " GiB total |",
+                (root._availableBytes / (1024 * 1024 * 1024)).toFixed(2) + " GiB available"
+            )
+        }
     }
 
     function resolveState(value, thresholds) {
-        let state = "low"
-
-        for (const entry of thresholds) {
-            if (value >= entry.threshold)
-                state = entry.state
-            else
-                break
-        }
-
-        return state
+        return thresholds[Core.Helpers.thresholdIndex(value, thresholds)].state
     }
 }

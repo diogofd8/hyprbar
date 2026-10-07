@@ -7,8 +7,8 @@ import qs.core as Core
 Chevron {
     id: root
 
-    contentLeftPadding: 1
-    contentRightPadding: 1
+    contentLeftPadding: SpotifyConfig.leftSidePadding
+    contentRightPadding: SpotifyConfig.rightSidePadding
 
     leftCap: Core.ChevronGeometry.Cap.Point
     rightCap: Core.ChevronGeometry.Cap.Point
@@ -18,17 +18,7 @@ Chevron {
     // ────── Brand ──────
     // Spotify green is the player's colour, not a role in the palette, so it
     // lives with the module and follows the theme on its own.
-    readonly property color brandColor: Settings.darkMode ? "#2AB14C" : "#249C43"
-
-    // ────── Icons ──────
-    // Kept with the module rather than in Settings, so this file and
-    // core/Spotify.qml are the whole of Spotify: delete the two and nothing
-    // is left behind to clean up.
-    readonly property string logoIcon: "󰓇"
-    readonly property string playIcon: "󰐌"
-    readonly property string pauseIcon: "󰏥"
-    readonly property string previousIcon: "󰙣"
-    readonly property string nextIcon: "󰙡"
+    readonly property color brandColor: Settings.colors.spotifyColor
 
     // ────── State ──────
     // Read-only: the player owns all of this now, so the view cannot drift
@@ -49,29 +39,29 @@ Chevron {
     PlayerButton {
         visible: !root.isOpen
 
-        text: root.logoIcon
+        text: SpotifyConfig.logoIcon
 
         onLeftClicked: Core.Spotify.launch()
     }
 
     Row {
         visible: root.isOpen
-        spacing: 8
+        spacing: SpotifyConfig.transportSpacing
 
         // One button rather than a play and a pause stacked under opposite
         // visibility: the row keeps its width across a play/pause, so the
         // chevron does not twitch on every toggle.
         PlayerButton {
             text: root.isPlaying
-                ? root.pauseIcon
-                : root.playIcon
+                ? SpotifyConfig.pauseIcon
+                : SpotifyConfig.playIcon
 
             onLeftClicked: Core.Spotify.togglePlaying()
             onRightClicked: Core.Spotify.close()
         }
 
         PlayerButton {
-            text: root.previousIcon
+            text: SpotifyConfig.previousIcon
 
             onLeftClicked: Core.Spotify.previous()
         }
@@ -81,11 +71,9 @@ Chevron {
         // each frame would shove the chevron — and every module left of it —
         // sideways at the same rate.
         Item {
-            property int padding: 4
-
             implicitWidth:
-                Core.Spotify.scrollerWindowSize * metadataMetrics.averageCharacterWidth
-                + padding
+                Core.Spotify.windowSize * metadataMetrics.averageCharacterWidth
+                + SpotifyConfig.metadataWidthPadding
 
             implicitHeight: metadata.implicitHeight
 
@@ -112,7 +100,7 @@ Chevron {
         }
 
         PlayerButton {
-            text: root.nextIcon
+            text: SpotifyConfig.nextIcon
 
             onLeftClicked: Core.Spotify.next()
         }

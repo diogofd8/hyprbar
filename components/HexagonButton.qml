@@ -10,9 +10,6 @@ Item {
     property alias glyphSize: glyphItem.iconSize
     property alias glyphColor: glyphItem.iconColor
 
-    // Keep both names so this component fits the conventions used by the
-    // existing Hexagon and Chevron components.
-    property alias backgroundColor: hexagon.fillColor
     property alias bgFill: hexagon.fillColor
     property alias outlineColor: hexagon.outlineColor
     property alias outlineWidth: hexagon.outlineWidth
@@ -22,7 +19,7 @@ Item {
     property real hoverOpacity: Settings.colors.hoverOpacity
 
     property real paddingOffset: 0
-    property real defaultPadding: 12
+    property real defaultPadding: 10
     readonly property real padding: defaultPadding + paddingOffset
 
     // Most glyphs need no correction because positioning uses their actual
@@ -95,10 +92,11 @@ Item {
         cursorShape: root.hovered ? Qt.PointingHandCursor : Qt.ArrowCursor
         propagateComposedEvents: true
 
-        onPressed: mouse => mouse.accepted = root.hovered
+        // Hit-test input at the event position; hover is only visual state.
+        onPressed: mouse => mouse.accepted = hexagon.containsPoint(mouse.x, mouse.y)
 
         onClicked: mouse => {
-            if (!root.hovered)
+            if (!hexagon.containsPoint(mouse.x, mouse.y))
                 return
 
             if (mouse.button === Qt.RightButton)
@@ -108,7 +106,7 @@ Item {
         }
 
         onWheel: wheel => {
-            if (!root.hovered) {
+            if (!hexagon.containsPoint(wheel.x, wheel.y)) {
                 wheel.accepted = false
                 return
             }

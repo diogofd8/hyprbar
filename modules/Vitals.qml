@@ -1,5 +1,4 @@
 import QtQuick
-import Quickshell
 
 import qs
 import qs.components
@@ -82,7 +81,7 @@ Row {
             spacing: 6
 
             Glyph {
-                text: Settings.cpuTempIcon[2]
+                text: Settings.cpuTempIcon[Core.SystemStats.cpuTemperature.overall.state]
             }
 
             Temperature {

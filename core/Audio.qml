@@ -19,8 +19,6 @@ Singleton {
     readonly property var sink: reading(Pipewire.defaultAudioSink, false)
     readonly property var source: reading(Pipewire.defaultAudioSource, true)
 
-    readonly property bool ready: Pipewire.ready
-
     // The bar needs only the two defaults above. The manager enables this
     // while its popup is open so the larger device/stream model is bound only
     // on demand.
@@ -63,12 +61,12 @@ Singleton {
     property var sourcePortRecords: []
 
     onOutputDeviceSnapshotsChanged: {
-        root.syncModel(outputDevices, root.outputDeviceSnapshots)
+        Helpers.syncModel(outputDevices, root.outputDeviceSnapshots, "id")
     }
-    onInputDeviceSnapshotsChanged: root.syncModel(inputDevices,
-        root.inputDeviceSnapshots)
+    onInputDeviceSnapshotsChanged: Helpers.syncModel(inputDevices,
+        root.inputDeviceSnapshots, "id")
     onApplicationSnapshotsChanged: {
-        root.syncModel(applications, root.applicationSnapshots)
+        Helpers.syncModel(applications, root.applicationSnapshots, "id")
     }
 
     Process {
@@ -122,38 +120,9 @@ Singleton {
     }
 
     function refreshModels() {
-        syncModel(outputDevices, root.outputDeviceSnapshots)
-        syncModel(inputDevices, root.inputDeviceSnapshots)
-        syncModel(applications, root.applicationSnapshots)
-    }
-
-    function syncModel(model, entries) {
-        const ids = new Set(entries.map(entry => entry.id))
-
-        for (let i = model.count - 1; i >= 0; --i) {
-            if (!ids.has(model.get(i).id))
-                model.remove(i)
-        }
-
-        for (let i = 0; i < entries.length; ++i) {
-            const entry = entries[i]
-            let existing = i
-
-            while (existing < model.count && model.get(existing).id !== entry.id)
-                ++existing
-
-            if (existing === model.count)
-                model.insert(i, entry)
-            else {
-                if (existing !== i)
-                    model.move(existing, i, 1)
-
-                for (const key of Object.keys(entry)) {
-                    if (model.get(i)[key] !== entry[key])
-                        model.setProperty(i, key, entry[key])
-                }
-            }
-        }
+        Helpers.syncModel(outputDevices, root.outputDeviceSnapshots, "id")
+        Helpers.syncModel(inputDevices, root.inputDeviceSnapshots, "id")
+        Helpers.syncModel(applications, root.applicationSnapshots, "id")
     }
 
     // ────── Actions ──────
@@ -338,10 +307,6 @@ Singleton {
 
     function deviceReading(node, isInput, port, activePort) {
         const audio = audioOf(node)
-        const headphones = !isInput && (port
-            ? /headphone|headset/i.test(port.type)
-                || /headphone|headset/i.test(port.name)
-            : isHeadphoneNode(node))
         const deviceName = node.nickname || node.description || node.name
         const properties = node.properties || ({})
         const internal = (properties["device.form_factor"]
@@ -356,19 +321,11 @@ Singleton {
 
         return {
             id: String(node.id) + (port ? ":" + port.name : ""),
-            nodeId: String(node.id),
             portName: port ? port.name : "",
             name: name,
             nodeName: node.name,
-            description: node.description || node.name,
-            icon: resolveIcon(audio ? resolveLevelIndex(
-                Math.round(audio.volume * 100), Settings.volumeLevelThresholds)
-                : 0, audio ? audio.muted : true,
-                headphones, isInput),
-            iconName: deviceIconName(node, isInput),
             value: audio ? Math.round(audio.volume * 100) : 0,
             muted: audio ? audio.muted : true,
-            state: audio && !audio.muted ? "default" : "muted",
             canSelect: node.ready && (!port || port.availability !== "not available"),
             isDefault: node === (isInput
                 ? Pipewire.defaultAudioSource : Pipewire.defaultAudioSink)
@@ -381,19 +338,14 @@ Singleton {
         const audio = audioOf(node)
         const properties = node.properties || ({})
         const name = properties["application.name"] || node.description || node.name
-        const icon = root.applicationIcon(properties, player)
 
         return {
             id: String(node.id),
             name: name,
-            iconName: icon.name,
-            iconSource: icon.source,
+            iconSource: root.applicationIconSource(properties, player),
             hasStream: true,
-            isInput: false,
-            isOutput: true,
             value: audio ? Math.round(audio.volume * 100) : 0,
-            muted: audio ? audio.muted : true,
-            state: audio && !audio.muted ? "default" : "muted"
+            muted: audio ? audio.muted : true
         }
     }
 
@@ -423,24 +375,19 @@ Singleton {
         for (const player of root.mediaPlayers) {
             if (!player.identity || matchedPlayers.has(player.dbusName))
                 continue
-            const icon = root.applicationIcon({}, player)
             entries.push({
                 id: "player:" + player.dbusName,
                 name: player.identity,
-                iconName: icon.name,
-                iconSource: icon.source,
+                iconSource: root.applicationIconSource({}, player),
                 hasStream: false,
-                isInput: false,
-                isOutput: true,
                 value: 0,
-                muted: false,
-                state: "default"
+                muted: false
             })
         }
         return entries
     }
 
-    function applicationIcon(properties, player) {
+    function applicationIconSource(properties, player) {
         // Desktop entries provide the real installed icon even when stream
         // metadata is absent (Spotify) or uses a different property spelling.
         const ids = [player ? player.desktopEntry : "",
@@ -454,7 +401,7 @@ Singleton {
             if (entry && entry.icon) {
                 const source = Quickshell.iconPath(entry.icon, true)
                 if (source)
-                    return { name: entry.icon, source: source }
+                    return source
             }
         }
         for (const name of [properties["application.icon-name"],
@@ -462,19 +409,10 @@ Singleton {
             if (name) {
                 const source = Quickshell.iconPath(String(name), true)
                 if (source)
-                    return { name: String(name), source: source }
+                    return source
             }
         }
-        return { name: "", source: "" }
-    }
-
-    function deviceIconName(node, isInput) {
-        const properties = node.properties || ({})
-        if (isInput)
-            return properties["device.icon-name"] || "audio-input-microphone"
-
-        return properties["device.icon-name"] || (isHeadphoneNode(node)
-            ? "audio-headphones" : "audio-speakers")
+        return ""
     }
 
     // ────── Internals ──────
@@ -506,7 +444,7 @@ Singleton {
         const percent = Math.round(audio.volume * 100)
         const muted = audio.muted
         const headphones = !isInput && isHeadphoneNode(node)
-        const index = resolveLevelIndex(percent, Settings.volumeLevelThresholds)
+        const index = Helpers.thresholdIndex(percent, Settings.volumeLevelThresholds)
 
         return {
             available: true,
@@ -521,22 +459,6 @@ Singleton {
         }
     }
 
-    // Returns the index rather than the state name, so volumeCtrlIcon and
-    // volumeLevelThresholds stay locked together — add a threshold and you
-    // must add the icon that goes with it.
-    function resolveLevelIndex(value, thresholds) {
-        let index = 0
-
-        for (let i = 0; i < thresholds.length; i++) {
-            if (value >= thresholds[i].threshold)
-                index = i
-            else
-                break
-        }
-
-        return index
-    }
-
     function resolveIcon(levelIndex, muted, headphones, isInput) {
         if (isInput)
             return muted ? Settings.volumeInputMicOffIcon : Settings.volumeInputMicOnIcon
@@ -547,7 +469,8 @@ Singleton {
         if (muted)
             return Settings.volumeMutedIcon
 
-        return Settings.volumeCtrlIcon[Math.min(levelIndex, Settings.volumeCtrlIcon.length - 1)]
+        const level = Settings.volumeLevelThresholds[levelIndex].state
+        return Settings.volumeCtrlIcon[level]
     }
 
     // Bluetooth and USB headsets say so on the node itself.
@@ -602,7 +525,7 @@ Singleton {
 
     Timer {
         id: portDebounce
-        interval: 150
+        interval: Settings.audioPortQueryDebounceMs
         onTriggered: {
             if (portDemand.outputs && !sinkPortReader.running) {
                 portDemand.outputs = false
@@ -652,12 +575,14 @@ Singleton {
     }
 
     // ────── Debug Trace ──────
-    // readonly property string logLine:
-    //     "AUDIO: sink " + sink.value + "% " + sink.state
-    //     + " level=" + sink.level + " " + sink.icon
-    //     + (sink.headphones ? " [headphones]" : "") + " port=" + activePort
-    //     + " <" + sink.description + ">"
-    //     + " | source " + source.value + "% " + source.state + " " + source.icon
+    readonly property string logLine: {
+        if (!Settings.bDebugTrace) return ""
+        return "AUDIO: sink " + sink.value + "% " + sink.state
+            + " level=" + sink.level + " " + sink.icon
+            + (sink.headphones ? " [headphones]" : "") + " port=" + activePort
+            + " <" + sink.description + ">"
+            + " | source " + source.value + "% " + source.state + " " + source.icon
+    }
 
-    // onLogLineChanged: if (ready) console.log(logLine)
+    onLogLineChanged: if (Settings.bDebugTrace && Pipewire.ready) console.log(logLine)
 }

@@ -3,26 +3,26 @@ import QtQuick.Layouts
 import QtQuick.Controls as Controls
 
 import qs
+import qs.widgets
 import qs.components
+import qs.core as Core
 
 Controls.Pane {
     id: root
     required property var model
-    signal dismissRequested()
 
     readonly property bool hasDetails: shouldShowBatteryDetails()
+    readonly property color statusColor: Core.Helpers.batteryStatusColor(root.model)
 
-    padding: Configuration.pwrEntryPadding
+    // ────── Dimensioning ──────
+    leftPadding: WidgetConfiguration.entryHPadding
+    rightPadding: WidgetConfiguration.entryHPadding
+    topPadding: WidgetConfiguration.entryVPadding
+    bottomPadding: WidgetConfiguration.entryVPadding
     implicitHeight: mainContent.implicitHeight + root.topPadding + root.bottomPadding
     clip: true
 
-    Behavior on implicitHeight {
-        SmoothedAnimation {
-            duration: Configuration.transitionMs
-            velocity: -1
-            reversingMode: SmoothedAnimation.Eased
-        }
-    }
+    Behavior on implicitHeight { Anim {} }
 
     background: Rectangle {
         color: Settings.colors.bgTint2
@@ -30,26 +30,29 @@ Controls.Pane {
 
     contentItem: RowLayout {
         id: mainContent
-        spacing: Configuration.pwrEntryPadding
+        spacing: WidgetConfiguration.entryHPadding
 
         Glyph {
             id: pwrEntryIcon
             Layout.alignment: Qt.AlignVCenter
-            Layout.leftMargin: 6
-            Layout.rightMargin: 6
+            Layout.leftMargin: WidgetConfiguration.entryIconHPadding
+            Layout.rightMargin: WidgetConfiguration.entryIconHPadding
 
             icon: root.model.icon
-            iconSize: Configuration.mainButtonSize
+            iconSize: WidgetConfiguration.entryRowMainIconSz
             useMetrics: false
-            iconColor: root.statusColor()
+            iconColor: root.statusColor
         }
 
         ColumnLayout {
-            spacing: 0
+            spacing: WidgetConfiguration.entryRowVSpacing
 
             RowLayout {
+                id: mainRow
+
                 Layout.fillWidth: true
-                spacing: Configuration.pwrEntryPadding
+                Layout.preferredHeight: WidgetConfiguration.entryRowMainIconSz
+                spacing: WidgetConfiguration.entryTitleRowHSpacing
 
                 Text {
                     id: pwrEntryName
@@ -61,22 +64,20 @@ Controls.Pane {
                     elide: Text.ElideRight
                     color: Settings.colors.fgMain
                     font.family: Settings.labelFontFamily
-                    font.pixelSize: Configuration.pwrEntryNameFontSize
+                    font.pixelSize: WidgetConfiguration.entryRowTitleFontSz
                 }
 
                 Text {
                     visible: root.model.statusText.length > 0
                     text: shortStatus(root.model.statusText)
-                    color: root.statusColor()
-                    opacity: 0.75
+                    color: root.statusColor
+                    opacity: Settings.colors.dimOpacity
                     font.family: Settings.labelFontFamily
-                    font.pixelSize: Configuration.subTextFontSize
+                    font.pixelSize: WidgetConfiguration.widgetMainFontSz
                 }
 
-                Rectangle {
+                Item {
                     Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    color: "transparent"
                 }
 
                 Percentage {
@@ -84,51 +85,54 @@ Controls.Pane {
                     value: root.model.value
 
                     fontFamily: Settings.labelFontFamily
-                    fontSize: Configuration.pwrEntryNameFontSize
+                    fontSize: WidgetConfiguration.widgetMainFontSz
                 }
             }
 
             RowLayout {
                 Layout.fillWidth: true
-                Layout.topMargin: visible ? Configuration.pwrEntryExpandedRowSpacing : 0
-                Layout.bottomMargin: visible ? Configuration.pwrEntryExpandedRowSpacing : 0
-                spacing: 0
+                spacing: WidgetConfiguration.entryExtendedRowHSpacing
                 clip: true
                 visible: root.hasDetails
-                opacity: 0.7
+                opacity: Settings.colors.dimOpacity
 
-                Text {
-                    visible: root.model.healthSupported
-                    text: "Health:"
-                    color: Settings.colors.fgMain
-                    font.family: Settings.labelFontFamily
-                    font.pixelSize: Settings.smallCapsFontSize
+                RowLayout {
+                    id: batteryHealth
+                    // very unlikely battery health is 100% so we remove spacing because
+                    // percentage already allocates enough space
+                    spacing: 0
+
+                    Text {
+                        visible: root.model.healthSupported
+                        text: "Health:"
+                        color: Settings.colors.fgMain
+                        font.family: Settings.labelFontFamily
+                        font.pixelSize: WidgetConfiguration.widgetMainFontSz
+                    }
+
+                    Percentage {
+                        visible: root.model.healthSupported
+                        height: parent.height
+                        value: root.model.health
+                        fontFamily: Settings.labelFontFamily
+                        fontSize: WidgetConfiguration.widgetMainFontSz
+                    }
                 }
 
-                Percentage {
-                    visible: root.model.healthSupported
-                    height: parent.height
-                    value: root.model.health
-                    fontFamily: Settings.labelFontFamily
-                    fontSize: Settings.smallCapsFontSize
-                }
-
-                Rectangle {
+                Item {
                     Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    color: "transparent"
                 }
 
                 RowLayout {
                     id: pwrEstimation
-                    Layout.rightMargin: Configuration.pwrEntryPadding
+                    spacing: WidgetConfiguration.entryExtendedRowHSpacing
 
                     Text {
                         visible: root.model.autonomy > 0
                         text: "Autonomy:"
                         color: Settings.colors.fgMain
                         font.family: Settings.labelFontFamily
-                        font.pixelSize: Settings.smallCapsFontSize
+                        font.pixelSize: WidgetConfiguration.widgetMainFontSz
                     }
 
                     Text {
@@ -136,7 +140,7 @@ Controls.Pane {
                         text: root.formatDuration(root.model.autonomy)
                         color: Settings.colors.fgMain
                         font.family: Settings.labelFontFamily
-                        font.pixelSize: Settings.smallCapsFontSize
+                        font.pixelSize: WidgetConfiguration.widgetMainFontSz
                     }
 
                     Text {
@@ -144,7 +148,7 @@ Controls.Pane {
                         text: "Full In:"
                         color: Settings.colors.fgMain
                         font.family: Settings.labelFontFamily
-                        font.pixelSize: Settings.smallCapsFontSize
+                        font.pixelSize: WidgetConfiguration.widgetMainFontSz
                     }
 
                     Text {
@@ -152,7 +156,7 @@ Controls.Pane {
                         text: root.formatDuration(root.model.fullIn)
                         color: Settings.colors.fgMain
                         font.family: Settings.labelFontFamily
-                        font.pixelSize: Settings.smallCapsFontSize
+                        font.pixelSize: WidgetConfiguration.widgetMainFontSz
                     }
                 }
             }
@@ -170,16 +174,6 @@ Controls.Pane {
         if (root.model.healthSupported)
             return true
         return false
-    }
-
-    function statusColor() {
-        if (root.model.charging)
-            return Settings.colors.accentCharging
-        if (root.model.state === "empty" || root.model.state === "discharging")
-            return Settings.colors.accentError
-        if (root.model.state === "alert")
-            return Settings.colors.accentAlert
-        return Settings.colors.fgMain
     }
 
     function formatDuration(seconds) {

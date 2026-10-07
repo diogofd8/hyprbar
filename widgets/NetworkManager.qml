@@ -16,112 +16,109 @@ Pane {
     signal dismissRequested()
 
     readonly property string panelBackgroundColor: Settings.colors.bgMain
-    readonly property real targetImplicitHeight: panelContent.implicitHeight
-        + root.topPadding + root.bottomPadding
 
-    padding: NetworkUI.Configuration.widgetBoxPadding
-    // Entry heights already contain the transition. Propagate that same
-    // intermediate value to PopupWindow instead of easing it a second time.
-    implicitHeight: root.targetImplicitHeight
+    padding: WidgetConfiguration.dropDownWindowPadding
+    // Entry heights already contain the transition. The shared host keeps
+    // its window size fixed while its clipped panel follows this height.
+    implicitHeight: panelContent.implicitHeight + root.topPadding + root.bottomPadding
     clip: true
 
-    background: Rectangle {
-        color: Qt.alpha(root.panelBackgroundColor, Settings.colors.bgOpacity)
-
-        border.width: 1
-        border.color: Qt.alpha(Settings.colors.fgMain, Settings.colors.hoverOpacity)
-
-        // Hide the top border
-        Rectangle {
-            anchors.top: parent.top
-            anchors.left: parent.left
-            anchors.right: parent.right
-
-            height: parent.border.width
-            color: root.panelBackgroundColor
-        }
-    }
+    // PopoutHost draws the panel background shared by every widget. Null, not
+    // omitted, so the Controls style doesn't add a default one.
+    background: null
 
     contentItem: ColumnLayout {
         id: panelContent
 
         // ────── Top Row ──────
-        RowLayout {
-            Layout.fillWidth: true
-            spacing: NetworkUI.Configuration.topBarPadding
+        ColumnLayout {
+            id: headerContainer
+            spacing: WidgetConfiguration.mainRowPadding
 
             RowLayout {
-                Layout.leftMargin: NetworkUI.Configuration.topBarPadding
-                Layout.alignment: Qt.AlignVCenter
-                spacing: 5
-
-                Glyph {
-                    icon: NetworkUI.Configuration.nwWifiIcon
-                    iconSize: NetworkUI.Configuration.mainButtonSize
-                    iconColor: Settings.colors.fgMain
-                }
-
-                HexagonSwitch {
-                    actionable: Network.wifiAvailable && !Network.wifiToggleBusy
-                    checked: Network.wifiEnabled
-                    onClicked: Network.toggleWifi()
-
-                    backgroundColor: root.panelBackgroundColor
-                }
-            }
-
-            // Text {
-            //     Layout.fillWidth: true
-            //     visible: !Network.wifiAvailable || Network.wifiErrorMessage.length > 0
-            //     text: Network.wifiErrorMessage.length > 0
-            //         ? Network.wifiErrorMessage
-            //         : Network.wifiPresent
-            //             ? "Wi-Fi hardware locked" : "Wi-Fi adapter unavailable"
-            //     wrapMode: Text.Wrap
-            //     color: Settings.colors.accentAlert
-            //     font.family: Settings.labelFontFamily
-            //     font.pixelSize: NetworkUI.Configuration.subTextFontSize
-            // }
-
-            Rectangle {
                 Layout.fillWidth: true
-                Layout.fillHeight: true
-                color: "transparent"
-            }
+                Layout.leftMargin: WidgetConfiguration.mainRowPadding
+                Layout.rightMargin: WidgetConfiguration.mainRowPadding
+                spacing: WidgetConfiguration.mainRowHSpacing
 
-            SquaredButton {
-                enabled: Network.discoveryActive && Network.wifiAvailable && Network.wifiEnabled
+                RowLayout {
+                    Layout.alignment: Qt.AlignVCenter
+                    spacing: WidgetConfiguration.hexSwitchSpacing
 
-                glyph: NetworkUI.Configuration.nmConnectionRefreshIcon
-                glyphSize: NetworkUI.Configuration.mainButtonSize
-                useMetrics: true
-                color: Settings.colors.fgMain
+                    Glyph {
+                        icon: NetworkUI.Configuration.nwWifiIcon
+                        iconSize: WidgetConfiguration.widgetMainIconSz
+                        iconColor: Settings.colors.fgMain
+                    }
 
-                onLeftClicked: Network.forceWifiScan()
-                rotateOnClick: true
-            }
+                    HexagonSwitch {
+                        actionable: Network.wifiAvailable && !Network.wifiToggleBusy
+                        checked: Network.wifiEnabled
+                        onClicked: Network.toggleWifi()
 
-            SquaredButton {
-                Layout.rightMargin: NetworkUI.Configuration.topBarPadding
-
-                glyph: NetworkUI.Configuration.nmConnectionEditorIcon
-                glyphSize: NetworkUI.Configuration.mainButtonSize
-                useMetrics: true
-                color: Settings.colors.fgMain
-
-                onLeftClicked: {
-                    Network.openSettings()
-                    root.dismissRequested()
+                        bgFill: root.panelBackgroundColor
+                    }
                 }
+
+                Item {
+                    Layout.fillWidth: true
+                }
+
+                SquaredButton {
+                    id: networkScanButton
+                    enabled: Network.discoveryActive && Network.wifiAvailable
+                        && Network.wifiEnabled && !Network.scanRequested
+
+                    glyph: NetworkUI.Configuration.nmConnectionRefreshIcon
+                    glyphSize: WidgetConfiguration.widgetMainIconSz
+                    useMetrics: true
+                    color: Settings.colors.fgMain
+
+                    onLeftClicked: Network.forceWifiScan()
+
+                    NumberAnimation on glyphRotation {
+                        from: 360
+                        to: 0
+                        duration: Motion.activitySpinMs
+                        loops: Animation.Infinite
+                        running: Network.scanRequested
+
+                        onStopped: networkScanButton.glyphRotation = 0
+                    }
+                }
+
+                SquaredButton {
+
+                    glyph: NetworkUI.Configuration.nmConnectionEditorIcon
+                    glyphSize: WidgetConfiguration.widgetMainIconSz
+                    useMetrics: true
+                    color: Settings.colors.fgMain
+
+                    onLeftClicked: {
+                        Network.openSettings()
+                        root.dismissRequested()
+                    }
+                }
+            }
+
+            // ────── Separator ──────
+            Separator {
+                Layout.fillWidth: true
+                Layout.topMargin: 1
+                Layout.bottomMargin: WidgetConfiguration.mainRowVMargin
+                color: Settings.colors.bgTint4
             }
         }
 
-        // ────── Separator ──────
-        Separator {
+        // ────── Wi-Fi Toggle Error ──────
+        Text {
             Layout.fillWidth: true
-            Layout.topMargin: 1
-            Layout.bottomMargin: NetworkUI.Configuration.mainColumnGap
-            color: Settings.colors.bgTint4
+            visible: Network.wifiErrorMessage.length > 0
+            text: Network.wifiErrorMessage
+            wrapMode: Text.WordWrap
+            color: Settings.colors.accentError
+            font.family: Settings.labelFontFamily
+            font.pixelSize: WidgetConfiguration.widgetMsgFieldFontSz
         }
 
         // ────── Connections ──────
@@ -130,7 +127,7 @@ Pane {
             Layout.fillWidth: true
             Layout.preferredHeight: implicitHeight
             implicitWidth: NetworkUI.Configuration.contentWidth
-            implicitHeight: Math.min(contents.implicitHeight, NetworkUI.Configuration.listMaxHeight)
+            implicitHeight: Math.min(contents.implicitHeight, WidgetConfiguration.rowContentMaxHeight)
             contentWidth: width
             contentHeight: contents.implicitHeight
             clip: true
@@ -139,23 +136,21 @@ Pane {
             ColumnLayout {
                 id: contents
                 width: scroll.width
-                spacing: NetworkUI.Configuration.sectionSpacing
+                spacing: WidgetConfiguration.sectionVSpacing
 
                 ColumnLayout {
                     id: activeSection
 
                     Layout.fillWidth: true
                     visible: Network.activeConnections.count > 0
-                    spacing: NetworkUI.Configuration.nwEntryRowSpacing
+                    spacing: WidgetConfiguration.sectionContentVSpacing
 
                     Text {
-                        Layout.bottomMargin: 4
-
                         text: "ACTIVE CONNECTIONS"
                         color: Settings.colors.fgMain
                         font.family: Settings.labelFontFamily
                         font.bold: true
-                        font.pixelSize: NetworkUI.Configuration.columnLabelFontSize
+                        font.pixelSize: WidgetConfiguration.sectionRowLabelFontSz
                     }
 
                     Repeater {
@@ -172,16 +167,14 @@ Pane {
                     id: availableSection
 
                     Layout.fillWidth: true
-                    spacing: NetworkUI.Configuration.nwEntryRowSpacing
+                    spacing: WidgetConfiguration.sectionContentVSpacing
 
                     Text {
-                        Layout.bottomMargin: 4
-
                         text: "AVAILABLE CONNECTIONS"
                         color: Settings.colors.fgMain
                         font.family: Settings.labelFontFamily
                         font.bold: true
-                        font.pixelSize: NetworkUI.Configuration.columnLabelFontSize
+                        font.pixelSize: WidgetConfiguration.sectionRowLabelFontSz
                     }
 
                     Repeater {
@@ -203,9 +196,9 @@ Pane {
                                 ? "No other connections available"
                                 : "No connections available"
                         color: Settings.colors.fgMain
-                        opacity: 0.7
+                        opacity: Settings.colors.dimOpacity
                         font.family: Settings.labelFontFamily
-                        font.pixelSize: NetworkUI.Configuration.subTextFontSize
+                        font.pixelSize: WidgetConfiguration.widgetMsgFieldFontSz
                     }
 
                     Text {
@@ -213,7 +206,7 @@ Pane {
                         text: Network.scanErrorMessage
                         color: Settings.colors.accentError
                         font.family: Settings.labelFontFamily
-                        font.pixelSize: NetworkUI.Configuration.subTextFontSize
+                        font.pixelSize: WidgetConfiguration.widgetMsgFieldFontSz
                     }
                 }
             }

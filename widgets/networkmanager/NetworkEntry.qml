@@ -4,6 +4,7 @@ import QtQuick.Controls as Controls
 
 import qs
 import qs.components
+import qs.widgets
 import qs.core as Core
 
 Controls.Pane {
@@ -27,18 +28,12 @@ Controls.Pane {
     readonly property string statusText: makeStatusText()
 
     // ────── Dimensioning ──────
-    padding: Configuration.nwEntryPadding
+    leftPadding: WidgetConfiguration.entryHPadding
+    rightPadding: WidgetConfiguration.entryHPadding
+    topPadding: WidgetConfiguration.entryVPadding
+    bottomPadding: WidgetConfiguration.entryVPadding
     implicitHeight: mainContent.implicitHeight + root.topPadding + root.bottomPadding
     clip: true
-
-    // ────── Animations ──────
-    Behavior on implicitHeight {
-        SmoothedAnimation {
-            duration: Configuration.transitionMs
-            velocity: -1
-            reversingMode: SmoothedAnimation.Eased
-        }
-    }
 
     background: Rectangle {
         color: Settings.colors.bgTint2
@@ -46,28 +41,30 @@ Controls.Pane {
 
     contentItem: RowLayout {
         id: mainContent
-        spacing: Configuration.nwEntryPadding
+        spacing: WidgetConfiguration.entryHPadding
 
         Glyph {
             id: entryGlyph
             Layout.alignment: Qt.AlignVCenter
-            Layout.leftMargin: 6
-            Layout.rightMargin: 6
+            Layout.leftMargin: WidgetConfiguration.entryIconHPadding
+            Layout.rightMargin: WidgetConfiguration.entryIconHPadding
 
             icon: root.entryIcon
-            iconSize: Configuration.mainButtonSize
+            iconSize: WidgetConfiguration.entryRowMainIconSz
             useMetrics: false
         }
 
         ColumnLayout {
-            spacing: Configuration.nwEntryExpandedRowSpacing
+            spacing: WidgetConfiguration.entryRowVSpacing
 
             // ────── Main Row ──────
             RowLayout {
                 id: mainRow
                 Layout.fillWidth: true
-                spacing: Configuration.nwEntryPadding
+                Layout.preferredHeight: WidgetConfiguration.entryRowMainIconSz
+                spacing: WidgetConfiguration.entryTitleRowHSpacing
 
+                Behavior on Layout.topMargin { Anim {} }
 
                 Text {
                     id: networkName
@@ -77,19 +74,18 @@ Controls.Pane {
                     elide: Text.ElideRight
                     color: Settings.colors.fgMain
                     font.family: Settings.labelFontFamily
-                    font.pixelSize: Configuration.nwNameFontSize
+                    font.pixelSize: WidgetConfiguration.entryRowTitleFontSz
                 }
 
                 SquaredButton {
                     id: compactConnectionBtn
 
                     visible: root.isActionable
-                    enabled: root.isActionable
 
                     glyph: root.model.state === "Connected"
                         ? Configuration.nwDisconnectIcon
                         : Configuration.nwConnectIcon
-                    glyphSize: Configuration.secondaryButtonSize
+                    glyphSize: WidgetConfiguration.entryRowSecondaryIconSz
                     color: Settings.colors.fgMain
 
                     onLeftClicked: root.runConnectionAction()
@@ -99,9 +95,8 @@ Controls.Pane {
                     id: settingsBtn
 
                     visible: root.model.canEdit
-                    enabled: root.model.canEdit
                     glyph: Configuration.nwEditConnectionIcon
-                    glyphSize: Configuration.secondaryButtonSize
+                    glyphSize: WidgetConfiguration.entryRowSecondaryIconSz
                     color: Settings.colors.fgMain
 
                     onLeftClicked: {
@@ -115,7 +110,7 @@ Controls.Pane {
 
                     rotation: root.bottomShown ? 180 : 0
                     glyph: Configuration.nwExpandIcon
-                    glyphSize: Configuration.secondaryButtonSize
+                    glyphSize: WidgetConfiguration.entryRowSecondaryIconSz
                     color: Settings.colors.fgMain
 
                     onLeftClicked: {
@@ -124,43 +119,36 @@ Controls.Pane {
                         root.expanded = !wasOpen
                     }
 
-                    Behavior on rotation {
-                        NumberAnimation {
-                            duration: Configuration.transitionMs
-                            easing.type: Easing.InOutCubic
-                        }
-                    }
+                    Behavior on rotation { Anim {} }
                 }
             }
 
             // ────── Extended Row ──────
-            RowLayout {
+            CollapsibleRow {
                 id: bottom
-                visible: root.bottomShown
-                clip: true
-
+                shown: root.bottomShown
                 Layout.fillWidth: true
-                spacing: Configuration.nwEntryPadding
+                spacing: WidgetConfiguration.entryExtendedRowHSpacing
 
                 // ────── Network Details ──────
-                Row {
+                RowLayout {
                     Layout.fillWidth: true
-                    opacity: 0.7
-                    spacing: 4
                     visible: !root.askingPassword
+                    opacity: Settings.colors.dimOpacity
+                    spacing: WidgetConfiguration.entryExtendedRowHSpacing
 
                     Text {
                         text: NetworkActions.connectionTypeText(root.model)
 
                         color: Settings.colors.fgMain
                         font.family: Settings.labelFontFamily
-                        font.pixelSize: Settings.smallCapsFontSize
+                        font.pixelSize: WidgetConfiguration.entryRowDefaultFontSz
                     }
 
                     Circle {
-                        diameter: 2
+                        Layout.alignment: Qt.AlignCenter
+                        diameter: Settings.separatorDotSize
                         color: Settings.colors.fgMain
-                        anchors.verticalCenter: parent.verticalCenter
                     }
 
                     Text {
@@ -168,7 +156,7 @@ Controls.Pane {
 
                         color: Settings.colors.fgMain
                         font.family: Settings.labelFontFamily
-                        font.pixelSize: Settings.smallCapsFontSize
+                        font.pixelSize: WidgetConfiguration.entryRowDefaultFontSz
                     }
                 }
 
@@ -182,7 +170,7 @@ Controls.Pane {
                     echoMode: TextInput.Password
                     color: Settings.colors.fgMain
                     font.family: Settings.labelFontFamily
-                    font.pixelSize: Settings.smallCapsFontSize
+                    font.pixelSize: WidgetConfiguration.entryRowDefaultFontSz
 
                     background: Rectangle {
                         color: Settings.colors.bgTint1
@@ -204,34 +192,29 @@ Controls.Pane {
                     enabled: root.model.canSubmitPassword && passwordField.text.length > 0
 
                     glyph: Configuration.nwSendIcon
-                    glyphSize: Configuration.secondaryButtonSize
+                    glyphSize: WidgetConfiguration.entryRowSecondaryIconSz
                     color: Settings.colors.fgMain
                     opacity: connectBtn.enabled ? 1 : 0.7
 
                     onLeftClicked: root.joinNetwork()
                 }
 
-                // dismissBtn doubles as empty padding aligned with expandBtn
                 SquaredButton {
                     id: dismissBtn
                     Layout.fillHeight: true
                     Layout.preferredWidth: expandBtn.implicitWidth
 
+                    // dismissBtn doubles as empty padding aligned with expandBtn
                     enabled: root.hasError
                     opacity: root.hasError ? 1 : 0
 
                     glyph: Configuration.nwDismissIcon
-                    glyphSize: Configuration.secondaryButtonSize
+                    glyphSize: WidgetConfiguration.entryRowSecondaryIconSz
                     color: Settings.colors.fgMain
 
                     onLeftClicked: Core.Network.clearEntryError(root.model.entryId)
 
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: Configuration.transitionMs
-                            easing.type: Easing.InOutCubic
-                        }
-                    }
+                    Behavior on opacity { Anim {} }
                 }
             }
 
@@ -247,7 +230,7 @@ Controls.Pane {
                     ? Settings.colors.accentError : Settings.colors.fgMain
                 opacity: root.hasError ? 1 : 0.7
                 font.family: Settings.labelFontFamily
-                font.pixelSize: Settings.smallCapsFontSize
+                font.pixelSize: WidgetConfiguration.widgetMsgFieldFontSz
             }
         }
     }

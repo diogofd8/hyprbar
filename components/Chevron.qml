@@ -70,6 +70,6 @@ Item {
         id: contentContainer
 
         anchors.verticalCenter: parent.verticalCenter
-        x: Core.ChevronGeometry.calcContentOffset(root.height, root.leftCap) + root.contentLeftPadding
+        x: Core.ChevronGeometry.calcCapBoundingBox(root.height, root.leftCap) + root.contentLeftPadding
     }
 }

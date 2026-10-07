@@ -18,7 +18,7 @@ Singleton {
         available ? Math.round(targetRaw / maxRaw * 100) : 0
 
     readonly property int levelIndex:
-        ModelHelpers.thresholdIndex(value, Settings.brightnessLevelThresholds)
+        Helpers.thresholdIndex(value, Settings.brightnessLevelThresholds)
 
     readonly property string level:
         Settings.brightnessLevelThresholds[levelIndex].state

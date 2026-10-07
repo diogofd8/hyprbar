@@ -299,9 +299,9 @@ Singleton {
     readonly property var discoveredDevices: discoveredModel
 
     onEntrySnapshotsChanged: {
-        ModelHelpers.syncModel(connectedModel, root.entrySnapshots.connected, "address")
-        ModelHelpers.syncModel(pairedModel, root.entrySnapshots.paired, "address")
-        ModelHelpers.syncModel(discoveredModel, root.entrySnapshots.discovered, "address")
+        Helpers.syncModel(connectedModel, root.entrySnapshots.connected, "address")
+        Helpers.syncModel(pairedModel, root.entrySnapshots.paired, "address")
+        Helpers.syncModel(discoveredModel, root.entrySnapshots.discovered, "address")
     }
 
     ListModel { id: connectedModel }

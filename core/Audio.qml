@@ -61,12 +61,12 @@ Singleton {
     property var sourcePortRecords: []
 
     onOutputDeviceSnapshotsChanged: {
-        ModelHelpers.syncModel(outputDevices, root.outputDeviceSnapshots, "id")
+        Helpers.syncModel(outputDevices, root.outputDeviceSnapshots, "id")
     }
-    onInputDeviceSnapshotsChanged: ModelHelpers.syncModel(inputDevices,
+    onInputDeviceSnapshotsChanged: Helpers.syncModel(inputDevices,
         root.inputDeviceSnapshots, "id")
     onApplicationSnapshotsChanged: {
-        ModelHelpers.syncModel(applications, root.applicationSnapshots, "id")
+        Helpers.syncModel(applications, root.applicationSnapshots, "id")
     }
 
     Process {
@@ -120,9 +120,9 @@ Singleton {
     }
 
     function refreshModels() {
-        ModelHelpers.syncModel(outputDevices, root.outputDeviceSnapshots, "id")
-        ModelHelpers.syncModel(inputDevices, root.inputDeviceSnapshots, "id")
-        ModelHelpers.syncModel(applications, root.applicationSnapshots, "id")
+        Helpers.syncModel(outputDevices, root.outputDeviceSnapshots, "id")
+        Helpers.syncModel(inputDevices, root.inputDeviceSnapshots, "id")
+        Helpers.syncModel(applications, root.applicationSnapshots, "id")
     }
 
     // ────── Actions ──────
@@ -444,7 +444,7 @@ Singleton {
         const percent = Math.round(audio.volume * 100)
         const muted = audio.muted
         const headphones = !isInput && isHeadphoneNode(node)
-        const index = ModelHelpers.thresholdIndex(percent, Settings.volumeLevelThresholds)
+        const index = Helpers.thresholdIndex(percent, Settings.volumeLevelThresholds)
 
         return {
             available: true,

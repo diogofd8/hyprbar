@@ -102,8 +102,8 @@ Singleton {
     readonly property var peripheralEntrySnapshots: root.discoveryActive
         ? makeEntries(peripheralBatteries, "device") : []
 
-    onBatteryEntrySnapshotsChanged: ModelHelpers.syncModel(batteryEntries, root.batteryEntrySnapshots, "id")
-    onPeripheralEntrySnapshotsChanged: ModelHelpers.syncModel(peripheralEntries, root.peripheralEntrySnapshots, "id")
+    onBatteryEntrySnapshotsChanged: Helpers.syncModel(batteryEntries, root.batteryEntrySnapshots, "id")
+    onPeripheralEntrySnapshotsChanged: Helpers.syncModel(peripheralEntries, root.peripheralEntrySnapshots, "id")
 
     ListModel { id: batteryEntries }
     ListModel { id: peripheralEntries }
@@ -253,7 +253,7 @@ Singleton {
     }
 
     function resolveState(value, thresholds) {
-        return thresholds[ModelHelpers.thresholdIndex(value, thresholds)].state
+        return thresholds[Helpers.thresholdIndex(value, thresholds)].state
     }
 
     // ────── Debug Trace ──────

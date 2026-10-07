@@ -79,7 +79,7 @@ Singleton {
     readonly property bool ethernetConnected: root.ethernetDevice !== null
         && root.ethernetDevice.connected
     function wifiSignalLevel(strength) {
-        return ModelHelpers.thresholdIndex(strength, Settings.wifiSignalThresholds)
+        return Helpers.thresholdIndex(strength, Settings.wifiSignalThresholds)
     }
     readonly property string icon: {
         if (root.ethernetConnected) return Settings.networkEthIcon
@@ -170,8 +170,8 @@ Singleton {
     readonly property var activeConnections: activeModel
     readonly property var availableConnections: availableModel
     onEntrySnapshotsChanged: {
-        ModelHelpers.syncModel(activeModel, root.entrySnapshots.active, "entryId")
-        ModelHelpers.syncModel(availableModel, root.entrySnapshots.available, "entryId")
+        Helpers.syncModel(activeModel, root.entrySnapshots.active, "entryId")
+        Helpers.syncModel(availableModel, root.entrySnapshots.available, "entryId")
     }
     ListModel { id: activeModel }
     ListModel { id: availableModel }

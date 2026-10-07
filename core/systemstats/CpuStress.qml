@@ -176,6 +176,6 @@ Singleton {
     }
 
     function resolveState(value, thresholds) {
-        return thresholds[Core.ModelHelpers.thresholdIndex(value, thresholds)].state
+        return thresholds[Core.Helpers.thresholdIndex(value, thresholds)].state
     }
 }

@@ -77,8 +77,8 @@ Singleton {
 
     ListModel { id: slotModel }
 
-    onSlotSnapshotsChanged: Core.ModelHelpers.syncModel(slotModel, root.slotSnapshots, "slotId")
-    Component.onCompleted: Core.ModelHelpers.syncModel(slotModel, root.slotSnapshots, "slotId")
+    onSlotSnapshotsChanged: Core.Helpers.syncModel(slotModel, root.slotSnapshots, "slotId")
+    Component.onCompleted: Core.Helpers.syncModel(slotModel, root.slotSnapshots, "slotId")
 
     // Focus a slot by its workspace id.
     function activate(slotId: int): void {

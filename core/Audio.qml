@@ -61,12 +61,12 @@ Singleton {
     property var sourcePortRecords: []
 
     onOutputDeviceSnapshotsChanged: {
-        root.syncModel(outputDevices, root.outputDeviceSnapshots)
+        ModelHelpers.syncModel(outputDevices, root.outputDeviceSnapshots, "id")
     }
-    onInputDeviceSnapshotsChanged: root.syncModel(inputDevices,
-        root.inputDeviceSnapshots)
+    onInputDeviceSnapshotsChanged: ModelHelpers.syncModel(inputDevices,
+        root.inputDeviceSnapshots, "id")
     onApplicationSnapshotsChanged: {
-        root.syncModel(applications, root.applicationSnapshots)
+        ModelHelpers.syncModel(applications, root.applicationSnapshots, "id")
     }
 
     Process {
@@ -120,38 +120,9 @@ Singleton {
     }
 
     function refreshModels() {
-        syncModel(outputDevices, root.outputDeviceSnapshots)
-        syncModel(inputDevices, root.inputDeviceSnapshots)
-        syncModel(applications, root.applicationSnapshots)
-    }
-
-    function syncModel(model, entries) {
-        const ids = new Set(entries.map(entry => entry.id))
-
-        for (let i = model.count - 1; i >= 0; --i) {
-            if (!ids.has(model.get(i).id))
-                model.remove(i)
-        }
-
-        for (let i = 0; i < entries.length; ++i) {
-            const entry = entries[i]
-            let existing = i
-
-            while (existing < model.count && model.get(existing).id !== entry.id)
-                ++existing
-
-            if (existing === model.count)
-                model.insert(i, entry)
-            else {
-                if (existing !== i)
-                    model.move(existing, i, 1)
-
-                for (const key of Object.keys(entry)) {
-                    if (model.get(i)[key] !== entry[key])
-                        model.setProperty(i, key, entry[key])
-                }
-            }
-        }
+        ModelHelpers.syncModel(outputDevices, root.outputDeviceSnapshots, "id")
+        ModelHelpers.syncModel(inputDevices, root.inputDeviceSnapshots, "id")
+        ModelHelpers.syncModel(applications, root.applicationSnapshots, "id")
     }
 
     // ────── Actions ──────

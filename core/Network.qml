@@ -175,8 +175,8 @@ Singleton {
     readonly property var activeConnections: activeModel
     readonly property var availableConnections: availableModel
     onEntrySnapshotsChanged: {
-        syncModel(activeModel, root.entrySnapshots.active)
-        syncModel(availableModel, root.entrySnapshots.available)
+        ModelHelpers.syncModel(activeModel, root.entrySnapshots.active, "entryId")
+        ModelHelpers.syncModel(availableModel, root.entrySnapshots.available, "entryId")
     }
     ListModel { id: activeModel }
     ListModel { id: availableModel }
@@ -240,26 +240,6 @@ Singleton {
             canEdit: uuid !== ""
         }
     }
-    function syncModel(model, entries) {
-        const ids = new Set(entries.map(entry => entry.entryId))
-        for (let i = model.count - 1; i >= 0; --i) {
-            if (!ids.has(model.get(i).entryId)) model.remove(i)
-        }
-        for (let i = 0; i < entries.length; ++i) {
-            const row = entries[i]
-            let existing = i
-            while (existing < model.count && model.get(existing).entryId !== row.entryId)
-                ++existing
-            if (existing === model.count) model.insert(i, row)
-            else {
-                if (existing !== i) model.move(existing, i, 1)
-                for (const key of Object.keys(row)) {
-                    if (model.get(i)[key] !== row[key]) model.setProperty(i, key, row[key])
-                }
-            }
-        }
-    }
-
     // The popup owns discovery demand. No scans are requested by the bar.
     property bool discoveryActive: false
     readonly property bool passwordPromptActive: priv.operationStatus === "PasswordRequired"

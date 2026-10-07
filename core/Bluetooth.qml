@@ -299,9 +299,9 @@ Singleton {
     readonly property var discoveredDevices: discoveredModel
 
     onEntrySnapshotsChanged: {
-        syncModel(connectedModel, root.entrySnapshots.connected)
-        syncModel(pairedModel, root.entrySnapshots.paired)
-        syncModel(discoveredModel, root.entrySnapshots.discovered)
+        ModelHelpers.syncModel(connectedModel, root.entrySnapshots.connected, "address")
+        ModelHelpers.syncModel(pairedModel, root.entrySnapshots.paired, "address")
+        ModelHelpers.syncModel(discoveredModel, root.entrySnapshots.discovered, "address")
     }
 
     ListModel { id: connectedModel }
@@ -356,32 +356,6 @@ Singleton {
             canDisconnect: !busy && device.connected && state === "Connected",
             canForget: !busy && (known || device.connected),
             canCancel: mine && (priv.operationMode === "pair" || priv.operationMode === "connect")
-        }
-    }
-
-    function syncModel(model, entries) {
-        const addresses = new Set(entries.map(entry => entry.address))
-        for (let i = model.count - 1; i >= 0; --i) {
-            if (!addresses.has(model.get(i).address))
-                model.remove(i)
-        }
-
-        for (let i = 0; i < entries.length; ++i) {
-            const row = entries[i]
-            let existing = i
-            while (existing < model.count && model.get(existing).address !== row.address)
-                ++existing
-
-            if (existing === model.count)
-                model.insert(i, row)
-            else {
-                if (existing !== i)
-                    model.move(existing, i, 1)
-                for (const key of Object.keys(row)) {
-                    if (model.get(i)[key] !== row[key])
-                        model.setProperty(i, key, row[key])
-                }
-            }
         }
     }
 

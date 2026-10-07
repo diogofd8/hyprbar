@@ -102,8 +102,8 @@ Singleton {
     readonly property var peripheralEntrySnapshots: root.discoveryActive
         ? makeEntries(peripheralBatteries, "device") : []
 
-    onBatteryEntrySnapshotsChanged: syncModel(batteryEntries, root.batteryEntrySnapshots)
-    onPeripheralEntrySnapshotsChanged: syncModel(peripheralEntries, root.peripheralEntrySnapshots)
+    onBatteryEntrySnapshotsChanged: ModelHelpers.syncModel(batteryEntries, root.batteryEntrySnapshots, "id")
+    onPeripheralEntrySnapshotsChanged: ModelHelpers.syncModel(peripheralEntries, root.peripheralEntrySnapshots, "id")
 
     ListModel { id: batteryEntries }
     ListModel { id: peripheralEntries }
@@ -186,32 +186,6 @@ Singleton {
                 healthSupported: value.healthSupported
             }
         })
-    }
-
-    function syncModel(model, entries) {
-        const ids = new Set(entries.map(entry => entry.id))
-        for (let i = model.count - 1; i >= 0; --i) {
-            if (!ids.has(model.get(i).id))
-                model.remove(i)
-        }
-
-        for (let i = 0; i < entries.length; ++i) {
-            const entry = entries[i]
-            let existing = i
-            while (existing < model.count && model.get(existing).id !== entry.id)
-                ++existing
-
-            if (existing === model.count)
-                model.insert(i, entry)
-            else {
-                if (existing !== i)
-                    model.move(existing, i, 1)
-                for (const key of Object.keys(entry)) {
-                    if (model.get(i)[key] !== entry[key])
-                        model.setProperty(i, key, entry[key])
-                }
-            }
-        }
     }
 
     function statusName(state) {

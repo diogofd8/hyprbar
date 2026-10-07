@@ -77,8 +77,8 @@ Singleton {
 
     ListModel { id: slotModel }
 
-    onSlotSnapshotsChanged: syncModel(slotModel, root.slotSnapshots)
-    Component.onCompleted: syncModel(slotModel, root.slotSnapshots)
+    onSlotSnapshotsChanged: Core.ModelHelpers.syncModel(slotModel, root.slotSnapshots, "slotId")
+    Component.onCompleted: Core.ModelHelpers.syncModel(slotModel, root.slotSnapshots, "slotId")
 
     // Focus a slot by its workspace id.
     function activate(slotId: int): void {
@@ -90,32 +90,6 @@ Singleton {
             ws.activate();
         else
             Core.Actions.focusWorkspace(String(slotId));
-    }
-
-    function syncModel(model, entries) {
-        const ids = new Set(entries.map(entry => entry.slotId));
-        for (let i = model.count - 1; i >= 0; --i) {
-            if (!ids.has(model.get(i).slotId))
-                model.remove(i);
-        }
-
-        for (let i = 0; i < entries.length; ++i) {
-            const entry = entries[i];
-            let existing = i;
-            while (existing < model.count && model.get(existing).slotId !== entry.slotId)
-                ++existing;
-
-            if (existing === model.count)
-                model.insert(i, entry);
-            else {
-                if (existing !== i)
-                    model.move(existing, i, 1);
-                for (const key of Object.keys(entry)) {
-                    if (model.get(i)[key] !== entry[key])
-                        model.setProperty(i, key, entry[key]);
-                }
-            }
-        }
     }
 
     // `ws` is a HyprlandWorkspace, or null when the compositor has no object

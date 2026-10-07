@@ -18,7 +18,7 @@ Singleton {
         available ? Math.round(targetRaw / maxRaw * 100) : 0
 
     readonly property int levelIndex:
-        resolveLevelIndex(value, Settings.brightnessLevelThresholds)
+        ModelHelpers.thresholdIndex(value, Settings.brightnessLevelThresholds)
 
     readonly property string level:
         Settings.brightnessLevelThresholds[levelIndex].state
@@ -157,19 +157,6 @@ Singleton {
     // another tool — shows up here and wins. Our own writes land back with
     // rawValue already equal to targetRaw, so they change nothing.
     onRawValueChanged: if (rawValue !== targetRaw) root.targetRaw = rawValue
-
-    function resolveLevelIndex(value, thresholds) {
-        let index = 0
-
-        for (let i = 0; i < thresholds.length; i++) {
-            if (value >= thresholds[i].threshold)
-                index = i
-            else
-                break
-        }
-
-        return index
-    }
 
     Process {
         id: setter

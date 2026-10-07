@@ -5,6 +5,7 @@ import Quickshell
 import Quickshell.Io
 
 import qs
+import qs.core as Core
 
 Singleton {
     id: root
@@ -175,15 +176,6 @@ Singleton {
     }
 
     function resolveState(value, thresholds) {
-        let state = "idle"
-
-        for (const entry of thresholds) {
-            if (value >= entry.threshold)
-                state = entry.state
-            else
-                break
-        }
-
-        return state
+        return thresholds[Core.ModelHelpers.thresholdIndex(value, thresholds)].state
     }
 }

@@ -79,12 +79,7 @@ Singleton {
     readonly property bool ethernetConnected: root.ethernetDevice !== null
         && root.ethernetDevice.connected
     function wifiSignalLevel(strength) {
-        let level = 0
-        for (let i = 0; i < Settings.wifiSignalThresholds.length; ++i) {
-            if (strength >= Settings.wifiSignalThresholds[i].threshold)
-                level = i
-        }
-        return level
+        return ModelHelpers.thresholdIndex(strength, Settings.wifiSignalThresholds)
     }
     readonly property string icon: {
         if (root.ethernetConnected) return Settings.networkEthIcon

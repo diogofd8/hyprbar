@@ -253,16 +253,7 @@ Singleton {
     }
 
     function resolveState(value, thresholds) {
-        let state = "empty"
-
-        for (const entry of thresholds) {
-            if (value >= entry.threshold)
-                state = entry.state
-            else
-                break
-        }
-
-        return state
+        return thresholds[ModelHelpers.thresholdIndex(value, thresholds)].state
     }
 
     // ────── Debug Trace ──────

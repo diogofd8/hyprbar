@@ -6,6 +6,7 @@ import Quickshell.Io
 import Qt.labs.folderlistmodel
 
 import qs
+import qs.core as Core
 
 Singleton {
     id: root
@@ -222,15 +223,6 @@ Singleton {
     }
 
     function resolveState(value, thresholds) {
-        let state = "normal"
-
-        for (const entry of thresholds) {
-            if (value >= entry.threshold)
-                state = entry.state
-            else
-                break
-        }
-
-        return state
+        return thresholds[Core.ModelHelpers.thresholdIndex(value, thresholds)].state
     }
 }

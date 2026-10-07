@@ -444,7 +444,7 @@ Singleton {
         const percent = Math.round(audio.volume * 100)
         const muted = audio.muted
         const headphones = !isInput && isHeadphoneNode(node)
-        const index = resolveLevelIndex(percent, Settings.volumeLevelThresholds)
+        const index = ModelHelpers.thresholdIndex(percent, Settings.volumeLevelThresholds)
 
         return {
             available: true,
@@ -457,21 +457,6 @@ Singleton {
             name: node.name,
             description: node.description
         }
-    }
-
-    // Callers use the index to read the threshold state; icon lookup uses
-    // that state rather than the icon's position in an array.
-    function resolveLevelIndex(value, thresholds) {
-        let index = 0
-
-        for (let i = 0; i < thresholds.length; i++) {
-            if (value >= thresholds[i].threshold)
-                index = i
-            else
-                break
-        }
-
-        return index
     }
 
     function resolveIcon(levelIndex, muted, headphones, isInput) {

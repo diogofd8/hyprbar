@@ -2,9 +2,10 @@ pragma Singleton
 
 import Quickshell
 
-// Stateless ListModel operations. Each service owns its snapshots and decides
-// when to sync; rows need a unique, stable key role.
+// Stateless model and threshold operations. Services own their state and
+// decide when to update it.
 Singleton {
+    // Entries need a unique, stable key role.
     function syncModel(model, entries, key) {
         const keys = new Set(entries.map(entry => entry[key]))
 
@@ -30,5 +31,18 @@ Singleton {
                 }
             }
         }
+    }
+
+    // The first entry is the fallback. Thresholds must be nonempty and sorted
+    // in ascending order; a value exactly on a threshold selects that entry.
+    function thresholdIndex(value, thresholds) {
+        let index = 0
+        for (let i = 1; i < thresholds.length; ++i) {
+            if (value >= thresholds[i].threshold)
+                index = i
+            else
+                break
+        }
+        return index
     }
 }

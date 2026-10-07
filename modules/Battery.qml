@@ -15,23 +15,6 @@ Chevron {
 
     bgFill: Settings.colors.bgTint1
 
-    // PowerSupply hands over a state; turning that into a colour is the only
-    // battery logic that belongs in the view. Charging wins over level, so a
-    // pack topping up from 5% reads as charging rather than as an alert.
-    function levelColor(battery) {
-        if (battery.charging)
-            return Settings.colors.accentCharging
-
-        switch (battery.state) {
-        case "empty":
-            return Settings.colors.accentError
-        case "alert":
-            return Settings.colors.accentAlert
-        default:
-            return Settings.colors.fgMain
-        }
-    }
-
     Row {
         Row {
             spacing: -Core.ChevronGeometry.calcCapWidth(height)
@@ -50,7 +33,7 @@ Chevron {
 
                 Glyph {
                     text: Core.PowerSupply.internal.icon
-                    color: root.levelColor(Core.PowerSupply.internal)
+                    color: Core.Helpers.batteryStatusColor(Core.PowerSupply.internal)
 
                     NotificationDot {
                         visible: Core.PowerSupply.internal.active
@@ -74,7 +57,7 @@ Chevron {
 
                 Glyph {
                     text: Core.PowerSupply.external.icon
-                    color: root.levelColor(Core.PowerSupply.external)
+                    color: Core.Helpers.batteryStatusColor(Core.PowerSupply.external)
 
                     NotificationDot {
                         visible: Core.PowerSupply.external.active

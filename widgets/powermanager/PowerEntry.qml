@@ -5,12 +5,14 @@ import QtQuick.Controls as Controls
 import qs
 import qs.widgets
 import qs.components
+import qs.core as Core
 
 Controls.Pane {
     id: root
     required property var model
 
     readonly property bool hasDetails: shouldShowBatteryDetails()
+    readonly property color statusColor: Core.Helpers.batteryStatusColor(root.model)
 
     // ────── Dimensioning ──────
     leftPadding: WidgetConfiguration.entryHPadding
@@ -39,7 +41,7 @@ Controls.Pane {
             icon: root.model.icon
             iconSize: WidgetConfiguration.entryRowMainIconSz
             useMetrics: false
-            iconColor: root.statusColor()
+            iconColor: root.statusColor
         }
 
         ColumnLayout {
@@ -68,7 +70,7 @@ Controls.Pane {
                 Text {
                     visible: root.model.statusText.length > 0
                     text: shortStatus(root.model.statusText)
-                    color: root.statusColor()
+                    color: root.statusColor
                     opacity: Settings.colors.dimOpacity
                     font.family: Settings.labelFontFamily
                     font.pixelSize: WidgetConfiguration.widgetMainFontSz
@@ -172,16 +174,6 @@ Controls.Pane {
         if (root.model.healthSupported)
             return true
         return false
-    }
-
-    function statusColor() {
-        if (root.model.charging)
-            return Settings.colors.accentCharging
-        if (root.model.state === "empty")
-            return Settings.colors.accentError
-        if (root.model.state === "alert")
-            return Settings.colors.accentAlert
-        return Settings.colors.fgMain
     }
 
     function formatDuration(seconds) {

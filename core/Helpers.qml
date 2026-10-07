@@ -2,8 +2,10 @@ pragma Singleton
 
 import Quickshell
 
-// Stateless model and threshold operations. Services own their state and
-// decide when to update it.
+import qs
+
+// Stateless operations shared by services and views. Callers own their state
+// and decide when to update it.
 Singleton {
     // Entries need a unique, stable key role.
     function syncModel(model, entries, key) {
@@ -44,5 +46,17 @@ Singleton {
                 break
         }
         return index
+    }
+
+    // Charging takes precedence over battery level. The caller supplies the
+    // active palette so this helper does not own theme or UPower state.
+    function batteryStatusColor(battery) {
+        if (battery.charging)
+            return Settings.colors.accentCharging
+        if (battery.state === "empty")
+            return Settings.colors.accentError
+        if (battery.state === "alert")
+            return Settings.colors.accentAlert
+        return Settings.colors.fgMain
     }
 }

@@ -24,6 +24,10 @@ ChevronButton {
     readonly property bool trayHasContent: TrayService.SystemTray.items.values.some(
         item => SysTrayUI.Configuration.isVisible(item)
     )
+    readonly property bool trayNeedsAttention: TrayService.SystemTray.items.values.some(
+        item => SysTrayUI.Configuration.isVisible(item)
+            && item.status === TrayService.Status.NeedsAttention
+    )
 
     onLeftClicked: sysTray.toggle()
 
@@ -38,7 +42,7 @@ ChevronButton {
         Behavior on rotation { Anim { duration: Motion.fastMs } }
 
         NotificationDot {
-            visible: !sysTray.isOpen && root.trayHasContent
+            visible: !sysTray.isOpen && root.trayNeedsAttention
             dotColor: Settings.colors.accentAlert
             dotBgColor: Settings.colors.bgTint1
         }

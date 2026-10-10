@@ -4,6 +4,7 @@ Item {
     id: root
 
     property color color
+    property int orientation: Qt.Horizontal
     // Logical thickness, rounded up to whole device pixels
     property real thickness: 1
 
@@ -14,19 +15,24 @@ Item {
     readonly property int devicePixels: Math.max(1,
         Math.ceil(root.thickness * root.dpr - root.devicePixelRoundingTolerance))
 
-    readonly property real windowY: {
-        let y = 0
+    // Align the thickness axis to the window's device-pixel grid.
+    readonly property real windowPosition: {
+        let position = 0
         for (let item = root; item; item = item.parent)
-            y += item.y
-        return y
+            position += root.orientation === Qt.Vertical ? item.x : item.y
+        return position
     }
+    readonly property real alignedOffset:
+        Math.round(root.windowPosition * root.dpr) / root.dpr - root.windowPosition
 
-    implicitHeight: root.thickness
+    implicitWidth: root.orientation === Qt.Vertical ? root.thickness : 0
+    implicitHeight: root.orientation === Qt.Horizontal ? root.thickness : 0
 
     Rectangle {
-        y: Math.round(root.windowY * root.dpr) / root.dpr - root.windowY
-        width: parent.width
-        height: root.devicePixels / root.dpr
+        x: root.orientation === Qt.Vertical ? root.alignedOffset : 0
+        y: root.orientation === Qt.Horizontal ? root.alignedOffset : 0
+        width: root.orientation === Qt.Vertical ? root.devicePixels / root.dpr : parent.width
+        height: root.orientation === Qt.Vertical ? parent.height : root.devicePixels / root.dpr
         color: root.color
     }
 }

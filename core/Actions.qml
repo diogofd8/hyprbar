@@ -61,7 +61,7 @@ Singleton {
     }
 
     function notificationMenu(): void {
-        run(["swaync-client", "-t"]);
+        Notifications.requestOpen();
     }
 
     function networkManager(uuid): void {

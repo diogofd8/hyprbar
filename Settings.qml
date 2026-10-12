@@ -47,6 +47,42 @@ Singleton {
     readonly property int actionScrollDelta: 25
     readonly property var popupCloseKeys: [Qt.Key_Escape, Qt.Key_Q]
 
+    // ────── Notifications ──────
+    readonly property int notificationHistoryLimit: 25
+    readonly property int notificationPopupLimit: 3
+    // Default toast timeouts in milliseconds; applications may override them.
+    readonly property int notificationTimeout: 5000
+    readonly property int notificationLowTimeout: 2500
+    readonly property var notificationSilentApps: ["Spotify"]
+
+    // ────── Notification Popups ──────
+    readonly property int notificationPopupWidth: 420
+    readonly property int notificationPopupMargin: 8
+    readonly property int notificationPopupSpacing: 8
+    readonly property int notificationPopupPadding: 6
+    readonly property int notificationPopupContentSpacing: 4
+    readonly property int notificationPopupHeaderSpacing: 8
+
+    readonly property int notificationPopupFontSize: 11
+    readonly property int notificationPopupTitleFontSize: 12
+    readonly property int notificationPopupAppIconSize: 18
+    readonly property int notificationPopupButtonIconSize: 16
+    readonly property int notificationPopupButtonPadding: 4
+
+    readonly property int notificationPopupAttentionBarWidth: 2
+    readonly property int notificationPopupImageHeight: 120
+    readonly property real notificationPopupImageSourceScale: 2
+
+    readonly property int notificationPopupTitleLineLimit: 3
+    readonly property int notificationPopupBodyLineLimit: 4
+    // Qt Text uses the maximum signed int for unlimited lines.
+    readonly property int notificationPopupExpandedBodyLineLimit: 2147483647
+
+    readonly property var notificationPopupIcon: ({
+        clear: "󰅖",
+        expand: ""
+    })
+
     // ────── Typography ──────
     readonly property string labelFontFamily: "JetBrains Mono"
     readonly property int labelFontSize: 14
@@ -77,6 +113,7 @@ Singleton {
         critical: "󱃂"
     })
     readonly property var notificationIcon: "󰂚"
+    readonly property string notificationAppFallbackIcon: "󰀻"
     readonly property var bluetoothOffIcon: "󰂲"
     readonly property var bluetoothOnIcon: "󰂯"
     readonly property var bluetoothConnectedIcon: "󰂰"

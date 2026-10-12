@@ -11,6 +11,14 @@ option for single-battery laptops. Everything else — glyphs, fonts, colours, m
 
 Most modules respond to the mouse: scroll to change volume and brightness, left-click to mute, right-click to switch the volume module between output and input, and click the vitals, weather and date segments to open a floating terminal popup.
 
+Hyprbar also displays notification toasts, so another notification daemon such as
+SwayNC must not run alongside it. The center can be toggled from a key binding with
+`qs ipc -c hyprbar call notifications toggle`. History and do not disturb survive
+hot reloads within the running session; they are not saved across restarts. History
+limits, toast timeouts, silent applications, and popup styling are configured in
+`Settings.qml`. Popup QML lives in `popups/`; manager dimensions and spacing are in
+`widgets/notificationmanager/Configuration.qml`.
+
 ## Dependencies
 
 ### System services
@@ -52,7 +60,6 @@ These support optional click actions and modules. Install only the parts you use
 | `rofi` | app launcher, power menu |
 | `alacritty` | floating terminal popups |
 | `clipse` (AUR) | clipboard manager |
-| `swaync` | notification centre |
 | `btop` | vitals popup |
 | `curl` | weather popup (`wttr.in`) |
 | `util-linux` | `cal`, calendar popup |

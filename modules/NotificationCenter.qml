@@ -23,7 +23,7 @@ ChevronButton {
         icon: Settings.notificationIcon
         NotificationDot {
             visible: !notificationCenter.isOpen && Core.Notifications.count > 0
-            dotColor: Settings.colors.accentMain
+            dotColor: Settings.colors.accentAlert
             dotBgColor: root.bgFill
         }
     }

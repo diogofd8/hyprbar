@@ -28,8 +28,10 @@ Controls.Pane {
         easing.bezierCurve: Motion.exitCurve
 
         onFinished: {
+            // Removal can destroy this QML context. Only surviving surfaces
+            // should reset, after the model has finished removing entries.
+            Qt.callLater(root.resetDismissProgress)
             root.finishDismissal()
-            root.dismissProgress = 0
         }
     }
 
@@ -54,5 +56,9 @@ Controls.Pane {
             for (const entry of entries)
                 root.service.dismiss(entry)
         }
+    }
+
+    function resetDismissProgress(): void {
+        root.dismissProgress = 0
     }
 }

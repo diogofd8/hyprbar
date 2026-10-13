@@ -12,6 +12,9 @@ Scope {
     property bool alive: true
     property bool popupVisible: false
     property bool popupHovered: false
+    property bool popupPinned: false
+    // Zero while expiry is stopped; the toast uses this deadline for its ring.
+    property double popupExpiresAt: 0
     // Native closure can precede deferred destruction of the QML record/cards.
     readonly property int notificationId: notification?.id ?? 0
     readonly property string appName: notification?.appName || "Notification"
@@ -26,12 +29,15 @@ Scope {
     readonly property real timeout: !notification ? 0 : notification.expireTimeout >= 0
         ? notification.expireTimeout : root.urgency === NotificationUrgency.Critical
         ? 0 : root.urgency === NotificationUrgency.Low
-        ? Settings.notificationLowTimeout : Settings.notificationTimeout
+        ? Settings.notificationLowTimeoutMs : Settings.notificationTimeoutMs
 
     function restartTimeout(): void {
         expiry.stop()
-        if (root.popupVisible && !root.popupHovered && root.timeout > 0)
+        root.popupExpiresAt = 0
+        if (root.popupVisible && !root.popupHovered && !root.popupPinned && root.timeout > 0) {
             expiry.start()
+            root.popupExpiresAt = Date.now() + expiry.interval
+        }
     }
     function refresh(): void {
         if (root.alive)
@@ -40,6 +46,7 @@ Scope {
 
     onPopupVisibleChanged: restartTimeout()
     onPopupHoveredChanged: restartTimeout()
+    onPopupPinnedChanged: restartTimeout()
     Timer {
         id: expiry
         interval: Math.max(1, root.timeout)

@@ -18,18 +18,22 @@ PanelWindow {
     }
 
     margins {
-        top: Settings.barHeight + Settings.notificationPopupMargin
-        right: Settings.notificationPopupMargin
+        top: Settings.barHeight + PopupConfiguration.notificationPopupMarginY
+        right: PopupConfiguration.notificationPopupMarginX
     }
 
     exclusionMode: ExclusionMode.Ignore
     color: "transparent"
     visible: Core.Notifications.popupModel.count > 0
-    implicitWidth: Settings.notificationPopupWidth
-    implicitHeight: root.popupHeight()
+    implicitWidth: PopupConfiguration.notificationPopupWidth
+    implicitHeight: Math.max(1, root.screen.height - Settings.barHeight - 2 * PopupConfiguration.notificationPopupMarginY)
+    mask: Region { item: viewport }
 
     Flickable {
-        anchors.fill: parent
+        id: viewport
+
+        width: parent.width
+        height: Math.min(contents.implicitHeight, parent.height)
         contentWidth: width
         contentHeight: contents.implicitHeight
         clip: true
@@ -41,7 +45,7 @@ PanelWindow {
             id: contents
 
             width: parent.width
-            spacing: Settings.notificationPopupSpacing
+            spacing: PopupConfiguration.notificationPopupSpacing
 
             Repeater {
                 model: Core.Notifications.popupModel
@@ -50,7 +54,6 @@ PanelWindow {
                     id: toast
 
                     width: contents.width
-                    popup: true
 
                     onHoveredChanged: {
                         if (toast.entry)
@@ -59,12 +62,5 @@ PanelWindow {
                 }
             }
         }
-    }
-
-    // ────── Helper Functions ──────
-    function popupHeight(): real {
-        const margin = Settings.notificationPopupMargin
-        const available = root.screen.height - Settings.barHeight - 2 * margin
-        return Math.min(contents.implicitHeight, available)
     }
 }

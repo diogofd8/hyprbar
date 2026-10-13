@@ -47,6 +47,14 @@ Singleton {
     readonly property int actionScrollDelta: 25
     readonly property var popupCloseKeys: [Qt.Key_Escape, Qt.Key_Q]
 
+    // ────── Notification Popup Settings ──────
+    readonly property int notificationHistoryLimit: 25
+    readonly property int notificationPopupLimit: 5
+    // Default toast timeouts - applications may override them.
+    readonly property int notificationTimeoutMs: 5000
+    readonly property int notificationLowTimeoutMs: 2500
+    readonly property var notificationSilentApps: ["Spotify"]
+
     // ────── Typography ──────
     readonly property string labelFontFamily: "JetBrains Mono"
     readonly property int labelFontSize: 14
@@ -77,6 +85,7 @@ Singleton {
         critical: "󱃂"
     })
     readonly property var notificationIcon: "󰂚"
+    readonly property string notificationAppFallbackIcon: "󰀻"
     readonly property var bluetoothOffIcon: "󰂲"
     readonly property var bluetoothOnIcon: "󰂯"
     readonly property var bluetoothConnectedIcon: "󰂰"

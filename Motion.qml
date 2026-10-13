@@ -17,6 +17,7 @@ Singleton {
     readonly property int squaredButtonPressMs: 200
     readonly property int squaredButtonReleaseMs: 300
     readonly property int activitySpinMs: 1500
+    readonly property int notificationDismissMs: 200
 
     // ────── Angles ──────
     readonly property real squaredButtonPressAngle: -45

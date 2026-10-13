@@ -24,6 +24,7 @@ Item {
         glyphItem.implicitHeight) + root.padding
     property real verticalOffset
     property bool useMetrics
+    property bool alignWhenCentered: true
 
     property bool rotateOnClick: false
     property alias glyphRotation: glyphItem.rotation
@@ -52,6 +53,7 @@ Item {
         id: glyphItem
 
         anchors.centerIn: parent
+        anchors.alignWhenCentered: root.alignWhenCentered
         text: root.glyph
         font.pixelSize: root.glyphSize
         font.family: root.fontFamily

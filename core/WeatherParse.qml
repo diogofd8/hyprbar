@@ -100,6 +100,7 @@ Singleton {
     //   precipitationSum          mm
     //   precipitationProbability  %
     //   windSpeedMax              in WeatherConfig.windSpeedUnit
+    //   windDirectionDominant     degrees clockwise from north
     readonly property var daily: {
         if (!internal.snapshot)
             return [];
@@ -329,7 +330,8 @@ Singleton {
         readonly property var dailyFields: [
             "weather_code", "temperature_2m_max", "temperature_2m_min",
             "sunrise", "sunset", "precipitation_sum",
-            "precipitation_probability_max", "wind_speed_10m_max"
+            "precipitation_probability_max", "wind_speed_10m_max",
+            "wind_direction_10m_dominant"
         ]
 
         // ────── Cache ──────
@@ -533,7 +535,8 @@ Singleton {
                     sunset: pickString(forecast.sunset, i),
                     precipitationSum: pick(forecast.precipitation_sum, i),
                     precipitationProbability: pick(forecast.precipitation_probability_max, i),
-                    windSpeedMax: pick(forecast.wind_speed_10m_max, i)
+                    windSpeedMax: pick(forecast.wind_speed_10m_max, i),
+                    windDirectionDominant: pick(forecast.wind_direction_10m_dominant, i)
                 });
             }
 

@@ -13,10 +13,10 @@ RowLayout {
     property real fontSize: Settings.labelFontSize
     property real verticalOffset: Settings.inducedVerticalOffset
     property string color: Settings.colors.fgMain
+    property bool fontBold: false
 
     readonly property real degreeUnitSpacing: root.unit === "K" ? 1.75 : -1.75
-    readonly property real labelVerticalOffset:
-        (degreeMetrics.ascent - labelMetrics.ascent) / 2
+    readonly property real labelVerticalOffset: (degreeMetrics.ascent - labelMetrics.ascent) / 2
 
     spacing: 0
 
@@ -25,11 +25,9 @@ RowLayout {
         color: root.color
         font.family: root.fontFamily
         font.pixelSize: root.fontSize
+        font.bold: root.fontBold
 
-        Layout.topMargin: root.unit === "K"
-            ? root.verticalOffset
-            : -root.labelVerticalOffset + root.verticalOffset
-
+        Layout.topMargin: root.unit === "K" ? root.verticalOffset : -root.labelVerticalOffset + root.verticalOffset
         Layout.alignment: Qt.AlignVCenter
     }
 
@@ -39,6 +37,7 @@ RowLayout {
         color: root.color
         font.family: Settings.labelFontFamily
         font.pixelSize: Settings.iconFontSize
+        font.bold: root.fontBold
 
         Layout.alignment: Qt.AlignVCenter
     }
@@ -48,11 +47,10 @@ RowLayout {
         color: root.color
         font.family: root.fontFamily
         font.pixelSize: root.fontSize
+        font.bold: root.fontBold
 
         Layout.leftMargin: root.degreeUnitSpacing
-        Layout.topMargin: root.unit === "K"
-            ? root.verticalOffset
-            : -root.labelVerticalOffset + root.verticalOffset
+        Layout.topMargin: root.unit === "K" ? root.verticalOffset : -root.labelVerticalOffset + root.verticalOffset
 
         Layout.alignment: Qt.AlignVCenter
     }

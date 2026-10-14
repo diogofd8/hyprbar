@@ -8,6 +8,8 @@ Row {
     id: root
     spacing: -Core.ChevronGeometry.calcCapWidth(height)
 
+    signal weatherRequested()
+
     ChevronButton {
         height: root.height
         contentLeftPadding: 5
@@ -19,7 +21,7 @@ Row {
         bgFill: Settings.colors.bgTint4
         hoverOpacity: Settings.colors.hoverOpacityStrong
 
-        onLeftClicked: Core.Actions.weatherPopUp()
+        onLeftClicked: root.weatherRequested()
 
         Row {
             spacing: 7

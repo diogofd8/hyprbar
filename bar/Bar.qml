@@ -5,6 +5,8 @@ import Quickshell.Wayland
 import qs
 import qs.components
 import qs.core as Core
+import qs.widgets as Widgets
+import qs.widgets.centerpiece as CenterPieceUI
 
 PanelWindow {
     id: root
@@ -13,6 +15,37 @@ PanelWindow {
     // The shared host is a sibling window, supplied by shell.qml. DropDown
     // controllers find it through their QsWindow attached property.
     property PopoutHost popoutHost: null
+
+    function toggleCenterPiece(page: string): void {
+        const tab = CenterPieceUI.Configuration.tabs.findIndex(entry => entry.key === page)
+        if (tab < 0)
+            return
+
+        const content = centerPiece.loadedItem
+        const activeTab = content ? content.activeTab : centerPiece.initialTab
+        if (centerPiece.isOpen && activeTab === tab) {
+            centerPiece.close()
+            return
+        }
+
+        centerPiece.initialTab = tab
+        if (content)
+            content.activeTab = tab
+        centerPiece.open()
+    }
+
+    DropDown {
+        id: centerPiece
+
+        property int initialTab: 0
+        // A full-width anchor puts the popup at the bar's horizontal center.
+        anchorItem: root.contentItem
+
+        Widgets.CenterPiece {
+            anchors.fill: parent
+            activeTab: centerPiece.initialTab
+        }
+    }
 
     anchors {
         top: true
@@ -66,6 +99,7 @@ PanelWindow {
             anchors.bottom: parent.bottom
 
             anchors.rightMargin: Settings.moduleSpacing - Core.ChevronGeometry.calcCapWidth(height)
+            onCalendarRequested: root.toggleCenterPiece("calendar")
         }
 
         RightSection {
@@ -77,6 +111,7 @@ PanelWindow {
             anchors.bottom: parent.bottom
 
             anchors.leftMargin: Settings.moduleSpacing - Core.ChevronGeometry.calcCapWidth(height)
+            onWeatherRequested: root.toggleCenterPiece("weather")
         }
     }
 

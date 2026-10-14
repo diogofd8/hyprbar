@@ -79,21 +79,4 @@ Singleton {
         run([Quickshell.shellPath("scripts/float_term.sh"), "waybar-vitals", "btop"]);
     }
 
-    function weatherPopUp(): void {
-        run([Quickshell.shellPath("scripts/float_term.sh"),
-            "waybar-weather", "curl", "-s", "wttr.in", "--keep-alive"
-        ]);
-    }
-
-    function calendarPopUp(): void {
-        run([Quickshell.shellPath("scripts/float_term.sh"),
-            "waybar-calendar", "cal", "--keep-alive"
-        ]);
-    }
-
-    function calendarFullPopUp(): void {
-        run([Quickshell.shellPath("scripts/float_term.sh"),
-            "waybar-calendar-full", "cal", "-Y", "--columns", "4", "--keep-alive"
-        ]);
-    }
 }

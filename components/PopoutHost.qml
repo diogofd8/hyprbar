@@ -78,10 +78,15 @@ PanelWindow {
     }
 
     function show(dropdown) {
-        if (!dropdown || !dropdown.menuContent || root.current === dropdown)
+        if (!dropdown || !dropdown.menuContent)
             return
 
         ++root.interactionSerial
+        // Opening an existing popup can still handle a bar click, for example
+        // selecting another CenterPiece page. Keep barTapped() from closing it.
+        if (root.current === dropdown)
+            return
+
         root.current = dropdown
 
         // Reopened during its own close: reverse the reveal

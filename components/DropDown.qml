@@ -23,6 +23,8 @@ Item {
         ? (root.QsWindow.window.popoutHost || null) : null
     readonly property bool isOpen: root.host !== null && root.host.current === root
     readonly property bool contentActive: root.host !== null && root.host.retains(root)
+    readonly property Item loadedItem: root.host
+        ? (root.host.slots.find(slot => slot.owner === root)?.item ?? null) : null
 
     function open() {
         if (root.host)

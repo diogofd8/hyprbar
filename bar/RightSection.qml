@@ -8,12 +8,15 @@ import qs.modules
 RowLayout {
     id: root
 
+    signal weatherRequested()
+
     // Centre modules — adjacent to the centre section.
     RowLayout {
         spacing: Settings.moduleSpacing - Core.ChevronGeometry.calcCapWidth(height)
 
         Weather {
             Layout.fillHeight: true
+            onWeatherRequested: root.weatherRequested()
         }
 
         NotificationCenter {

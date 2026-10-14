@@ -9,6 +9,8 @@ Row {
     id: root
     spacing: -Core.ChevronGeometry.calcCapWidth(height)
 
+    signal calendarRequested()
+
     SystemClock {
         id: clock
         precision: SystemClock.Minutes
@@ -25,8 +27,7 @@ Row {
         bgFill: Settings.colors.bgTint3
         hoverOpacity: Settings.colors.hoverOpacityStrong
 
-        onLeftClicked: Core.Actions.calendarPopUp()
-        onRightClicked: Core.Actions.calendarFullPopUp()
+        onLeftClicked: root.calendarRequested()
 
         Text {
             y: Settings.inducedVerticalOffset
@@ -39,7 +40,7 @@ Row {
         }
     }
 
-    Chevron {
+    ChevronButton {
         height: root.height
         contentLeftPadding: 2
         contentRightPadding: 4
@@ -48,6 +49,9 @@ Row {
         rightCap: Core.ChevronGeometry.Cap.Notch
 
         bgFill: Settings.colors.bgTint4
+        hoverOpacity: Settings.colors.hoverOpacityStrong
+
+        onLeftClicked: root.calendarRequested()
 
         Row {
             spacing: 5

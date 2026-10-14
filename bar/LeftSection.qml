@@ -8,6 +8,8 @@ import qs.modules
 RowLayout {
     id: root
 
+    signal calendarRequested()
+
     // Left modules — adjacent to the screen edge.
     RowLayout {
         spacing: Settings.moduleSpacing - Core.ChevronGeometry.calcCapWidth(height)
@@ -38,6 +40,7 @@ RowLayout {
 
         Date {
             Layout.fillHeight: true
+            onCalendarRequested: root.calendarRequested()
         }
     }
 }

@@ -12,10 +12,8 @@ import "centerpiece" as CenterPieceUI
 Pane {
     id: root
 
-    readonly property int calendarTab: 0
-    readonly property int weatherTab: 1
     readonly property var tabs: CenterPieceUI.Configuration.tabs
-    property int activeTab: weatherTab
+    property int activeTab: root.tabs.findIndex(tab => tab.key === "weather")
 
     implicitWidth: CenterPieceUI.Configuration.widgetWidth
     implicitHeight: CenterPieceUI.Configuration.widgetHeight
@@ -55,7 +53,7 @@ Pane {
                         contentLeftPadding: CenterPieceUI.Configuration.tabIconPaddingX
                         contentRightPadding: CenterPieceUI.Configuration.tabIconPaddingX
 
-                        icon: CenterPieceUI.Configuration.tabIcon[tabEntry.modelData.key]
+                        icon: tabEntry.modelData.icon
                         iconSize: WidgetConfiguration.widgetMainIconSz
                         useMetrics: true
 
@@ -86,18 +84,7 @@ Pane {
             Layout.fillHeight: true
             clip: true
 
-            sourceComponent: selectSourceComponent()
-        }
-    }
-
-    Component { id: calendarPage; CenterPieceUI.CalendarPage {} }
-    Component { id: weatherPage; CenterPieceUI.WeatherPage {} }
-
-    // ────── Helper Functions ──────
-    function selectSourceComponent() {
-        switch (root.activeTab) {
-            case root.calendarTab: return calendarPage;
-            case root.weatherTab: return weatherPage;
+            source: root.tabs[root.activeTab]?.source ?? ""
         }
     }
 }

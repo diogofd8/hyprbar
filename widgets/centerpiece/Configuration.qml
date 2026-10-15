@@ -18,17 +18,11 @@ Singleton {
     readonly property real mainTextFontSz: 18
     readonly property real subTextFontSz: 11
 
-    // ────── Center Piece Icons ──────
-    readonly property var tabIcon: ({
-        calendar: "",
-        weather: ""
-    })
-
-    //  
-
+    // ────── Center Piece Tabs ──────
     readonly property var tabs: [
-        {key: "calendar", label: "Calendar"},
-        {key: "weather", label: "Weather"}
+        {key: "calendar", label: "Calendar", icon: "", source: Qt.resolvedUrl("CalendarPage.qml")},
+        {key: "system", label: "System", icon: "", source: Qt.resolvedUrl("SystemPage.qml")},
+        {key: "weather", label: "Weather", icon: "", source: Qt.resolvedUrl("WeatherPage.qml")},
     ]
 
     // ────── Calendar Page ──────

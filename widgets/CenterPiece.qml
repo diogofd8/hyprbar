@@ -84,14 +84,20 @@ Pane {
         Loader {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            Layout.margins: CenterPieceUI.Configuration.pagePadding
             clip: true
 
-            sourceComponent: root.activeTab === root.calendarTab
-                ? calendarPage : weatherPage
+            sourceComponent: selectSourceComponent()
         }
     }
 
     Component { id: calendarPage; CenterPieceUI.CalendarPage {} }
     Component { id: weatherPage; CenterPieceUI.WeatherPage {} }
+
+    // ────── Helper Functions ──────
+    function selectSourceComponent() {
+        switch (root.activeTab) {
+            case root.calendarTab: return calendarPage;
+            case root.weatherTab: return weatherPage;
+        }
+    }
 }

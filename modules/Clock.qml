@@ -5,7 +5,10 @@ import qs
 import qs.components
 import qs.core as Core
 
-Chevron {
+ChevronButton {
+    id: root
+    signal systemRequested()
+
     contentLeftPadding: 0
     contentRightPadding: 0
 
@@ -13,6 +16,8 @@ Chevron {
     rightCap: Core.ChevronGeometry.Cap.Point
 
     bgFill: Settings.colors.accentMain
+
+    onLeftClicked: root.systemRequested()
 
     SystemClock {
         id: clock

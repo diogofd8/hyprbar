@@ -150,4 +150,87 @@ Singleton {
         const palette = isDay ? weatherGlyphColorDay : weatherGlyphColorNight
         return palette[weatherGlyphCategory[icon]] ?? Settings.colors.fgMain
     }
+
+    // ────── System Page ──────
+    readonly property real sysInfoRowHSpacing: 3
+    readonly property real sysCompositeItemHSpacing: 4
+    readonly property real sysProfileImgSz: 32
+    readonly property real sysEntryFontSz: 13
+    readonly property real sysEntryIconSz: 16
+
+    readonly property var sysClockIcon: ""
+    readonly property var sysDistroIcon: ({
+        // Add the entries you need from: nf-linux-*
+        arch: "",
+        ubuntu: "",
+        fedora: "",
+        tux: ""
+    })
+
+    readonly property var sysDesktopIcon: ({
+        hyprland: "",
+        kde: "",
+        gnome: "",
+        default_shell: ""
+    })
+
+    function desktopIcon(desktopName) {
+        const desktops = desktopName.toLowerCase().split(":");
+
+        for (const desktop of desktops) {
+            if (sysDesktopIcon[desktop])
+                return sysDesktopIcon[desktop];
+        }
+
+        return sysDesktopIcon.default_shell;
+    }
+
+    // ────── MPRIS Player ──────
+    readonly property real mprisVSpacing: 6
+    readonly property real mprisArtPaddingY: 8
+    readonly property real mprisHMargin: 10
+
+    readonly property real mprisArtImgSz: 96
+    readonly property real mprisArtCircumferenceClipRatio: 0.15
+    readonly property real mprisArtCircumferenceWidth: 2
+    readonly property real mprisArtCircumferenceMargin: 9
+
+    readonly property int mprisVisualizerBarCount: 48 // 0 disables the visualizer
+    readonly property int mprisVisualizerFrameRate: 24
+    readonly property real mprisVisualizerBarWidth: 2
+    readonly property real mprisVisualizerBarHeight: 18
+    readonly property real mprisVisualizerBarDistance: 1
+
+    readonly property real mprisMetadataFontSz: 12
+    readonly property real mprisArtistMaxWidthRatio: 0.7
+
+    readonly property real mprisMetadataVSpacing: -1
+    readonly property real mprisMetadataHSpacing: 4
+    readonly property real mprisButtonsPadding: 2
+    readonly property real mprisPlayPausePadding: 10
+    readonly property real mprisPlayPauseBtnSz: 29
+    readonly property real mprisPrevNextBtnSz: 18
+    readonly property real mprisSeekbarPaddingY: 4
+    readonly property real mprisSeekbarPaddingX: 6
+    readonly property real mprisActionBtnPaddingS: 4
+    readonly property real mprisActionBtnPaddingL: 6
+
+    readonly property int mprisPlayerMenuMaxVisibleEntries: 4
+    readonly property real mprisPlayerMenuWidth: 80
+    readonly property real mprisPlayerMenuPadding: 2
+    readonly property real mprisPlayerMenuEntryHeight: 22
+    readonly property real mprisPlayerMenuEntrySpacing: 2
+    readonly property real mprisPlayerMenuEntryFontSz: 12
+    readonly property real mprisPlayerMenuScrollbarWidth: 6
+
+    readonly property var mprisPlayerBtn: ({
+        play: "",
+        pause: "",
+        prev: "",
+        next: ""
+    })
+    readonly property var mprisActionBtn: ({
+        source: "󰌳",
+        close: "󰅙"
+    })
 }

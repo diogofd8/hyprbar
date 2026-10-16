@@ -32,6 +32,7 @@ desktop, but the matching module will sit empty if one is missing.
 | `pavucontrol` | settings for the volume widget |
 | `libpulse` | `pactl`, used to detect the analog headphone jack (see notes) |
 | `upower` | battery levels and charge state |
+| `accountsservice` | user profile icon from AccountsService configuration |
 | `networkmanager` | Wi-Fi status |
 | `bluez`, `bluez-utils` | Bluetooth status |
 | `brightnessctl` | setting the backlight |
@@ -69,6 +70,7 @@ These support optional click actions and modules. Install only the parts you use
 | `pacman-contrib` | `checkupdates`, for the update script |
 | `spotify-bin` | Spotify desktop player for the Spotify module |
 | `gtk3` | `gtk-launch`, used by the Spotify module |
+| `cava` | audio spectrum around the MPRIS player's album art |
 
 ## Installation
 
@@ -152,6 +154,11 @@ add the icon that goes with it.
   point `Actions.powerMenu()` somewhere else.
 - **Spotify.** The module reads Spotify's MPRIS state and scrolls metadata in QML.
   Edit `SpotifyConfig.qml` to change the player, text format, and scroll behavior.
+- **Audio spectrum.** CAVA captures the default PipeWire output mix while the system
+  page is visible and the selected MPRIS player is playing. Bar dimensions and frame
+  rate live in `widgets/centerpiece/Configuration.qml`; set
+  `mprisVisualizerBarCount` to `0` to disable capture. Hyprbar supplies its own CAVA
+  configuration without changing `~/.config/cava/config`.
 
 ## Notes and limitations
 

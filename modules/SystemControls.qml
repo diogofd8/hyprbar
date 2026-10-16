@@ -48,8 +48,8 @@ Chevron {
             }
             useMetrics: true
 
-            onLeftClicked: Core.Actions.sysUpdateCheck()
-            onRightClicked: Core.Actions.sysUpdate()
+            onLeftClicked: Core.Actions.sysUpdate()
+            onRightClicked: Core.Actions.sysUpdateCheck()
 
             NumberAnimation on iconRotation {
                 from: 360

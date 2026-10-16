@@ -2,7 +2,6 @@ pragma Singleton
 
 import QtQuick
 import Quickshell
-import Quickshell.Services.Mpris
 
 import qs
 
@@ -26,7 +25,7 @@ Singleton {
     // Null whenever Spotify is closed, which is most of the time — every
     // reader below has to tolerate that.
     readonly property var player: {
-        const players = Mpris.players.values
+        const players = Media.players
         const busName = "org.mpris.MediaPlayer2." + SpotifyConfig.playerName
 
         for (let i = 0; i < players.length; i++) {
@@ -125,82 +124,27 @@ Singleton {
     }
 
     // ────── Transport ──────
-    // Guarded rather than disabled at the call site: a click landing in the
-    // gap between Spotify quitting and the bar noticing is a no-op, not an
-    // error on a null player.
+    // The shared service keeps the bar and centerpiece's transport behavior
+    // consistent, including Spotify's correction after a skip while paused.
     function togglePlaying() {
-        if (!root.running)
-            return
-
-        // An explicit play is exactly what the correction below must not
-        // undo, so asking for one disarms it.
-        root.disarmSkipPause()
-        root.player.togglePlaying()
+        Media.togglePlaying(root.player)
     }
 
     function next() {
-        if (!root.running)
-            return
-
-        root.armSkipPause()
-        root.player.next()
+        Media.next(root.player)
     }
 
     function previous() {
-        if (!root.running)
-            return
-
-        root.armSkipPause()
-        root.player.previous()
-    }
-
-    // ────── Skipping While Paused ──────
-    // Spotify starts playing whenever it is told to change track, even from a
-    // paused state — that is the player's behaviour, not something MPRIS asks
-    // for. Skipping ahead to see what is next should leave the music where it
-    // was, so a skip taken while paused arms this and the player goes back on
-    // pause the moment it reports playing.
-    //
-    // It has to be a reaction rather than a pause sent straight after the
-    // skip: the track change and the state change arrive in their own time,
-    // and a pause sent before Spotify has started is simply lost.
-    property bool holdPaused: false
-
-    function armSkipPause() {
-        if (!SpotifyConfig.keepPausedOnSkip || root.playing)
-            return
-
-        root.holdPaused = true
-        skipPauseGuard.restart()
-    }
-
-    function disarmSkipPause() {
-        root.holdPaused = false
-        skipPauseGuard.stop()
+        Media.previous(root.player)
     }
 
     Connections {
         target: root.player
 
-        function onIsPlayingChanged() {
-            if (root.holdPaused && root.player.isPlaying)
-                root.player.pause()
-        }
-
         function onTrackChanged() {
             if (SpotifyConfig.resetScrollOnTrackOrPlaybackChange)
                 root.scrollOffset = 0
         }
-    }
-
-    // Without this the correction would outlive the skip that armed it, and
-    // a play pressed a minute later would be swatted back down.
-    Timer {
-        id: skipPauseGuard
-
-        interval: SpotifyConfig.skipPauseGuardMs
-
-        onTriggered: root.holdPaused = false
     }
 
     // Nothing to talk to over MPRIS until it is running, so this is the one
@@ -216,7 +160,6 @@ Singleton {
     }
 
     function close() {
-        if (root.running)
-            root.player.quit()
+        Media.quit(root.player)
     }
 }

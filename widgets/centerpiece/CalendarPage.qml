@@ -7,11 +7,11 @@ import qs
 import qs.components
 import qs.widgets as Widgets
 
-Item {
+Pane {
     id: root
 
-    implicitWidth: pageLayout.implicitWidth
-    implicitHeight: pageLayout.implicitHeight
+    background: null
+    padding: Configuration.pagePadding
 
     property date displayedMonth: new Date()
     readonly property date today: {
@@ -63,10 +63,8 @@ Item {
         contentItem: Item {}
     }
 
-    RowLayout {
+    contentItem: RowLayout {
         id: pageLayout
-
-        anchors.fill: parent
         spacing: 0
 
         Item {

@@ -8,7 +8,7 @@ import qs.components
 import qs.core as Core
 import qs.widgets as Widgets
 
-Item {
+Pane {
     id: root
 
     property var service: Core.WeatherParse
@@ -17,8 +17,11 @@ Item {
     readonly property var selectedDay: root.findSelectedDay()
     readonly property string todayDate: Qt.formatDateTime(clock.date, "yyyy-MM-dd")
 
-    implicitWidth: pageLayout.implicitWidth
-    implicitHeight: pageLayout.implicitHeight
+    background: null
+    // ────── Dimensioning ──────
+    topPadding: Configuration.pagePadding - Widgets.WidgetConfiguration.dropDownWindowPadding
+    bottomPadding: Configuration.pagePadding
+    horizontalPadding: Configuration.pagePadding
 
     onForecastChanged: root.selectAvailableDay()
     Component.onCompleted: root.selectAvailableDay()
@@ -28,9 +31,8 @@ Item {
         precision: SystemClock.Hours
     }
 
-    ColumnLayout {
+    contentItem: ColumnLayout {
         id: pageLayout
-        anchors.fill: parent
         spacing: Configuration.weatherColumnVSpacing
 
         RowLayout {

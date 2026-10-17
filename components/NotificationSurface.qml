@@ -12,6 +12,7 @@ Controls.Pane {
     property var service: Core.Notifications
     readonly property bool dismissing: pendingEntries.length > 0
     property var pendingEntries: []
+    property bool popupOnly: false
     property real dismissProgress: 0
 
     enabled: !root.dismissing
@@ -39,22 +40,36 @@ Controls.Pane {
     Component.onDestruction: root.finishDismissal()
 
     // ────── Helper Functions ──────
-    function dismissEntries(entries): void {
+    function dismissEntries(entries, popupOnly = false): void {
         if (root.dismissing || entries.length === 0)
             return
 
         // New arrivals during the swipe must survive this clear.
         root.pendingEntries = entries.slice()
+        root.popupOnly = popupOnly
         swipe.start()
+    }
+
+    function cancelDismissal(): void {
+        swipe.stop()
+        root.pendingEntries = []
+        root.popupOnly = false
+        root.resetDismissProgress()
     }
 
     function finishDismissal(): void {
         const entries = root.pendingEntries
+        const popupOnly = root.popupOnly
         root.pendingEntries = []
+        root.popupOnly = false
 
         if (root.service) {
-            for (const entry of entries)
-                root.service.dismiss(entry)
+            for (const entry of entries) {
+                if (popupOnly)
+                    root.service.hidePopup(entry)
+                else
+                    root.service.dismiss(entry)
+            }
         }
     }
 

@@ -15,6 +15,8 @@ Scope {
     property bool popupPinned: false
     // Zero while expiry is stopped; the toast uses this deadline for its ring.
     property double popupExpiresAt: 0
+    // Let the toast animate before it leaves the popup model.
+    signal popupExpired()
     // Native closure can precede deferred destruction of the QML record/cards.
     readonly property int notificationId: notification?.id ?? 0
     readonly property string appName: notification?.appName || "Notification"
@@ -50,7 +52,7 @@ Scope {
     Timer {
         id: expiry
         interval: Math.max(1, root.timeout)
-        onTriggered: root.owner.hidePopup(root)
+        onTriggered: root.popupExpired()
     }
     Connections {
         target: root.notification

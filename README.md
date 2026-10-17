@@ -23,6 +23,9 @@ The power button opens a native power-menu with Lock, Suspend, Reboot, Power Off
 Log Out. It can also be
 toggled with `qs ipc -c hyprbar call powermenu toggle`.
 
+Volume and display-brightness keys also show a temporary slider menu on the left.
+Use `qs ipc -c hyprbar call slidermenu open volume` (or `brightness`) to preview it.
+
 ## Dependencies
 
 ### System services

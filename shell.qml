@@ -47,6 +47,29 @@ ShellRoot {
         }
     }
 
+    function showSliderMenu(control: string): void {
+        if (control !== "volume" && control !== "brightness")
+            return
+        sliderMenu.active = true
+        sliderMenu.item.show(control)
+    }
+
+    LazyLoader {
+        id: sliderMenu
+
+        Widgets.SliderMenu {
+            screen: bar.screen
+            onDismissed: sliderMenu.active = false
+        }
+    }
+
+    IpcHandler {
+        target: "slidermenu"
+        function open(control: string): void {
+            shell.showSliderMenu(control)
+        }
+    }
+
     Core.NotificationService {}
     Popups.NotificationToasts {
         screen: bar.screen

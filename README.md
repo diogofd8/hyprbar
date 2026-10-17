@@ -19,6 +19,20 @@ limits, toast timeouts, silent applications, and popup styling are configured in
 `Settings.qml`. Popup QML lives in `popups/`; manager dimensions and spacing are in
 `widgets/notificationmanager/Configuration.qml`.
 
+The power button opens a native power-menu with Lock, Suspend, Reboot, Power Off, and
+Log Out. It can also be
+toggled with `qs ipc -c hyprbar call powermenu toggle`.
+
+Volume and display-brightness keys also show a temporary slider menu on the left.
+Use `qs ipc -c hyprbar call slidermenu open volume` (or `brightness`) to preview it.
+
+Use `qs ipc -c hyprbar call applicationlauncher toggle` to
+toggle it. Type to filter applications, use Up/Down to select, Enter to launch, and
+Escape to close. Prefix the search with `>` to list commands from
+`widgets/applicationlauncher/LauncherActions.qml`; matching actions appear before
+the entry that runs your typed shell command. Appearance and layout live in
+`widgets/applicationlauncher/Configurations.qml`.
+
 ## Dependencies
 
 ### System services
@@ -58,7 +72,7 @@ These support optional click actions and modules. Install only the parts you use
 
 | Package | Used for |
 | --- | --- |
-| `rofi` | app launcher, power menu |
+| `hyprlock` | locking the session from the power menu |
 | `alacritty` | floating terminal popups |
 | `clipse` (AUR) | clipboard manager |
 | `btop` | vitals popup |
@@ -148,10 +162,6 @@ add the icon that goes with it.
 
 - **Battery device names.** `Settings.qml` maps `internalBatteryPath: "BAT0"` and
   `externalBatteryPath: "BAT1"`. Check yours with `ls /sys/class/power_supply/`.
-- **Power menu.** `scripts/powermenu.sh` is a symlink to my own Rofi power menu at
-  `~/.config/rofi/powermenu/powermenu.sh`, which is **not** part of this repository —
-  it will be a dangling symlink after cloning. Replace it with your own script, or
-  point `Actions.powerMenu()` somewhere else.
 - **Spotify.** The module reads Spotify's MPRIS state and scrolls metadata in QML.
   Edit `SpotifyConfig.qml` to change the player, text format, and scroll behavior.
 - **Audio spectrum.** CAVA captures the default PipeWire output mix while the system

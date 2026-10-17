@@ -8,6 +8,9 @@ import qs
 Singleton {
     id: root
 
+    signal powerMenuRequested()
+    signal applicationLauncherRequested()
+
     function run(argv): void {
         Quickshell.execDetached(argv);
     }
@@ -37,11 +40,32 @@ Singleton {
     }
 
     function launcher(): void {
-        run(["rofi", "-show", "drun"]);
+        root.applicationLauncherRequested();
     }
 
     function powerMenu(): void {
-        run([Quickshell.shellPath("scripts/powermenu.sh")]);
+        root.powerMenuRequested();
+    }
+
+    // Called only after the power menu's confirmation step.
+    function performPowerAction(action: string): void {
+        switch (action) {
+        case "lock":
+            run(["hyprlock"]);
+            break;
+        case "suspend":
+            run(["systemctl", "suspend"]);
+            break;
+        case "reboot":
+            run(["systemctl", "reboot"]);
+            break;
+        case "poweroff":
+            run(["systemctl", "poweroff"]);
+            break;
+        case "logout":
+            Hyprland.dispatch("hl.dsp.exit()");
+            break;
+        }
     }
 
     function terminal(title: string, command: string): void {

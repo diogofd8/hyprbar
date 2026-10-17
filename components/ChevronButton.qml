@@ -11,6 +11,8 @@ Item {
     required property int leftCap
     required property int rightCap
     required property color bgFill
+    property real leftCapProgress: 1
+    property real rightCapProgress: 1
     property color hoverColor: Settings.colors.fgMain
     property real hoverOpacity: Settings.colors.hoverOpacity
 
@@ -53,6 +55,8 @@ Item {
 
         leftCap: root.leftCap
         rightCap: root.rightCap
+        leftCapProgress: root.leftCapProgress
+        rightCapProgress: root.rightCapProgress
         bgFill: root.bgFill
 
         contentLeftPadding: root.contentLeftPadding
@@ -66,6 +70,8 @@ Item {
 
         leftCap: root.leftCap
         rightCap: root.rightCap
+        leftCapProgress: root.leftCapProgress
+        rightCapProgress: root.rightCapProgress
 
         bgFill: root.hoverColor
         opacity: root.hoverOpacity

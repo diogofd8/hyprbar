@@ -14,6 +14,20 @@ NotificationSurface {
     readonly property bool hasActions: (root.entry?.actions.length ?? 0) > 0
     readonly property bool hasImage: (root.entry?.image.length ?? 0) > 0
 
+    Connections {
+        target: root.entry
+
+        function onPopupExpired(): void {
+            root.dismissEntries([root.entry], true)
+        }
+
+        function onPopupExpiresAtChanged(): void {
+            // A replacement starts a fresh timeout and keeps its toast visible.
+            if (root.popupOnly && root.entry.popupExpiresAt > 0)
+                root.cancelDismissal()
+        }
+    }
+
     TapHandler {
         parent: root
         acceptedButtons: Qt.LeftButton | Qt.RightButton

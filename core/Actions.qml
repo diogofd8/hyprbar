@@ -9,6 +9,7 @@ Singleton {
     id: root
 
     signal powerMenuRequested()
+    signal applicationLauncherRequested()
 
     function run(argv): void {
         Quickshell.execDetached(argv);
@@ -39,7 +40,7 @@ Singleton {
     }
 
     function launcher(): void {
-        run(["rofi", "-show", "drun"]);
+        root.applicationLauncherRequested();
     }
 
     function powerMenu(): void {

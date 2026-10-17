@@ -15,7 +15,20 @@ ShellRoot {
 
     function togglePowerMenu(): void {
         popoutHost.dismiss()
+        if (applicationLauncher.active)
+            applicationLauncher.item.close()
         powerMenu.active = !powerMenu.active
+    }
+
+    function toggleApplicationLauncher(): void {
+        popoutHost.dismiss()
+        powerMenu.active = false
+        if (!applicationLauncher.active)
+            applicationLauncher.active = true
+        else if (applicationLauncher.item.closing)
+            applicationLauncher.item.open()
+        else
+            applicationLauncher.item.close()
     }
 
     Connections {
@@ -23,6 +36,26 @@ ShellRoot {
 
         function onPowerMenuRequested(): void {
             shell.togglePowerMenu()
+        }
+
+        function onApplicationLauncherRequested(): void {
+            shell.toggleApplicationLauncher()
+        }
+    }
+
+    LazyLoader {
+        id: applicationLauncher
+
+        Widgets.ApplicationLauncher {
+            screen: bar.screen
+            onDismissed: applicationLauncher.active = false
+        }
+    }
+
+    IpcHandler {
+        target: "applicationlauncher"
+        function toggle(): void {
+            shell.toggleApplicationLauncher()
         }
     }
 

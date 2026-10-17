@@ -26,6 +26,13 @@ toggled with `qs ipc -c hyprbar call powermenu toggle`.
 Volume and display-brightness keys also show a temporary slider menu on the left.
 Use `qs ipc -c hyprbar call slidermenu open volume` (or `brightness`) to preview it.
 
+Use `qs ipc -c hyprbar call applicationlauncher toggle` to
+toggle it. Type to filter applications, use Up/Down to select, Enter to launch, and
+Escape to close. Prefix the search with `>` to list commands from
+`widgets/applicationlauncher/LauncherActions.qml`; matching actions appear before
+the entry that runs your typed shell command. Appearance and layout live in
+`widgets/applicationlauncher/Configurations.qml`.
+
 ## Dependencies
 
 ### System services
@@ -65,7 +72,6 @@ These support optional click actions and modules. Install only the parts you use
 
 | Package | Used for |
 | --- | --- |
-| `rofi` | app launcher |
 | `hyprlock` | locking the session from the power menu |
 | `alacritty` | floating terminal popups |
 | `clipse` (AUR) | clipboard manager |

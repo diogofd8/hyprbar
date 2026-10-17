@@ -18,20 +18,22 @@ Singleton {
     }
 
     // Six points at most: 1 (top-left corner) + 3 (right cap) + 2 (left cap)
-    function polygon(width, height, leftCap, rightCap) {
+    function polygon(width, height, leftCap, rightCap, leftCapProgress = 1, rightCapProgress = 1) {
         const capWidth = calcCapWidth(height);
+        const leftWidth = capWidth * leftCapProgress;
+        const rightWidth = capWidth * rightCapProgress;
         const mid = height / 2;
         const points = [];
 
-        points.push(Qt.point(leftCap === ChevronGeometry.Cap.Point ? capWidth : 0, 0));
+        points.push(Qt.point(leftCap === ChevronGeometry.Cap.Point ? leftWidth : 0, 0));
 
         if (rightCap === ChevronGeometry.Cap.Point) {
-            points.push(Qt.point(width - capWidth, 0));
+            points.push(Qt.point(width - rightWidth, 0));
             points.push(Qt.point(width, mid));
-            points.push(Qt.point(width - capWidth, height));
+            points.push(Qt.point(width - rightWidth, height));
         } else if (rightCap === ChevronGeometry.Cap.Notch) {
             points.push(Qt.point(width, 0));
-            points.push(Qt.point(width - capWidth, mid));
+            points.push(Qt.point(width - rightWidth, mid));
             points.push(Qt.point(width, height));
         } else {
             points.push(Qt.point(width, 0));
@@ -39,11 +41,11 @@ Singleton {
         }
 
         if (leftCap === ChevronGeometry.Cap.Point) {
-            points.push(Qt.point(capWidth, height));
+            points.push(Qt.point(leftWidth, height));
             points.push(Qt.point(0, mid));
         } else if (leftCap === ChevronGeometry.Cap.Notch) {
             points.push(Qt.point(0, height));
-            points.push(Qt.point(capWidth, mid));
+            points.push(Qt.point(leftWidth, mid));
         } else {
             points.push(Qt.point(0, height));
         }
@@ -55,9 +57,9 @@ Singleton {
 
     // Pointy and notch caps extend beyond the chevron's bounding box
     // Flat caps are flush with the chevron's bounding box
-    function calcCapBoundingBox(height, cap) {
+    function calcCapBoundingBox(height, cap, progress = 1) {
         if (cap === ChevronGeometry.Cap.Point || cap === ChevronGeometry.Cap.Notch)
-            return calcCapWidth(height);
+            return calcCapWidth(height) * progress;
 
         return 0;
     }

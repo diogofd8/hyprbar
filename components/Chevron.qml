@@ -10,6 +10,9 @@ Item {
     required property int leftCap
     required property int rightCap
     required property color bgFill
+    // Zero flattens the cap; one draws its full point or notch.
+    property real leftCapProgress: 1
+    property real rightCapProgress: 1
     property color outlineColor: "transparent"
     property real outlineWidth: -1
 
@@ -27,8 +30,8 @@ Item {
         contentContainer.implicitWidth
         + contentLeftPadding
         + contentRightPadding
-        + Core.ChevronGeometry.calcCapBoundingBox(root.height, root.leftCap)
-        + Core.ChevronGeometry.calcCapBoundingBox(root.height, root.rightCap)
+        + Core.ChevronGeometry.calcCapBoundingBox(root.height, root.leftCap, root.leftCapProgress)
+        + Core.ChevronGeometry.calcCapBoundingBox(root.height, root.rightCap, root.rightCapProgress)
 
     implicitHeight: contentContainer.implicitHeight
 
@@ -59,7 +62,9 @@ Item {
                     root.width,
                     root.height,
                     root.leftCap,
-                    root.rightCap
+                    root.rightCap,
+                    root.leftCapProgress,
+                    root.rightCapProgress
                 )
             }
         }
@@ -70,6 +75,7 @@ Item {
         id: contentContainer
 
         anchors.verticalCenter: parent.verticalCenter
-        x: Core.ChevronGeometry.calcCapBoundingBox(root.height, root.leftCap) + root.contentLeftPadding
+        x: Core.ChevronGeometry.calcCapBoundingBox(root.height, root.leftCap, root.leftCapProgress)
+            + root.contentLeftPadding
     }
 }

@@ -6,6 +6,7 @@ Item {
     id: root
 
     property string value: ""
+    property color color: Settings.colors.foreground.main
     property int padding: 0
     property real verticalOffset: Settings.inducedVerticalOffset
 
@@ -28,14 +29,14 @@ Item {
 
         Text {
             text: root.value
-            color: Settings.colors.fgMain
+            color: root.color
             font.family: root.fontFamily
             font.pixelSize: root.fontSize
         }
 
         Text {
             text: "%"
-            color: Settings.colors.fgMain
+            color: root.color
             font.family: root.fontFamily
             font.pixelSize: root.fontSize
         }

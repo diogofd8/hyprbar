@@ -9,6 +9,8 @@ import qs.components
 NotificationSurface {
     id: root
 
+    readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: root }
+
     required property var entry
     readonly property string receivedTime: root.formattedTime()
     readonly property bool hasActions: (root.entry?.actions.length ?? 0) > 0
@@ -44,13 +46,13 @@ NotificationSurface {
     clip: true
     hoverEnabled: true
 
-    background: Rectangle {
-        color: Qt.alpha(Settings.colors.bgMain, Settings.colors.bgOpacity)
+    background: BackgroundRectangle {
+        color: Settings.colors.background.main
 
-        Rectangle {
+        BackgroundRectangle {
             width: PopupConfiguration.notificationPopupAttentionBarWidth
             height: parent.height
-            color: Settings.colors.accentError
+            color: Settings.colors.background.error
             visible: root.entry?.urgency === NotificationUrgency.Critical
         }
     }
@@ -75,26 +77,25 @@ NotificationSurface {
                 text: root.entry?.appName ?? ""
                 textFormat: Text.PlainText
                 elide: Text.ElideRight
-                color: Settings.colors.fgMain
+                color: Settings.colors.foreground.muted
                 font.family: Settings.labelFontFamily
                 font.pixelSize: PopupConfiguration.notificationPopupHeaderFontSize
-                opacity: Settings.colors.dimOpacity
+
             }
 
             Circle {
                 Layout.alignment: Qt.AlignCenter
 
                 diameter: Settings.separatorDotSize
-                color: Settings.colors.fgMain
-                opacity: Settings.colors.dimOpacity
+                color: Settings.colors.foreground.muted
             }
 
             Text {
                 text: root.receivedTime
-                color: Settings.colors.fgMain
+                color: Settings.colors.foreground.muted
                 font.family: Settings.labelFontFamily
                 font.pixelSize: PopupConfiguration.notificationPopupHeaderFontSize
-                opacity: Settings.colors.dimOpacity
+
             }
 
             Item {
@@ -125,9 +126,9 @@ NotificationSurface {
                     width: PopupConfiguration.notificationCountdownRingMargin + PopupConfiguration.notificationPopupHeaderIconSize
                     height: width
                     visible: (root.entry?.timeout ?? 0) > 0 && !root.entry?.popupPinned
-                    opacity: Settings.colors.dimOpacity
+
                     strokeWidth: PopupConfiguration.notificationCountdownRingWidth
-                    strokeColor: Settings.colors.fgMain
+                    strokeColor: Settings.colors.foreground.muted
                     duration: root.entry?.timeout ?? 0
                     deadline: root.entry?.popupExpiresAt ?? 0
                 }
@@ -145,7 +146,7 @@ NotificationSurface {
                 Layout.minimumWidth: 0
                 text: root.entry?.summary ?? ""
                 textFormat: Text.PlainText
-                color: Settings.colors.fgMain
+                color: Settings.colors.foreground.main
                 font.family: Settings.labelFontFamily
                 font.pixelSize: PopupConfiguration.notificationPopupTitleFontSize
                 font.bold: true
@@ -164,10 +165,10 @@ NotificationSurface {
                 text: root.entry?.body ?? ""
                 textFormat: Text.StyledText
                 wrapMode: Text.Wrap
-                color: Settings.colors.fgMain
+                color: Settings.colors.foreground.muted
                 font.family: Settings.labelFontFamily
                 font.pixelSize: PopupConfiguration.notificationPopupFontSize
-                opacity: Settings.colors.dimOpacity
+
             }
         }
 
@@ -198,14 +199,14 @@ NotificationSurface {
                         padding: PopupConfiguration.notificationActionButtonPadding
                         text: modelData.text || "Open"
 
-                        background: Rectangle {
-                            color: actionButton.hovered ? Settings.colors.bgTint4 : Settings.colors.bgTint3
+                        background: BackgroundRectangle {
+                            color: actionButton.hovered ? Settings.colors.background.tint4 : Settings.colors.background.tint3
                         }
 
                         contentItem: Text {
                             text: actionButton.text
                             wrapMode: Text.Wrap
-                            color: Settings.colors.fgMain
+                            color: Settings.colors.foreground.main
                             font.family: Settings.labelFontFamily
                             font.pixelSize: PopupConfiguration.notificationPopupFontSize
                         }

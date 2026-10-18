@@ -32,6 +32,7 @@ Singleton {
     readonly property real listEntryIconSz: 32
     readonly property real listEntryPaddingX: 6
     readonly property real listEntryPaddingY: 6
+    // Blend odd-row color before the surface applies desktop transparency.
     readonly property real listEntryOddAlpha: 0.85
     readonly property int listMaxEntries: 8
 

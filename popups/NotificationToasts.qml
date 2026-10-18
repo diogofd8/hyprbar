@@ -5,9 +5,12 @@ import Quickshell.Wayland
 
 import qs
 import qs.core as Core
+import qs.components
 
 PanelWindow {
     id: root
+
+    readonly property Item backgroundTarget: toastBackground.paintTarget
 
     WlrLayershell.namespace: "hyprbar-notifications"
     WlrLayershell.layer: WlrLayer.Overlay
@@ -32,6 +35,8 @@ PanelWindow {
     Flickable {
         id: viewport
 
+        readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: viewport }
+
         width: parent.width
         height: Math.min(contents.implicitHeight, parent.height)
         contentWidth: width
@@ -39,7 +44,15 @@ PanelWindow {
         clip: true
         boundsBehavior: Flickable.StopAtBounds
 
-        Controls.ScrollBar.vertical: Controls.ScrollBar {}
+        BackgroundSurface {
+            id: toastBackground
+            parent: viewport
+            width: viewport.width
+            height: viewport.height
+            z: -1
+        }
+
+        Controls.ScrollBar.vertical: BackgroundScrollBar {}
 
         Column {
             id: contents

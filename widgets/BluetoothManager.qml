@@ -10,9 +10,11 @@ import "bluetoothmanager" as BluetoothUI
 
 Pane {
     id: root
+
+    readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: root }
     signal dismissRequested()
 
-    readonly property string panelBackgroundColor: Settings.colors.bgMain
+    readonly property string panelBackgroundColor: Settings.colors.background.main
 
     // Overrides the remembered-device cap. The popup is rebuilt on every open, so this resets itself without any teardown.
     property bool showAllPaired: false
@@ -48,7 +50,7 @@ Pane {
                     Glyph {
                         icon: BluetoothUI.Configuration.bmBluetoothIcon
                         iconSize: WidgetConfiguration.widgetMainIconSz
-                        iconColor: Settings.colors.fgMain
+                        iconColor: Settings.colors.foreground.main
                     }
 
                     HexagonSwitch {
@@ -73,7 +75,7 @@ Pane {
                     icon: BluetoothUI.Configuration.bmIsScanningIcon
                     iconSize: WidgetConfiguration.widgetSecondaryIconSz
                     useMetrics: true
-                    iconColor: Settings.colors.accentMain
+                    iconColor: Settings.colors.foreground.accent
 
                     NumberAnimation on rotation {
                         from: 360
@@ -97,7 +99,7 @@ Pane {
 
                     icon: BluetoothUI.Configuration.bmClearScanIcon
                     iconSize: WidgetConfiguration.widgetSecondaryIconSz
-                    iconColor: Settings.colors.accentMain
+                    iconColor: Settings.colors.foreground.accent
                     hoverOpacity: 0
                     useMetrics: true
 
@@ -114,8 +116,8 @@ Pane {
                     glyphSize: WidgetConfiguration.widgetMainIconSz
                     useMetrics: true
                     color: btScanBtn.enabled
-                        ? Settings.colors.fgMain
-                        : Qt.alpha(Settings.colors.fgMain, Settings.colors.disabledOpacity)
+                        ? Settings.colors.foreground.main
+                        : Qt.alpha(Settings.colors.foreground.main, Settings.colors.foreground.disabledOpacity)
 
                     onLeftClicked: Bluetooth.toggleDiscovery()
                 }
@@ -126,7 +128,7 @@ Pane {
                     glyph: BluetoothUI.Configuration.bmLauncherIcon
                     glyphSize: WidgetConfiguration.widgetMainIconSz
                     useMetrics: true
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
 
                     onLeftClicked: {
                         Bluetooth.openSettings()
@@ -140,13 +142,15 @@ Pane {
                 Layout.fillWidth: true
                 Layout.topMargin: 1
                 Layout.bottomMargin: WidgetConfiguration.mainRowVMargin
-                color: Settings.colors.bgTint4
+                color: Settings.colors.background.tint4
             }
         }
 
         // ────── Devices ──────
         Flickable {
             id: scroll
+
+            readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: scroll }
             Layout.fillWidth: true
             Layout.preferredHeight: implicitHeight
             implicitWidth: BluetoothUI.Configuration.contentWidth
@@ -168,8 +172,7 @@ Pane {
                     text: Bluetooth.statusMessage
                     wrapMode: Text.Wrap
                     color: Bluetooth.bluetoothAvailable && !Bluetooth.bluetoothBlocked
-                        ? Settings.colors.fgMain : Settings.colors.accentAlert
-                    opacity: Bluetooth.bluetoothAvailable && !Bluetooth.bluetoothBlocked ? 0.7 : 1
+                        ? Settings.colors.foreground.muted : Settings.colors.foreground.alert
                     font.family: Settings.labelFontFamily
                     font.pixelSize: WidgetConfiguration.widgetMsgFieldFontSz
                 }
@@ -180,7 +183,7 @@ Pane {
 
                     text: Bluetooth.scanErrorMessage
                     wrapMode: Text.Wrap
-                    color: Settings.colors.accentAlert
+                    color: Settings.colors.foreground.alert
                     font.family: Settings.labelFontFamily
                     font.pixelSize: WidgetConfiguration.widgetMsgFieldFontSz
                 }
@@ -194,7 +197,7 @@ Pane {
 
                     Text {
                         text: "CONNECTED DEVICES"
-                        color: Settings.colors.fgMain
+                        color: Settings.colors.foreground.main
                         font.family: Settings.labelFontFamily
                         font.bold: true
                         font.pixelSize: WidgetConfiguration.sectionRowLabelFontSz
@@ -218,7 +221,7 @@ Pane {
                     RowLayout {
                         Text {
                             text: "PAIRED DEVICES"
-                            color: Settings.colors.fgMain
+                            color: Settings.colors.foreground.main
                             font.family: Settings.labelFontFamily
                             font.bold: true
                             font.pixelSize: WidgetConfiguration.sectionRowLabelFontSz
@@ -236,7 +239,7 @@ Pane {
                             rotation: root.showAllPaired ? 180 : 0
                             glyph: BluetoothUI.Configuration.btExpandIcon
                             glyphSize: WidgetConfiguration.sectionRowLabelFontSz
-                            color: Settings.colors.fgMain
+                            color: Settings.colors.foreground.main
 
                             onLeftClicked: root.showAllPaired = !root.showAllPaired
 
@@ -264,7 +267,7 @@ Pane {
 
                     Text {
                         text: "SCANNED DEVICES"
-                        color: Settings.colors.fgMain
+                        color: Settings.colors.foreground.main
                         font.family: Settings.labelFontFamily
                         font.bold: true
                         font.pixelSize: WidgetConfiguration.sectionRowLabelFontSz
@@ -281,8 +284,8 @@ Pane {
                         visible: Bluetooth.discoveredDevices.count === 0
 
                         text: Bluetooth.scanning ? "Scanning for devices…" : "No Bluetooth devices found."
-                        color: Settings.colors.fgMain
-                        opacity: Settings.colors.dimOpacity
+                        color: Settings.colors.foreground.muted
+
                         font.family: Settings.labelFontFamily
                         font.pixelSize: WidgetConfiguration.widgetMsgFieldFontSz
                     }

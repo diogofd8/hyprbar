@@ -10,7 +10,7 @@ Item {
 
     property bool pointUp: false
     property int leftCap: Core.ChevronGeometry.Cap.Notch
-    property color bgFill: Settings.colors.accentMain
+    property color bgFill: Settings.colors.background.accent
 
     implicitWidth: Configurations.scrollBarWidth
     implicitHeight: Configurations.scrollBarChevronHeight

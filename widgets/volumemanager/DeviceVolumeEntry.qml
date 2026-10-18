@@ -9,6 +9,8 @@ import qs.core as Core
 
 Controls.Pane {
     id: root
+
+    readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: root }
     required property var model
     signal dismissRequested()
 
@@ -22,8 +24,8 @@ Controls.Pane {
 
     Behavior on implicitHeight { Anim {} }
 
-    background: Rectangle {
-        color: Settings.colors.bgTint2
+    background: BackgroundRectangle {
+        color: Settings.colors.background.tint2
     }
 
     contentItem: RowLayout {
@@ -33,7 +35,7 @@ Controls.Pane {
         GlyphButton {
             id: volEntryBtn
             enabled: root.model.canSelect
-            opacity: enabled ? 1 : Settings.colors.disabledOpacity
+            opacity: enabled ? 1 : Settings.colors.foreground.disabledOpacity
             Layout.alignment: Qt.AlignVCenter
             Layout.leftMargin: WidgetConfiguration.entryIconHPadding
             Layout.rightMargin: WidgetConfiguration.entryIconHPadding
@@ -44,7 +46,7 @@ Controls.Pane {
             iconSize: WidgetConfiguration.entryRowMainIconSz
             useMetrics: false
             iconColor: root.model.isDefault
-                ? Settings.colors.accentMain : Settings.colors.fgMain
+                ? Settings.colors.foreground.accent : Settings.colors.foreground.main
 
             onLeftClicked: {
                 if (root.model.isInput)
@@ -69,7 +71,7 @@ Controls.Pane {
 
                     text: root.deviceLabel()
                     elide: Text.ElideRight
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
                     font.family: Settings.labelFontFamily
                     font.pixelSize: WidgetConfiguration.entryRowTitleFontSz
                 }
@@ -83,7 +85,7 @@ Controls.Pane {
 
                     glyph: Configuration.volEntrySettingsIcon
                     glyphSize: WidgetConfiguration.widgetSecondaryIconSz
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
 
                     onLeftClicked: {
                         VolumeActions.volumeManager()
@@ -105,7 +107,7 @@ Controls.Pane {
                         : (root.model.muted
                             ? Configuration.outputMutedIcon : Configuration.outputUnmutedIcon)
                     glyphSize: WidgetConfiguration.widgetSecondaryIconSz
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
 
                     onLeftClicked: Core.Audio.setEntryMuted(
                         root.model.id, !root.model.muted)
@@ -113,6 +115,8 @@ Controls.Pane {
 
                 RowLayout {
                     id: volumeSliderContainer
+
+                    readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: volumeSliderContainer }
                     spacing: WidgetConfiguration.entryExtendedRowHSpacing
                     Layout.topMargin: WidgetConfiguration.sliderExtraSpacing
                     Layout.bottomMargin: WidgetConfiguration.sliderExtraSpacing
@@ -127,7 +131,7 @@ Controls.Pane {
                         to: 100
                         value: root.model.value
                         actionable: true
-                        bgFill: Settings.colors.bgTint2
+                        bgFill: Settings.colors.background.tint2
 
                         onMoved: Core.Audio.setEntryVolume(root.model.id, value)
                     }

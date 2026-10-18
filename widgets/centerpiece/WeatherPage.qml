@@ -47,12 +47,12 @@ Pane {
                 Circle {
                     Layout.alignment: Qt.AlignVCenter
                     diameter: Configuration.weatherLocationDotSize
-                    color: root.service.lastError ? Settings.colors.accentError : Settings.colors.accentCharging
+                    color: root.service.lastError ? Settings.colors.foreground.error : Settings.colors.foreground.charging
                 }
 
                 Text {
                     text: root.service.location.label || root.service.unknownText
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
                     font.family: Settings.labelFontFamily
                     font.bold: true
                     font.pixelSize: Configuration.weatherDefaultFontSz
@@ -62,16 +62,15 @@ Pane {
             Circle {
                 Layout.alignment: Qt.AlignVCenter
                 diameter: Settings.separatorDotSize
-                color: Settings.colors.fgMain
-                opacity: Settings.colors.dimOpacity
+                color: Settings.colors.foreground.muted
             }
 
             Text {
                 text: root.updatedTime()
-                color: Settings.colors.fgMain
+                color: Settings.colors.foreground.muted
                 font.family: Settings.labelFontFamily
                 font.pixelSize: Widgets.WidgetConfiguration.sectionRowLabelFontSz
-                opacity: Settings.colors.dimOpacity
+
             }
 
             Item {
@@ -85,7 +84,7 @@ Pane {
                 glyph: Configuration.weatherIcon.refresh
                 glyphSize: Widgets.WidgetConfiguration.widgetMainIconSz
                 useMetrics: true
-                color: Settings.colors.fgMain
+                color: Settings.colors.foreground.main
 
                 onLeftClicked: root.service.refresh()
 
@@ -139,10 +138,10 @@ Pane {
             Layout.fillWidth: true
             visible: root.forecast.length === 0
             text: root.emptyMessage()
-            color: Settings.colors.fgMain
+            color: Settings.colors.foreground.muted
             font.family: Settings.labelFontFamily
             font.pixelSize: Widgets.WidgetConfiguration.sectionRowLabelFontSz
-            opacity: Settings.colors.dimOpacity
+
             wrapMode: Text.WordWrap
         }
     }

@@ -16,7 +16,7 @@ Row {
         leftCap: Core.ChevronGeometry.Cap.Point
         rightCap: Core.ChevronGeometry.Cap.Notch
 
-        bgFill: Settings.colors.bgTint1
+        bgFill: Settings.colors.background.tint1
         hoverOpacity: 0
 
         onLeftClicked: Core.Actions.vitalsPopUp()
@@ -44,7 +44,7 @@ Row {
         leftCap: Core.ChevronGeometry.Cap.Point
         rightCap: Core.ChevronGeometry.Cap.Notch
 
-        bgFill: Settings.colors.bgTint2
+        bgFill: Settings.colors.background.tint2
         hoverOpacity: 0
 
         onLeftClicked: Core.Actions.vitalsPopUp()
@@ -72,7 +72,7 @@ Row {
         leftCap: Core.ChevronGeometry.Cap.Point
         rightCap: Core.ChevronGeometry.Cap.Notch
 
-        bgFill: Settings.colors.bgTint3
+        bgFill: Settings.colors.background.tint3
         hoverOpacity: 0
 
         onLeftClicked: Core.Actions.vitalsPopUp()

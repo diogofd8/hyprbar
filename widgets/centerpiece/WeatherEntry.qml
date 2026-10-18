@@ -14,18 +14,18 @@ AbstractButton {
     required property string todayDate
     property var service: Core.WeatherParse
     property bool selected: false
-    property color bgFill: Settings.colors.bgTint1
+    property color bgFill: Settings.colors.background.tint1
 
     padding: Configuration.weatherEntryPadding
     hoverEnabled: true
 
-    background: Rectangle {
-        color: root.selected ? Settings.colors.bgTint2 : root.bgFill
+    background: BackgroundRectangle {
+        color: root.selected ? Settings.colors.background.tint2 : root.bgFill
 
-        Rectangle {
+        BackgroundRectangle {
             anchors.fill: parent
-            color: Settings.colors.fgMain
-            opacity: Settings.colors.hoverOpacity
+            color: Settings.colors.background.highlight
+            opacity: Settings.colors.background.hoverOpacity
             visible: root.hovered
         }
     }
@@ -36,7 +36,7 @@ AbstractButton {
         Text {
             Layout.alignment: Qt.AlignHCenter
             text: root.dayLabel()
-            color: Settings.colors.fgMain
+            color: Settings.colors.foreground.main
             font.family: Settings.labelFontFamily
             font.pixelSize: Widgets.WidgetConfiguration.sectionRowLabelFontSz
             font.bold: root.selected ? true : false
@@ -69,8 +69,8 @@ AbstractButton {
                 Layout.bottomMargin: Configuration.weatherEntryTempRangeSpacingOffset
                 Layout.alignment: Qt.AlignCenter
                 Layout.preferredWidth: Configuration.weatherEntrySeparatorWidth
-                color: Settings.colors.bgTint4
-                opacity: Settings.colors.dimOpacity
+                color: Settings.colors.background.tint4
+                opacity: Settings.colors.background.dimOpacity
             }
 
             Text {

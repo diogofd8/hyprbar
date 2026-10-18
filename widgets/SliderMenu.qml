@@ -12,6 +12,8 @@ import "slidermenu" as SliderMenuUI
 PanelWindow {
     id: root
 
+    readonly property Item backgroundTarget: menuBackground.paintTarget
+
     property string activeControl: "volume"
     readonly property bool interacting: hover.hovered || volumeEntry.interacting || brightnessEntry.interacting
 
@@ -68,7 +70,8 @@ PanelWindow {
             parent: panel
         }
 
-        background: Item {
+        background: BackgroundSurface {
+            id: menuBackground
             anchors.alignWhenCentered: false
 
             Chevron {
@@ -81,7 +84,7 @@ PanelWindow {
 
                 leftCap: Core.ChevronGeometry.Cap.Point
                 rightCap: Core.ChevronGeometry.Cap.Point
-                bgFill: Settings.colors.bgMain
+                bgFill: Settings.colors.background.main
             }
         }
 

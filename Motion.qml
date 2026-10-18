@@ -18,6 +18,7 @@ Singleton {
     readonly property int squaredButtonReleaseMs: 300
     readonly property int activitySpinMs: 1500
     readonly property int notificationDismissMs: 200
+    readonly property int scrollBarIdleDelayMs: 450
 
     // ────── Angles ──────
     readonly property real squaredButtonPressAngle: -45

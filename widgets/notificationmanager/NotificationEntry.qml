@@ -10,6 +10,8 @@ import qs.widgets
 NotificationSurface {
     id: root
 
+    readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: root }
+
     required property var entry
     property bool expandedMode: false
     property bool expanded: false
@@ -44,10 +46,10 @@ NotificationSurface {
     clip: true
 
     background: Item {
-        Rectangle {
+        BackgroundRectangle {
             width: Configuration.nfAttentionBarWidth
             height: parent.height
-            color: Settings.colors.accentError
+            color: Settings.colors.background.error
             visible: root.entry?.urgency === NotificationUrgency.Critical
         }
     }
@@ -78,7 +80,7 @@ NotificationSurface {
 
                     text: root.entry?.summary ?? ""
                     textFormat: Text.PlainText
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
                     font.family: Settings.labelFontFamily
                     font.pixelSize: WidgetConfiguration.entryRowTitleFontSz
                     font.bold: true
@@ -96,10 +98,10 @@ NotificationSurface {
                     visible: !root.expandedMode && (root.entry?.body.length ?? 0) > 0
                     text: (root.entry?.body ?? "").replace(/\s*\n\s*/g, " ")
                     textFormat: Text.StyledText
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.muted
                     font.family: Settings.labelFontFamily
                     font.pixelSize: WidgetConfiguration.entryRowDefaultFontSz
-                    opacity: Settings.colors.dimOpacity
+
                     elide: Text.ElideRight
                     maximumLineCount: 1
                     wrapMode: Text.NoWrap
@@ -109,10 +111,10 @@ NotificationSurface {
             Text {
                 visible: root.expandedMode
                 text: root.receivedTime()
-                color: Settings.colors.fgMain
+                color: Settings.colors.foreground.muted
                 font.family: Settings.labelFontFamily
                 font.pixelSize: WidgetConfiguration.entryRowDefaultFontSz
-                opacity: Settings.colors.dimOpacity
+
             }
 
             Item {
@@ -124,7 +126,7 @@ NotificationSurface {
                 visible: root.expandedMode
                 enabled: root.canExpand
                 rotation: root.expanded ? 180 : 0
-                opacity: root.canExpand ? 1 : Settings.colors.disabledOpacity
+                opacity: root.canExpand ? 1 : Settings.colors.foreground.disabledOpacity
 
                 glyph: Configuration.nfExpandIcon
                 glyphSize: WidgetConfiguration.entryRowSecondaryIconSz
@@ -156,6 +158,8 @@ NotificationSurface {
                 Item {
                     id: bodyViewport
 
+                    readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: bodyViewport }
+
                     Layout.fillWidth: true
                     Layout.minimumWidth: 0
                     visible: (root.entry?.body.length ?? 0) > 0
@@ -171,10 +175,10 @@ NotificationSurface {
                         visible: !bodyViewport.revealing
                         text: root.entry?.body ?? ""
                         textFormat: Text.StyledText
-                        color: Settings.colors.fgMain
+                        color: Settings.colors.foreground.muted
                         font.family: Settings.labelFontFamily
                         font.pixelSize: WidgetConfiguration.entryRowDefaultFontSz
-                        opacity: Settings.colors.dimOpacity
+
                         wrapMode: Text.NoWrap
                         maximumLineCount: 1
                         elide: Text.ElideRight
@@ -189,7 +193,6 @@ NotificationSurface {
                         textFormat: bodyPreview.textFormat
                         font: bodyPreview.font
                         color: bodyPreview.color
-                        opacity: bodyPreview.opacity
                         wrapMode: Text.Wrap
                     }
                 }
@@ -231,13 +234,13 @@ NotificationSurface {
                         padding: WidgetConfiguration.entryHPadding
                         onClicked: modelData.invoke()
 
-                        background: Rectangle {
-                            color: actionButton.hovered ? Settings.colors.bgTint4 : Settings.colors.bgTint3
+                        background: BackgroundRectangle {
+                            color: actionButton.hovered ? Settings.colors.background.tint4 : Settings.colors.background.tint3
                         }
 
                         contentItem: Text {
                             text: actionButton.text
-                            color: Settings.colors.fgMain
+                            color: Settings.colors.foreground.main
                             font.family: Settings.labelFontFamily
                             font.pixelSize: WidgetConfiguration.entryRowDefaultFontSz
                         }

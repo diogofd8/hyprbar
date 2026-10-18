@@ -25,12 +25,19 @@ Item {
 
     ClippingRectangle {
         id: userProfile
+        readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: userProfile }
         anchors.centerIn: parent
         width: Configuration.sysProfileImgSz
         height: width
         radius: width / 2
-        color: Settings.colors.fgMain
+        color: "transparent"
         z: 1
+
+        BackgroundRectangle {
+            anchors.fill: parent
+            radius: width / 2
+            color: Settings.colors.background.imagePlaceholder
+        }
 
         Image {
             anchors.fill: parent
@@ -57,14 +64,14 @@ Item {
 
             leftCap: Core.ChevronGeometry.Cap.Point
             rightCap: Core.ChevronGeometry.Cap.Notch
-            bgFill: Settings.colors.bgTint1
+            bgFill: Settings.colors.background.tint1
 
             Text {
                 text: Core.SystemInfo.hostname
                 font.family: Settings.labelFontFamily
                 font.pixelSize: Configuration.sysEntryFontSz
                 font.weight: Font.Bold
-                color: Settings.colors.fgMain
+                color: Settings.colors.foreground.main
             }
         }
 
@@ -76,7 +83,7 @@ Item {
             leftCap: Core.ChevronGeometry.Cap.Point
             rightCap: Core.ChevronGeometry.Cap.Notch
 
-            bgFill: Settings.colors.bgTint2
+            bgFill: Settings.colors.background.tint2
 
             Glyph {
                 icon: Configuration.desktopIcon(Core.SystemInfo.desktop)
@@ -94,7 +101,7 @@ Item {
             leftCap: Core.ChevronGeometry.Cap.Point
             rightCap: Core.ChevronGeometry.Cap.Flat
 
-            bgFill: Settings.colors.bgTint3
+            bgFill: Settings.colors.background.tint3
 
             Glyph {
                 icon: root.distroIcon()
@@ -119,7 +126,7 @@ Item {
             leftCap: Core.ChevronGeometry.Cap.Flat
             rightCap: Core.ChevronGeometry.Cap.Point
 
-            bgFill: Settings.colors.bgTint3
+            bgFill: Settings.colors.background.tint3
 
             Glyph {
                 icon: Configuration.sysClockIcon
@@ -138,7 +145,7 @@ Item {
             leftCap: Core.ChevronGeometry.Cap.Notch
             rightCap: Core.ChevronGeometry.Cap.Point
 
-            bgFill: Settings.colors.bgTint2
+            bgFill: Settings.colors.background.tint2
 
             RowLayout {
                 spacing: Configuration.sysCompositeItemHSpacing
@@ -149,7 +156,7 @@ Item {
                     font.family: Settings.labelFontFamily
                     font.pixelSize: Configuration.sysEntryFontSz
                     font.weight: Font.Bold
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
                 }
 
                 Text {
@@ -157,7 +164,7 @@ Item {
                     font.family: Settings.labelFontFamily
                     font.pixelSize: Configuration.sysEntryFontSz
                     font.weight: Font.Bold
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
                 }
 
                 Text {
@@ -165,7 +172,7 @@ Item {
                     font.family: Settings.labelFontFamily
                     font.pixelSize: Configuration.sysEntryFontSz
                     font.weight: Font.Bold
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
                 }
             }
         }

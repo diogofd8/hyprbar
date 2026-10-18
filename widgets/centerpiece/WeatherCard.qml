@@ -12,7 +12,7 @@ Pane {
 
     required property var day
     property var service: Core.WeatherParse
-    property color bgFill: Settings.colors.bgTint1
+    property color bgFill: Settings.colors.background.tint1
     readonly property bool hasWindDirection: root.service.isNumber(root.day?.windDirectionDominant)
 
     // ────── Dimensioning ──────
@@ -21,7 +21,7 @@ Pane {
     topPadding: Configuration.weatherCardPaddingY
     bottomPadding: Configuration.weatherCardPaddingY
 
-    background: Rectangle {
+    background: BackgroundRectangle {
         color: root.bgFill
     }
 
@@ -88,7 +88,7 @@ Pane {
                 width: parent.width - Configuration.weatherCardDescriptionPaddingX
 
                 text: root.day?.description ?? root.service.unknownText
-                color: Settings.colors.fgMain
+                color: Settings.colors.foreground.main
                 font.family: Settings.labelFontFamily
                 font.bold: true
                 font.pixelSize: descriptionMeasure.truncated
@@ -130,8 +130,8 @@ Pane {
                 Separator {
                     Layout.alignment: Qt.AlignCenter
                     Layout.preferredWidth: highTemp.implicitWidth + Configuration.weatherCardTempRangeSpacerWidthOffset
-                    color: Settings.colors.bgTint4
-                    opacity: Settings.colors.dimOpacity
+                    color: Settings.colors.background.tint4
+                    opacity: Settings.colors.background.dimOpacity
                 }
 
                 Temperature {
@@ -164,7 +164,7 @@ Pane {
                     Layout.bottomMargin: -Configuration.weatherCardDateSpacingOffset
                     Layout.alignment: Qt.AlignHCenter
                     text: root.service.formatDayLabel(root.day?.date ?? "")
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
                     font.family: Settings.labelFontFamily
                     font.bold: true
                     font.pixelSize: Configuration.weatherDefaultFontSz
@@ -174,15 +174,15 @@ Pane {
                 Separator {
                     Layout.alignment: Qt.AlignCenter
                     Layout.preferredWidth: highTemp.implicitWidth
-                    color: Settings.colors.bgTint4
-                    opacity: Settings.colors.dimOpacity
+                    color: Settings.colors.background.tint4
+                    opacity: Settings.colors.background.dimOpacity
                 }
 
                 Text {
                     Layout.topMargin: Configuration.weatherCardDateSpacingOffset
                     Layout.alignment: Qt.AlignHCenter
                     text: root.dateText()
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
                     font.family: Settings.labelFontFamily
                     font.pixelSize: Configuration.weatherSubFontSz
                 }
@@ -195,8 +195,8 @@ Pane {
             Layout.rowSpan: 2
             Layout.preferredHeight: cardGrid.implicitHeight
             orientation: Qt.Vertical
-            color: Settings.colors.bgTint4
-            opacity: Settings.colors.dimOpacity
+            color: Settings.colors.background.tint4
+            opacity: Settings.colors.background.dimOpacity
         }
 
         Item {
@@ -251,8 +251,7 @@ Pane {
                     Circle {
                         Layout.alignment: Qt.AlignVCenter
                         diameter: Settings.separatorDotSize
-                        color: Settings.colors.fgMain
-                        opacity: Settings.colors.dimOpacity
+                        color: Settings.colors.foreground.muted
                     }
 
                     ValueUnit {
@@ -321,8 +320,7 @@ Pane {
                     Circle {
                         Layout.alignment: Qt.AlignVCenter
                         diameter: Settings.separatorDotSize
-                        color: Settings.colors.fgMain
-                        opacity: Settings.colors.dimOpacity
+                        color: Settings.colors.foreground.muted
                     }
 
                     Item {
@@ -386,7 +384,7 @@ Pane {
                 Text {
                     Layout.alignment: Qt.AlignHCenter
                     text: root.service.formatClockTime(root.day?.sunrise ?? "")
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
                     font.family: Settings.labelFontFamily
                     font.pixelSize: Configuration.weatherSubFontSz
                 }
@@ -432,7 +430,7 @@ Pane {
                 Text {
                     Layout.alignment: Qt.AlignHCenter
                     text: root.service.formatClockTime(root.day?.sunset ?? "")
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
                     font.family: Settings.labelFontFamily
                     font.pixelSize: Configuration.weatherSubFontSz
                 }

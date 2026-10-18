@@ -6,10 +6,13 @@ import qs.core as Core
 Item {
     id: root
 
+    property Item backgroundTarget: null
+
     // ────── Appearance ──────
     required property int leftCap
     required property int rightCap
     required property color bgFill
+    property bool paintInForeground: false
     // Zero flattens the cap; one draws its full point or notch.
     property real leftCapProgress: 1
     property real rightCapProgress: 1
@@ -44,28 +47,39 @@ Item {
     }
 
     // ────── Geometry ──────
-    Shape {
-        id: shape
+    readonly property BackgroundScope backgroundScope: BackgroundScope {
+        id: paintScope
 
-        anchors.fill: parent
-        preferredRendererType: Shape.CurveRenderer
-        containsMode: Shape.FillContains
+        sourceItem: root
+        // A null target keeps the projected shape in the normal item tree,
+        // above the separately composited background surface.
+        target: root.paintInForeground ? null : paintScope.findTarget(root)
+        paintZOffset: root.paintInForeground ? -1 : 0
 
-        ShapePath {
-            fillColor: root.bgFill
-            strokeColor: root.outlineColor
-            strokeWidth: root.outlineWidth // -1 disables stroking entirely
-            joinStyle: ShapePath.MiterJoin
+        Shape {
+            id: shape
 
-            PathPolyline {
-                path: Core.ChevronGeometry.polygon(
-                    root.width,
-                    root.height,
-                    root.leftCap,
-                    root.rightCap,
-                    root.leftCapProgress,
-                    root.rightCapProgress
-                )
+            z: -1
+            anchors.fill: parent
+            preferredRendererType: Shape.CurveRenderer
+            containsMode: Shape.FillContains
+
+            ShapePath {
+                fillColor: root.bgFill
+                strokeColor: root.outlineColor
+                strokeWidth: root.outlineWidth // -1 disables stroking entirely
+                joinStyle: ShapePath.MiterJoin
+
+                PathPolyline {
+                    path: Core.ChevronGeometry.polygon(
+                        root.width,
+                        root.height,
+                        root.leftCap,
+                        root.rightCap,
+                        root.leftCapProgress,
+                        root.rightCapProgress
+                    )
+                }
             }
         }
     }

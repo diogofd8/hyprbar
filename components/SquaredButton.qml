@@ -6,18 +6,21 @@ import qs.components
 Item {
     id: root
 
+    property Item backgroundTarget: null
+    readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: root }
+
     // ────── Appearance ──────
     property string glyph: ""
     property string fontFamily: Settings.iconFontFamily
     required property real glyphSize
-    property color color: Settings.colors.fgMain
+    property color color: Settings.colors.foreground.main
 
     property color bgFill: "transparent"
-    property color hoverColor: Settings.colors.fgMain
-    property real hoverOpacity: Settings.colors.hoverOpacity
+    property color hoverColor: Settings.colors.background.highlight
+    property real hoverOpacity: Settings.colors.background.hoverOpacity
 
     property real borderWidth: 0
-    property color borderColor: Settings.colors.fgMain
+    property color borderColor: Settings.colors.background.highlight
 
     property real padding: 0
     property real buttonHeight: Math.max(glyphItem.implicitWidth,
@@ -40,7 +43,8 @@ Item {
     implicitHeight: root.buttonHeight
 
     // ────── Background ──────
-    Rectangle {
+    BackgroundRectangle {
+        z: -1
         anchors.fill: parent
 
         color: root.bgFill
@@ -65,7 +69,8 @@ Item {
     }
 
     // ────── Hover ──────
-    Rectangle {
+    BackgroundRectangle {
+        z: 1
         anchors.fill: parent
 
         color: root.hoverColor

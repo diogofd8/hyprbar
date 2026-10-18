@@ -15,7 +15,8 @@ ChevronButton {
     leftCap: Core.ChevronGeometry.Cap.Point
     rightCap: Core.ChevronGeometry.Cap.Point
 
-    bgFill: Settings.colors.accentMain
+    bgFill: Settings.colors.background.accent
+    paintInForeground: true
 
     onLeftClicked: root.systemRequested()
 
@@ -26,7 +27,7 @@ ChevronButton {
 
     Text {
         text: Qt.formatDateTime(clock.date, "HH:mm:ss")
-        color: Settings.colors.fgDark
+        color: Settings.colors.foreground.contrast
         font.family: Settings.labelFontFamily
         font.weight: Font.Bold
         font.pixelSize: Settings.labelFontSize

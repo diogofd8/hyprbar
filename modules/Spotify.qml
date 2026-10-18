@@ -18,7 +18,7 @@ Chevron {
     // ────── Brand ──────
     // Spotify green is the player's colour, not a role in the palette, so it
     // lives with the module and follows the theme on its own.
-    readonly property color brandColor: Settings.colors.spotifyColor
+    readonly property color brandColor: Settings.colors.background.spotify
 
     // ────── State ──────
     // Read-only: the player owns all of this now, so the view cannot drift
@@ -32,7 +32,7 @@ Chevron {
     // offset because these glyphs are already centred at this size.
     component PlayerButton: GlyphButton {
         iconSize: Settings.buttonFontSize
-        iconColor: Settings.colors.fgDark
+        iconColor: Settings.colors.foreground.contrast
         verticalOffset: 0
     }
 
@@ -86,7 +86,7 @@ Chevron {
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 text: Core.Spotify.metadata
-                color: Settings.colors.fgDark
+                color: Settings.colors.foreground.contrast
                 font.family: Settings.labelFontFamily
                 font.pixelSize: Settings.smallCapsFontSize
                 font.weight: Font.Bold

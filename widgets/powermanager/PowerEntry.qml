@@ -9,6 +9,8 @@ import qs.core as Core
 
 Controls.Pane {
     id: root
+
+    readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: root }
     required property var model
 
     readonly property bool hasDetails: shouldShowBatteryDetails()
@@ -24,8 +26,8 @@ Controls.Pane {
 
     Behavior on implicitHeight { Anim {} }
 
-    background: Rectangle {
-        color: Settings.colors.bgTint2
+    background: BackgroundRectangle {
+        color: Settings.colors.background.tint2
     }
 
     contentItem: RowLayout {
@@ -62,7 +64,7 @@ Controls.Pane {
                         ? batteryLabel(root.model.name)
                         : root.model.name
                     elide: Text.ElideRight
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
                     font.family: Settings.labelFontFamily
                     font.pixelSize: WidgetConfiguration.entryRowTitleFontSz
                 }
@@ -70,8 +72,8 @@ Controls.Pane {
                 Text {
                     visible: root.model.statusText.length > 0
                     text: shortStatus(root.model.statusText)
-                    color: root.statusColor
-                    opacity: Settings.colors.dimOpacity
+                    color: Qt.tint(Settings.colors.background.main, Qt.alpha(root.statusColor, Settings.colors.foreground.dimOpacity))
+
                     font.family: Settings.labelFontFamily
                     font.pixelSize: WidgetConfiguration.widgetMainFontSz
                 }
@@ -90,11 +92,13 @@ Controls.Pane {
             }
 
             RowLayout {
+                id: backgroundClip2
+                readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: backgroundClip2 }
+
                 Layout.fillWidth: true
                 spacing: WidgetConfiguration.entryExtendedRowHSpacing
                 clip: true
                 visible: root.hasDetails
-                opacity: Settings.colors.dimOpacity
 
                 RowLayout {
                     id: batteryHealth
@@ -105,12 +109,13 @@ Controls.Pane {
                     Text {
                         visible: root.model.healthSupported
                         text: "Health:"
-                        color: Settings.colors.fgMain
+                        color: Settings.colors.foreground.muted
                         font.family: Settings.labelFontFamily
                         font.pixelSize: WidgetConfiguration.widgetMainFontSz
                     }
 
                     Percentage {
+                        color: Settings.colors.foreground.muted
                         visible: root.model.healthSupported
                         height: parent.height
                         value: root.model.health
@@ -130,7 +135,7 @@ Controls.Pane {
                     Text {
                         visible: root.model.autonomy > 0
                         text: "Autonomy:"
-                        color: Settings.colors.fgMain
+                        color: Settings.colors.foreground.muted
                         font.family: Settings.labelFontFamily
                         font.pixelSize: WidgetConfiguration.widgetMainFontSz
                     }
@@ -138,7 +143,7 @@ Controls.Pane {
                     Text {
                         visible: root.model.autonomy > 0
                         text: root.formatDuration(root.model.autonomy)
-                        color: Settings.colors.fgMain
+                        color: Settings.colors.foreground.muted
                         font.family: Settings.labelFontFamily
                         font.pixelSize: WidgetConfiguration.widgetMainFontSz
                     }
@@ -146,7 +151,7 @@ Controls.Pane {
                     Text {
                         visible: root.model.fullIn > 0
                         text: "Full In:"
-                        color: Settings.colors.fgMain
+                        color: Settings.colors.foreground.muted
                         font.family: Settings.labelFontFamily
                         font.pixelSize: WidgetConfiguration.widgetMainFontSz
                     }
@@ -154,7 +159,7 @@ Controls.Pane {
                     Text {
                         visible: root.model.fullIn > 0
                         text: root.formatDuration(root.model.fullIn)
-                        color: Settings.colors.fgMain
+                        color: Settings.colors.foreground.muted
                         font.family: Settings.labelFontFamily
                         font.pixelSize: WidgetConfiguration.widgetMainFontSz
                     }

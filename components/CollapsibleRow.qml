@@ -5,6 +5,8 @@ import QtQuick.Layouts
 Item {
     id: root
 
+    readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: root }
+
     property bool shown: false
     property alias spacing: row.spacing
     default property alias content: row.data

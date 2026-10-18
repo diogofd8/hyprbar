@@ -3,6 +3,7 @@
 
 # Personal documentation
 /docs
+/tests
 
 # Local development entry points and scratch shells
 /debug

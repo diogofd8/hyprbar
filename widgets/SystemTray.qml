@@ -7,9 +7,12 @@ import Quickshell.Services.SystemTray as TrayService
 import qs
 
 import "systemtray" as SysTrayUI
+import qs.components
 
 Pane {
     id: root
+
+    readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: root }
     signal platformMenuOpened()
     signal platformMenuClosed()
 
@@ -34,12 +37,12 @@ Pane {
             visible: root.isEmpty
 
             text: "EMPTY TRAY"
-            color: Settings.colors.fgMain
+            color: Settings.colors.foreground.muted
             font.family: Settings.labelFontFamily
             font.pixelSize: Settings.smallCapsFontSize
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            opacity: Settings.colors.dimOpacity
+
         }
 
         RowLayout {

@@ -13,7 +13,7 @@ Chevron {
     leftCap: Core.ChevronGeometry.Cap.Flat
     rightCap: Core.ChevronGeometry.Cap.Notch
 
-    bgFill: Settings.colors.bgTint2
+    bgFill: Settings.colors.background.tint2
 
     // Controls volume UI input/output switcher
     property bool showingInput: false
@@ -21,8 +21,8 @@ Chevron {
     // Core hands over a state; turning it into a colour is the view's job.
     function stateColor(node) {
         return node.state === "muted"
-            ? Settings.colors.accentError
-            : Settings.colors.fgMain
+            ? Settings.colors.foreground.error
+            : Settings.colors.foreground.main
     }
 
     Row {
@@ -37,8 +37,8 @@ Chevron {
             leftCap: Core.ChevronGeometry.Cap.Point
             rightCap: Core.ChevronGeometry.Cap.Point
 
-            bgFill: Settings.colors.bgTint4
-            hoverOpacity: Settings.colors.hoverOpacityStrong
+            bgFill: Settings.colors.background.tint4
+            hoverOpacity: Settings.colors.background.hoverOpacityStrong
 
             onLeftClicked: volumeManager.toggle()
             onMiddleClicked: Core.Audio.toggleSourceMute()
@@ -59,7 +59,7 @@ Chevron {
             leftCap: Core.ChevronGeometry.Cap.Flat
             rightCap: Core.ChevronGeometry.Cap.Flat
 
-            bgFill: Settings.colors.bgTint2
+            bgFill: Settings.colors.background.tint2
 
             Percentage {
                 visible: !Core.Audio.source.muted
@@ -74,7 +74,7 @@ Chevron {
                 anchors.verticalCenterOffset: Settings.inducedVerticalOffset
 
                 text: "MUTED"
-                color: Settings.colors.accentError
+                color: Settings.colors.foreground.error
                 font.family: Settings.labelFontFamily
                 font.pixelSize: Settings.smallCapsFontSize
                 font.weight: Font.Bold
@@ -94,8 +94,8 @@ Chevron {
             leftCap: Core.ChevronGeometry.Cap.Point
             rightCap: Core.ChevronGeometry.Cap.Point
 
-            bgFill: Settings.colors.bgTint4
-            hoverOpacity: Settings.colors.hoverOpacityStrong
+            bgFill: Settings.colors.background.tint4
+            hoverOpacity: Settings.colors.background.hoverOpacityStrong
 
             onLeftClicked: volumeManager.toggle()
             onMiddleClicked: Core.Audio.toggleMute()
@@ -116,7 +116,7 @@ Chevron {
             leftCap: Core.ChevronGeometry.Cap.Flat
             rightCap: Core.ChevronGeometry.Cap.Flat
 
-            bgFill: Settings.colors.bgTint2
+            bgFill: Settings.colors.background.tint2
 
             Percentage {
                 visible: !Core.Audio.sink.muted
@@ -131,7 +131,7 @@ Chevron {
                 anchors.verticalCenterOffset: Settings.inducedVerticalOffset
 
                 text: "MUTED"
-                color: Settings.colors.accentError
+                color: Settings.colors.foreground.error
                 font.family: Settings.labelFontFamily
                 font.pixelSize: Settings.smallCapsFontSize
                 font.weight: Font.Bold

@@ -12,6 +12,8 @@ import "centerpiece" as CenterPieceUI
 Pane {
     id: root
 
+    readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: root }
+
     readonly property var tabs: CenterPieceUI.Configuration.tabs
     property int activeTab: root.tabs.findIndex(tab => tab.key === "weather")
 
@@ -64,7 +66,7 @@ Pane {
                         Layout.fillHeight: true
                         orientation: Qt.Vertical
                         thickness: CenterPieceUI.Configuration.tabSelectorWidth
-                        color: Settings.colors.accentMain
+                        color: Settings.colors.background.accent
 
                         opacity: root.activeTab === tabEntry.index ? 1 : 0
                     }
@@ -75,11 +77,14 @@ Pane {
         Separator {
             Layout.fillHeight: true
             orientation: Qt.Vertical
-            color: Settings.colors.bgTint2
-            opacity: Settings.colors.dimOpacity
+            color: Settings.colors.background.tint2
+            opacity: Settings.colors.background.dimOpacity
         }
 
         Loader {
+            id: backgroundClip2
+            readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: backgroundClip2 }
+
             Layout.fillWidth: true
             Layout.fillHeight: true
             clip: true

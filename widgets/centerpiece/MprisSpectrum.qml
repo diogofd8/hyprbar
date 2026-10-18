@@ -9,8 +9,8 @@ Item {
     property real diameter: Configuration.mprisArtImgSz + Configuration.mprisArtCircumferenceMargin
     property real clipRatio: Configuration.mprisArtCircumferenceClipRatio
     property real ringWidth: Configuration.mprisArtCircumferenceWidth
-    property color ringColor: Settings.colors.fgMain
-    property color barColor: Settings.colors.accentMain
+    property color ringColor: Settings.colors.foreground.main
+    property color barColor: Settings.colors.foreground.accent
     property int barCount: Configuration.mprisVisualizerBarCount
     property real barWidth: Configuration.mprisVisualizerBarWidth
     property real barHeight: Configuration.mprisVisualizerBarHeight

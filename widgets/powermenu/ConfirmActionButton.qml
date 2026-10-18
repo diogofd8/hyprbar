@@ -10,7 +10,7 @@ Controls.AbstractButton {
     required property Chevron container
     required property string glyph
     property color bgFill: "transparent"
-    property color glyphColor: Settings.colors.fgMain
+    property color glyphColor: Settings.colors.foreground.main
     property int glyphSize: Configuration.confirmActionIconSz
 
     padding: 0
@@ -62,6 +62,9 @@ Controls.AbstractButton {
     }
 
     background: Item {
+        id: backgroundClip1
+        readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: backgroundClip1 }
+
         clip: true
 
         // Paint the full chevron, cropped to this button's slice of the column.
@@ -89,9 +92,9 @@ Controls.AbstractButton {
     function buttonColor(): color {
         if (!root.hovered && !root.down && !root.activeFocus)
             return root.bgFill
-        const tint = Settings.colors.fgMain
+        const tint = Settings.colors.background.highlight
         const opacity = root.down || root.activeFocus
-            ? Settings.colors.hoverOpacityStrong : Settings.colors.hoverOpacity
+            ? Settings.colors.background.hoverOpacityStrong : Settings.colors.background.hoverOpacity
         return Qt.tint(root.bgFill, Qt.rgba(tint.r, tint.g, tint.b, opacity))
     }
 }

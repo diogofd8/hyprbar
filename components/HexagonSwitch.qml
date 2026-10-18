@@ -6,12 +6,15 @@ import qs.components
 Item {
     id: root
 
+    property Item backgroundTarget: null
+    readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: root }
+
     // ────── Appearance ──────
-    property color bgFill: Settings.colors.bgTint1
-    property color inactiveColor: Settings.colors.fgMain
-    property color activeColor: Settings.colors.accentMain
-    property color hoverColor: Settings.colors.fgMain
-    property real hoverOpacity: Settings.colors.hoverOpacity
+    property color bgFill: Settings.colors.background.tint1
+    property color inactiveColor: Settings.colors.background.highlight
+    property color activeColor: Settings.colors.background.accent
+    property color hoverColor: Settings.colors.background.highlight
+    property real hoverOpacity: Settings.colors.background.hoverOpacity
 
     property real trackWidth: 18
     property real trackHeight: 5
@@ -63,6 +66,7 @@ Item {
 
         HexagonThumb {
             id: thumb
+            z: 1
 
             property real centerX: root.checked
                 ? root.rightThumbCenterX : root.leftThumbCenterX

@@ -52,11 +52,11 @@ Singleton {
     // active palette so this helper does not own theme or UPower state.
     function batteryStatusColor(battery) {
         if (battery.charging)
-            return Settings.colors.accentCharging
+            return Settings.colors.foreground.charging
         if (battery.state === "empty")
-            return Settings.colors.accentError
+            return Settings.colors.foreground.error
         if (battery.state === "alert")
-            return Settings.colors.accentAlert
-        return Settings.colors.fgMain
+            return Settings.colors.foreground.alert
+        return Settings.colors.foreground.main
     }
 }

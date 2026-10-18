@@ -75,17 +75,20 @@ Popup {
         root.close()
     }
 
-    background: Rectangle {
-        color: Settings.colors.bgTint2
+    background: BackgroundSurface {
+        id: menuBackground
+        Rectangle { anchors.fill: parent; color: Settings.colors.background.tint2 }
     }
 
     contentItem: Item {
+        readonly property Item backgroundTarget: menuBackground.paintTarget
         implicitWidth: Configuration.mprisPlayerMenuWidth
         implicitHeight: root.anchorItem.height + 2 * Configuration.mprisPlayerMenuPadding
             + playerList.implicitHeight
 
         Item {
             id: buttonArea
+            readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: buttonArea }
             width: root.anchorItem.width
             height: root.anchorItem.height
             z: 1
@@ -93,6 +96,8 @@ Popup {
 
         ListView {
             id: playerList
+
+            readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: playerList }
             readonly property real scrollbarGutter: playerScrollbar.visible ? playerScrollbar.width : 0
             readonly property int visibleEntryCount:
                 Math.min(count, Math.max(1, Configuration.mprisPlayerMenuMaxVisibleEntries))
@@ -138,16 +143,16 @@ Popup {
                     cursorShape: Qt.PointingHandCursor
                 }
 
-                background: Rectangle {
-                    color: entry.down || entry.hovered || entry.activeFocus ? Settings.colors.bgTint4
-                        : entry.highlighted ? Settings.colors.bgTint3 : "transparent"
+                background: BackgroundRectangle {
+                    color: entry.down || entry.hovered || entry.activeFocus ? Settings.colors.background.tint4
+                        : entry.highlighted ? Settings.colors.background.tint3 : "transparent"
                 }
 
                 contentItem: Text {
                     text: entry.modelData.identity || entry.modelData.dbusName.replace("org.mpris.MediaPlayer2.", "")
                     font.family: Settings.labelFontFamily
                     font.pixelSize: Configuration.mprisPlayerMenuEntryFontSz
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     elide: Text.ElideRight
@@ -166,15 +171,15 @@ Popup {
                 enabled: playerList.enabled
                 policy: ScrollBar.AsNeeded
 
-                contentItem: Rectangle {
+                contentItem: BackgroundRectangle {
                     implicitWidth: Configuration.mprisPlayerMenuScrollbarWidth
                     radius: width / 2
-                    color: Settings.colors.fgMain
-                    opacity: parent.active ? 1 : Settings.colors.dimOpacity
+                    color: Settings.colors.background.highlight
+                    opacity: parent.active ? 1 : Settings.colors.background.dimOpacity
                 }
 
-                background: Rectangle {
-                    color: Settings.colors.bgTint2
+                background: BackgroundRectangle {
+                    color: Settings.colors.background.tint2
                 }
             }
         }

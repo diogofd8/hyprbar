@@ -10,7 +10,7 @@ RowLayout {
 
     required property string name
     required property string icon
-    property color bgFill: Settings.colors.bgMain
+    property color bgFill: Settings.colors.background.main
     property bool confirmOpen: false
     property bool expanded: powerAction.hovered || root.activeFocus || root.confirmOpen
 
@@ -61,8 +61,8 @@ RowLayout {
             anchors.margins: Configuration.powerActionBtnPadding
             leftCap: powerContainer.leftCap
             rightCap: powerContainer.rightCap
-            bgFill: Settings.colors.bgTint2
-            hoverOpacity: Settings.colors.hoverOpacityStrong
+            bgFill: Settings.colors.background.tint2
+            hoverOpacity: Settings.colors.background.hoverOpacityStrong
             onLeftClicked: root.clicked()
 
             RowLayout {
@@ -100,7 +100,7 @@ RowLayout {
                     visible: powerContainer.width > collapsedWidth() + Configuration.powerActionLabelPaddingX
                     text: root.name
                     clip: true
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
                     font.family: Settings.labelFontFamily
                     font.pixelSize: Configuration.powerActionLabelFontSz
                     transform: Translate { y: root.inkOffset(actionLabel, labelMetrics) }
@@ -147,8 +147,8 @@ RowLayout {
 
                 text: "No"
                 glyph: Configuration.confirmActionIcon.no
-                glyphColor: hovered || activeFocus ? Settings.colors.bgMain : Settings.colors.accentError
-                bgFill: hovered || activeFocus ? Settings.colors.accentError : Settings.colors.bgMain
+                glyphColor: hovered || activeFocus ? Settings.colors.foreground.contrast : Settings.colors.foreground.error
+                bgFill: hovered || activeFocus ? Settings.colors.background.error : Settings.colors.background.main
 
                 onClicked: root.cancelConfirmation(noAction.visualFocus)
             }
@@ -164,8 +164,8 @@ RowLayout {
 
                 text: "Yes"
                 glyph: Configuration.confirmActionIcon.yes
-                glyphColor: hovered || activeFocus ? Settings.colors.bgMain : Settings.colors.accentCharging
-                bgFill: hovered || activeFocus ? Settings.colors.accentCharging : Settings.colors.bgMain
+                glyphColor: hovered || activeFocus ? Settings.colors.foreground.contrast : Settings.colors.foreground.charging
+                bgFill: hovered || activeFocus ? Settings.colors.background.charging : Settings.colors.background.main
 
                 onClicked: root.confirmed()
             }

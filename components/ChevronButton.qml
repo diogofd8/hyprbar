@@ -5,16 +5,20 @@ import qs
 Item {
     id: root
 
+    property Item backgroundTarget: null
+    readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: root }
+
     // ────── Chevron Passthrough ──────
     // Mirrors Chevron's own API, so a display Chevron can be swapped for an
     // interactive one without changing anything else at the call site.
     required property int leftCap
     required property int rightCap
     required property color bgFill
+    property bool paintInForeground: false
     property real leftCapProgress: 1
     property real rightCapProgress: 1
-    property color hoverColor: Settings.colors.fgMain
-    property real hoverOpacity: Settings.colors.hoverOpacity
+    property color hoverColor: Settings.colors.background.highlight
+    property real hoverOpacity: Settings.colors.background.hoverOpacity
 
     property real contentLeftPadding: 0
     property real contentRightPadding: 0
@@ -58,6 +62,7 @@ Item {
         leftCapProgress: root.leftCapProgress
         rightCapProgress: root.rightCapProgress
         bgFill: root.bgFill
+        paintInForeground: root.paintInForeground
 
         contentLeftPadding: root.contentLeftPadding
         contentRightPadding: root.contentRightPadding
@@ -66,6 +71,7 @@ Item {
     // Hover tint, drawn as a separate shape so it composites over whatever
     // the chevron itself sits on rather than over a colour assumed here.
     Chevron {
+        z: 1
         anchors.fill: parent
 
         leftCap: root.leftCap

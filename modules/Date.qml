@@ -24,8 +24,8 @@ Row {
         leftCap: Core.ChevronGeometry.Cap.Point
         rightCap: Core.ChevronGeometry.Cap.Notch
 
-        bgFill: Settings.colors.bgTint3
-        hoverOpacity: Settings.colors.hoverOpacityStrong
+        bgFill: Settings.colors.background.tint3
+        hoverOpacity: Settings.colors.background.hoverOpacityStrong
 
         onLeftClicked: root.calendarRequested()
 
@@ -33,7 +33,7 @@ Row {
             y: Settings.inducedVerticalOffset
 
             text: Qt.formatDateTime(clock.date, "ddd").toUpperCase()
-            color: Settings.colors.fgMain
+            color: Settings.colors.foreground.main
             font.family: Settings.labelFontFamily
             font.pixelSize: Settings.smallCapsFontSize
             font.weight: Font.Bold
@@ -48,8 +48,8 @@ Row {
         leftCap: Core.ChevronGeometry.Cap.Point
         rightCap: Core.ChevronGeometry.Cap.Notch
 
-        bgFill: Settings.colors.bgTint4
-        hoverOpacity: Settings.colors.hoverOpacityStrong
+        bgFill: Settings.colors.background.tint4
+        hoverOpacity: Settings.colors.background.hoverOpacityStrong
 
         onLeftClicked: root.calendarRequested()
 
@@ -59,20 +59,20 @@ Row {
 
             Text {
                 text: Qt.formatDateTime(clock.date, "MMM")
-                color: Settings.colors.fgMain
+                color: Settings.colors.foreground.main
                 font.family: Settings.labelFontFamily
                 font.pixelSize: Settings.labelFontSize
             }
 
             Circle {
                 diameter: Settings.separatorDotSize
-                color: Settings.colors.fgMain
+                color: Settings.colors.foreground.main
                 anchors.verticalCenter: parent.verticalCenter
             }
 
             Text {
                 text: Qt.formatDateTime(clock.date, "dd")
-                color: Settings.colors.fgMain
+                color: Settings.colors.foreground.main
                 font.family: Settings.labelFontFamily
                 font.pixelSize: Settings.labelFontSize
             }

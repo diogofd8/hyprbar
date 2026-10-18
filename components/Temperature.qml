@@ -12,7 +12,7 @@ RowLayout {
     property string fontFamily: Settings.labelFontFamily
     property real fontSize: Settings.labelFontSize
     property real verticalOffset: Settings.inducedVerticalOffset
-    property string color: Settings.colors.fgMain
+    property string color: Settings.colors.foreground.main
     property bool fontBold: false
 
     readonly property real degreeUnitSpacing: root.unit === "K" ? 1.75 : -1.75

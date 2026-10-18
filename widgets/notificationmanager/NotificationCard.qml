@@ -8,6 +8,8 @@ import qs.widgets
 NotificationSurface {
     id: root
 
+    readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: root }
+
     required property var group
     property bool expanded: false
     property real expansionProgress: expanded ? 1.0 : 0.0
@@ -36,8 +38,8 @@ NotificationSurface {
     implicitHeight: contents.implicitHeight + topPadding + bottomPadding
     clip: true
 
-    background: Rectangle {
-        color: Settings.colors.bgTint1
+    background: BackgroundRectangle {
+        color: Settings.colors.background.tint1
     }
 
     contentItem: ColumnLayout {
@@ -61,7 +63,7 @@ NotificationSurface {
                 text: root.group?.latest?.appName ?? ""
                 textFormat: Text.PlainText
                 elide: Text.ElideRight
-                color: Settings.colors.fgMain
+                color: Settings.colors.foreground.main
                 font.family: Settings.labelFontFamily
                 font.pixelSize: WidgetConfiguration.entryRowTitleFontSz
                 font.bold: true
@@ -70,10 +72,10 @@ NotificationSurface {
             Text {
                 visible: !root.expanded
                 text: root.receivedTime()
-                color: Settings.colors.fgMain
+                color: Settings.colors.foreground.muted
                 font.family: Settings.labelFontFamily
                 font.pixelSize: WidgetConfiguration.entryRowDefaultFontSz
-                opacity: Settings.colors.dimOpacity
+
             }
 
             Item {
@@ -84,7 +86,7 @@ NotificationSurface {
                 rotation: root.expanded ? 180 : 0
                 glyph: Configuration.nfExpandIcon
                 glyphSize: WidgetConfiguration.entryRowSecondaryIconSz
-                color: Settings.colors.fgMain
+                color: Settings.colors.foreground.main
 
                 onLeftClicked: root.expansionRequested()
                 onRightClicked: root.dismiss()
@@ -97,16 +99,16 @@ NotificationSurface {
 
                 Text {
                     text: root.group?.count ?? 0
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.muted
                     font.family: Settings.labelFontFamily
                     font.pixelSize: WidgetConfiguration.entryRowDefaultFontSz
-                    opacity: Settings.colors.dimOpacity
+
                 }
 
                 SquaredButton {
                     glyph: Configuration.nfClearAllIcon
                     glyphSize: WidgetConfiguration.entryRowSecondaryIconSz
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
 
                     onLeftClicked: root.dismiss()
                     onRightClicked: root.dismiss()
@@ -115,6 +117,9 @@ NotificationSurface {
         }
 
         Item {
+            id: backgroundClip2
+            readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: backgroundClip2 }
+
             Layout.fillWidth: true
             implicitHeight: root.entriesHeight()
             clip: true

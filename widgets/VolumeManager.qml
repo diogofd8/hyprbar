@@ -10,9 +10,11 @@ import "volumemanager" as VolumeUI
 
 Pane {
     id: root
+
+    readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: root }
     signal dismissRequested()
 
-    readonly property string panelBackgroundColor: Settings.colors.bgMain
+    readonly property string panelBackgroundColor: Settings.colors.background.main
 
     // Mode values also give each page its horizontal slide position.
     readonly property int devicesMode: 0
@@ -43,13 +45,15 @@ Pane {
 
                 Item {
                     id: volumeMixer
+                    readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: volumeMixer }
                     Layout.topMargin: WidgetConfiguration.hexBtnVPadding
                     Layout.bottomMargin: WidgetConfiguration.hexBtnVPadding
                     implicitWidth: mixerToggler.implicitWidth
                     implicitHeight: mixerToggler.implicitHeight
 
-                    Rectangle {
+                    BackgroundRectangle {
                         id: volumeMixerBg
+                        z: -1
 
                         anchors {
                             top: parent.top
@@ -60,7 +64,7 @@ Pane {
                             rightMargin: mixerStreamsBtn.width / 2
                         }
 
-                        color: Settings.colors.bgTint2
+                        color: Settings.colors.background.tint2
                     }
 
                     RowLayout {
@@ -72,11 +76,11 @@ Pane {
                             id: mixerDevicesBtn
 
                             bgFill: root.activeMixerMode === root.devicesMode
-                                ? Settings.colors.accentMain : Settings.colors.bgTint3
+                                ? Settings.colors.background.accent : Settings.colors.background.tint3
                             glyph: VolumeUI.Configuration.volMixerMode["devices"]
                             glyphSize: WidgetConfiguration.widgetEmbeddedIconSz
                             glyphColor: root.activeMixerMode === root.devicesMode
-                                ? Settings.colors.fgDark : Settings.colors.fgMain
+                                ? Settings.colors.foreground.contrast : Settings.colors.foreground.main
                             glyphHorizontalOffset: -0.5
                             onLeftClicked: root.activeMixerMode = root.devicesMode
                         }
@@ -85,11 +89,11 @@ Pane {
                             id: mixerStreamsBtn
 
                             bgFill: root.activeMixerMode === root.applicationsMode
-                                ? Settings.colors.accentMain : Settings.colors.bgTint3
+                                ? Settings.colors.background.accent : Settings.colors.background.tint3
                             glyph: VolumeUI.Configuration.volMixerMode["applications"]
                             glyphSize: WidgetConfiguration.widgetEmbeddedIconSz
                             glyphColor: root.activeMixerMode === root.applicationsMode
-                                ? Settings.colors.fgDark : Settings.colors.fgMain
+                                ? Settings.colors.foreground.contrast : Settings.colors.foreground.main
                             glyphHorizontalOffset: -0.5
                             onLeftClicked: root.activeMixerMode = root.applicationsMode
                         }
@@ -117,7 +121,7 @@ Pane {
                                 ? VolumeUI.Configuration.outputMutedIcon
                                 : VolumeUI.Configuration.outputUnmutedIcon
                             iconSize: WidgetConfiguration.widgetMainIconSz
-                            iconColor: Settings.colors.fgMain
+                            iconColor: Settings.colors.foreground.main
                             useMetrics: true
                             verticalOffset: 0
                         }
@@ -154,7 +158,7 @@ Pane {
                                 ? VolumeUI.Configuration.inputMutedIcon
                                 : VolumeUI.Configuration.inputUnmutedIcon
                             iconSize: WidgetConfiguration.widgetMainIconSz
-                            iconColor: Settings.colors.fgMain
+                            iconColor: Settings.colors.foreground.main
                             useMetrics: true
                             verticalOffset: 0
                         }
@@ -178,7 +182,7 @@ Pane {
                     glyph: VolumeUI.Configuration.volumeSettingsIcon
                     glyphSize: WidgetConfiguration.widgetMainIconSz
                     useMetrics: true
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
 
                     onLeftClicked: {
                         VolumeUI.VolumeActions.volumeManager()
@@ -192,7 +196,7 @@ Pane {
                 Layout.fillWidth: true
                 Layout.topMargin: 1
                 Layout.bottomMargin: WidgetConfiguration.mainRowVMargin
-                color: Settings.colors.bgTint4
+                color: Settings.colors.background.tint4
             }
         }
 
@@ -200,6 +204,8 @@ Pane {
         // ────── Volume Entries ──────
         Flickable {
             id: scroll
+
+            readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: scroll }
             Layout.fillWidth: true
             Layout.preferredHeight: implicitHeight
             implicitWidth: VolumeUI.Configuration.contentWidth
@@ -211,6 +217,8 @@ Pane {
 
             Item {
                 id: contents
+
+                readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: contents }
                 width: scroll.width
                 // Height follows the page slide: 0 on the device page, 1 on the
                 // stream page, read from the sliding x. The popout then grows or
@@ -243,7 +251,7 @@ Pane {
 
                             Text {
                                 text: "OUTPUT DEVICES"
-                                color: Settings.colors.fgMain
+                                color: Settings.colors.foreground.main
                                 font.family: Settings.labelFontFamily
                                 font.bold: true
                                 font.pixelSize: WidgetConfiguration.sectionRowLabelFontSz
@@ -269,7 +277,7 @@ Pane {
                                 Layout.bottomMargin: 4
 
                                 text: "INPUT DEVICES"
-                                color: Settings.colors.fgMain
+                                color: Settings.colors.foreground.main
                                 font.family: Settings.labelFontFamily
                                 font.bold: true
                                 font.pixelSize: WidgetConfiguration.sectionRowLabelFontSz
@@ -302,7 +310,7 @@ Pane {
 
                     Text {
                         text: "APPLICATIONS"
-                        color: Settings.colors.fgMain
+                        color: Settings.colors.foreground.main
                         font.family: Settings.labelFontFamily
                         font.bold: true
                         font.pixelSize: WidgetConfiguration.sectionRowLabelFontSz
@@ -320,8 +328,8 @@ Pane {
                         Text {
                             visible: Core.Audio.applicationModel.count === 0
                             text: "No applications playing"
-                            color: Settings.colors.fgMain
-                            opacity: Settings.colors.dimOpacity
+                            color: Settings.colors.foreground.muted
+
                             font.family: Settings.labelFontFamily
                             font.pixelSize: WidgetConfiguration.widgetMsgFieldFontSz
                         }

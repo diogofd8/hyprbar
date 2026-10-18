@@ -9,6 +9,8 @@ import qs.core as Core
 
 Controls.Pane {
     id: root
+
+    readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: root }
     required property var model
 
     readonly property bool isKeyboard: root.model.kind === "keyboard"
@@ -31,8 +33,8 @@ Controls.Pane {
 
     Behavior on implicitHeight { Anim {} }
 
-    background: Rectangle {
-        color: Settings.colors.bgTint2
+    background: BackgroundRectangle {
+        color: Settings.colors.background.tint2
     }
 
     contentItem: RowLayout {
@@ -67,7 +69,7 @@ Controls.Pane {
 
                     text: BrightnessActions.entryName(root.model)
                     elide: Text.ElideRight
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
                     font.family: Settings.labelFontFamily
                     font.pixelSize: WidgetConfiguration.entryRowTitleFontSz
                 }
@@ -89,6 +91,9 @@ Controls.Pane {
         id: screenSliderComponent
 
         RowLayout {
+            id: backgroundClip2
+            readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: backgroundClip2 }
+
             clip: true
             spacing: WidgetConfiguration.entryExtendedRowHSpacing
 
@@ -99,7 +104,7 @@ Controls.Pane {
                 to: 100
                 value: root.model.value
                 actionable: root.canChange
-                bgFill: Settings.colors.bgTint2
+                bgFill: Settings.colors.background.tint2
 
                 onMoved: {
                     if (!root.commitOnRelease)
@@ -126,6 +131,9 @@ Controls.Pane {
         id: keyboardSliderComponent
 
         RowLayout {
+            id: backgroundClip3
+            readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: backgroundClip3 }
+
             clip: true
             spacing: WidgetConfiguration.entryExtendedRowHSpacing
 
@@ -135,7 +143,7 @@ Controls.Pane {
                 stepCount: root.model.max + 1
                 value: root.model.value
                 actionable: root.canChange
-                bgFill: Settings.colors.bgTint2
+                bgFill: Settings.colors.background.tint2
 
                 onPressedChanged: {
                     if (!pressed && Math.round(value) !== root.model.value)
@@ -157,14 +165,14 @@ Controls.Pane {
 
                     Circle {
                         anchors.verticalCenter: parent.verticalCenter
-                        opacity: keyboardModeIconOpacity()
+                        opacity: root.model.available ? 1 : 0
                         diameter: Configuration.keyboardBrightnessIndicatorSz
-                        color: Settings.colors.fgMain
+                        color: keyboardModeIconColor()
                     }
 
                     Text {
                         text: keyboardModeText()
-                        color: Settings.colors.fgMain
+                        color: Settings.colors.foreground.main
                         font.family: Settings.labelFontFamily
                         font.pixelSize: WidgetConfiguration.entryRowDefaultFontSz
                     }
@@ -193,11 +201,9 @@ Controls.Pane {
         }
     }
 
-    function keyboardModeIconOpacity() {
-        if (!root.model.available)
-            return 0.0
-
-        var opacity = 0.2 + 0.4*root.model.value
-        return (opacity > 1.0) ? 1.0 : opacity
+    function keyboardModeIconColor(): color {
+        const strength = Math.min(1, 0.2 + 0.4 * root.model.value)
+        return Qt.tint(Settings.colors.background.tint2,
+            Qt.alpha(Settings.colors.foreground.main, strength))
     }
 }

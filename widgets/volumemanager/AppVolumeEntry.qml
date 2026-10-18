@@ -10,6 +10,8 @@ import qs.core as Core
 
 Controls.Pane {
     id: root
+
+    readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: root }
     required property var model
     signal dismissRequested()
 
@@ -23,8 +25,8 @@ Controls.Pane {
 
     Behavior on implicitHeight { Anim {} }
 
-    background: Rectangle {
-        color: Settings.colors.bgTint2
+    background: BackgroundRectangle {
+        color: Settings.colors.background.tint2
     }
 
     contentItem: RowLayout {
@@ -71,7 +73,7 @@ Controls.Pane {
 
                     text: root.model.name
                     elide: Text.ElideRight
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
                     font.family: Settings.labelFontFamily
                     font.pixelSize: WidgetConfiguration.entryRowTitleFontSz
                 }
@@ -79,8 +81,8 @@ Controls.Pane {
                 Text {
                     visible: !root.model.hasStream
                     text: "Idle"
-                    color: Settings.colors.fgMain
-                    opacity: Settings.colors.dimOpacity
+                    color: Settings.colors.foreground.muted
+
                     font.family: Settings.labelFontFamily
                     font.pixelSize: WidgetConfiguration.entryRowTitleFontSz
                 }
@@ -94,7 +96,7 @@ Controls.Pane {
 
                     glyph: Configuration.volEntrySettingsIcon
                     glyphSize: WidgetConfiguration.widgetSecondaryIconSz
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
 
                     onLeftClicked: {
                         VolumeActions.volumeManager()
@@ -110,13 +112,13 @@ Controls.Pane {
                 SquaredButton {
                     id: muteBtn
                     enabled: root.model.hasStream
-                    opacity: enabled ? 1 : Settings.colors.disabledOpacity
+                    opacity: enabled ? 1 : Settings.colors.foreground.disabledOpacity
 
                     glyph: root.model.muted
                         ? Configuration.outputMutedIcon
                         : Configuration.outputUnmutedIcon
                     glyphSize: WidgetConfiguration.widgetSecondaryIconSz
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
 
                     onLeftClicked: Core.Audio.setEntryMuted(
                         root.model.id, !root.model.muted)
@@ -124,6 +126,8 @@ Controls.Pane {
 
                 RowLayout {
                     id: volumeSliderContainer
+
+                    readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: volumeSliderContainer }
                     spacing: WidgetConfiguration.entryExtendedRowHSpacing
                     Layout.topMargin: WidgetConfiguration.sliderExtraSpacing
                     Layout.bottomMargin: WidgetConfiguration.sliderExtraSpacing
@@ -134,14 +138,14 @@ Controls.Pane {
                         id: volumeSlider
                         Layout.fillWidth: true
 
-                        bgFill: Settings.colors.bgTint2
+                        bgFill: Settings.colors.background.tint2
 
                         from: 0
                         to: 100
                         value: root.model.value
 
                         actionable: root.model.hasStream
-                        opacity: actionable ? 1 : Settings.colors.disabledOpacity
+                        opacity: actionable ? 1 : Settings.colors.foreground.disabledOpacity
                         stepSize: 1
                         snapMode: Controls.Slider.SnapAlways
 

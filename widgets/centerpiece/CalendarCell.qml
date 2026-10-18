@@ -20,10 +20,10 @@ Item {
     Loader {
         anchors.fill: parent
         active: root.selected
-        opacity: root.adjacentMonth ? Settings.colors.disabledOpacity : 1
+        opacity: root.adjacentMonth ? Settings.colors.foreground.disabledOpacity : 1
 
         sourceComponent: Hexagon {
-            fillColor: Settings.colors.accentMain
+            fillColor: Settings.colors.background.accent
         }
     }
 
@@ -33,8 +33,8 @@ Item {
         anchors.centerIn: parent
         text: root.text
         padding: Configuration.calendarCellPadding
-        color: root.selected ? Settings.colors.fgDark : Settings.colors.fgMain
-        opacity: root.adjacentMonth ? Settings.colors.disabledOpacity : 1
+        color: root.selected ? Settings.colors.foreground.contrast : Settings.colors.foreground.main
+        opacity: root.adjacentMonth ? Settings.colors.foreground.disabledOpacity : 1
         font.family: Settings.labelFontFamily
         font.pixelSize: Configuration.calendarFontSz
         font.bold: root.heading || root.selected

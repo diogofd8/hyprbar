@@ -17,8 +17,8 @@ ChevronButton {
     leftCap: Core.ChevronGeometry.Cap.Notch
     rightCap: Core.ChevronGeometry.Cap.Point
 
-    bgFill: Settings.colors.bgTint1
-    hoverOpacity: root.trayHasContent ? Settings.colors.hoverOpacityStrong : 0
+    bgFill: Settings.colors.background.tint1
+    hoverOpacity: root.trayHasContent ? Settings.colors.background.hoverOpacityStrong : 0
     enabled: root.trayHasContent
 
     readonly property bool trayHasContent: TrayService.SystemTray.items.values.some(
@@ -35,7 +35,7 @@ ChevronButton {
         id: togglerIcon
 
         icon: Settings.systemTrayIcon
-        opacity: root.trayHasContent ? 1 : Settings.colors.disabledOpacity
+        opacity: root.trayHasContent ? 1 : Settings.colors.foreground.disabledOpacity
         useMetrics: true
         rotation: sysTray.isOpen ? 180 : 0
 
@@ -43,8 +43,8 @@ ChevronButton {
 
         NotificationDot {
             visible: !sysTray.isOpen && root.trayNeedsAttention
-            dotColor: Settings.colors.accentAlert
-            dotBgColor: Settings.colors.bgTint1
+            dotColor: Settings.colors.foreground.alert
+            dotBgColor: Settings.colors.background.tint1
         }
     }
 

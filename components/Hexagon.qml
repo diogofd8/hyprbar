@@ -8,6 +8,8 @@ import QtQuick.Shapes
 Item {
     id: root
 
+    property Item backgroundTarget: null
+
     property color fillColor: "transparent"
     property color outlineColor: "transparent"
     property real outlineWidth: -1
@@ -60,31 +62,35 @@ Item {
         ]
     }
 
-    Shape {
-        id: shape
+    readonly property BackgroundScope backgroundScope: BackgroundScope {
+        sourceItem: root
+        Shape {
+            id: shape
 
-        anchors.fill: parent
-        preferredRendererType: Shape.CurveRenderer
-        containsMode: Shape.FillContains
+            z: -1
+            anchors.fill: parent
+            preferredRendererType: Shape.CurveRenderer
+            containsMode: Shape.FillContains
 
-        ShapePath {
-            fillColor: root.fillColor
-            strokeColor: root.outlineColor
-            strokeWidth: root.outlineWidth
-            joinStyle: ShapePath.MiterJoin
+            ShapePath {
+                fillColor: root.fillColor
+                strokeColor: root.outlineColor
+                strokeWidth: root.outlineWidth
+                joinStyle: ShapePath.MiterJoin
 
-            PathPolyline {
-                path: root.polygon()
+                PathPolyline {
+                    path: root.polygon()
+                }
             }
-        }
 
-        ShapePath {
-            fillColor: root.hoverOverlayColor
-            strokeColor: "transparent"
-            joinStyle: ShapePath.MiterJoin
+            ShapePath {
+                fillColor: root.hoverOverlayColor
+                strokeColor: "transparent"
+                joinStyle: ShapePath.MiterJoin
 
-            PathPolyline {
-                path: root.polygon()
+                PathPolyline {
+                    path: root.polygon()
+                }
             }
         }
     }

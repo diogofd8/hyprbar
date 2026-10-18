@@ -7,12 +7,15 @@ import qs.components
 Slider {
     id: root
 
+    property Item backgroundTarget: null
+    readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: root }
+
     // ────── Appearance ──────
-    property color bgFill: Settings.colors.bgTint1
-    property color inactiveColor: Settings.colors.fgMain
-    property color activeColor: Settings.colors.accentMain
-    property color hoverColor: Settings.colors.fgMain
-    property real hoverOpacity: Settings.colors.hoverOpacity
+    property color bgFill: Settings.colors.background.tint1
+    property color inactiveColor: Settings.colors.background.highlight
+    property color activeColor: Settings.colors.background.accent
+    property color hoverColor: Settings.colors.background.highlight
+    property real hoverOpacity: Settings.colors.background.hoverOpacity
 
     // Preferred track length only; the actual track follows the assigned width.
     property real trackWidth: 100
@@ -39,6 +42,7 @@ Slider {
     // ────── Track ──────
     background: Item {
         id: trackContainer
+        readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: trackContainer }
 
         x: root.leftPadding + root.thumbWidth / 2
         y: root.topPadding
@@ -53,7 +57,7 @@ Slider {
 
         // Plain rectangles keep the horizontal edges uniform at fractional
         // scales. The two sections meet underneath the hexagonal thumb.
-        Rectangle {
+        BackgroundRectangle {
             id: inactiveTrack
 
             x: root.mirrored ? 0 : trackContainer.splitX
@@ -71,13 +75,13 @@ Slider {
                 }
             }
 
-            Rectangle {
+            BackgroundRectangle {
                 anchors.fill: parent
                 color: trackContainer.hoverOverlayColor
             }
         }
 
-        Rectangle {
+        BackgroundRectangle {
             id: activeTrack
 
             x: root.mirrored ? trackContainer.splitX : 0
@@ -95,7 +99,7 @@ Slider {
                 }
             }
 
-            Rectangle {
+            BackgroundRectangle {
                 anchors.fill: parent
                 color: trackContainer.hoverOverlayColor
             }
@@ -104,6 +108,8 @@ Slider {
 
     // ────── Thumb ──────
     handle: Item {
+        id: thumb
+        readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: thumb }
         implicitWidth: root.thumbWidth
         implicitHeight: root.thumbHeight
         width: implicitWidth
@@ -124,6 +130,7 @@ Slider {
         }
 
         HexagonThumb {
+            z: 1
             anchors.fill: parent
 
             separation: 0

@@ -5,6 +5,9 @@ import qs
 Item {
     id: root
 
+    property Item backgroundTarget: null
+    readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: root }
+
     // ────── Appearance ──────
     property alias glyph: glyphItem.icon
     property alias glyphSize: glyphItem.iconSize
@@ -15,8 +18,8 @@ Item {
     property alias outlineWidth: hexagon.outlineWidth
     property alias colorAnimationDuration: hexagon.colorAnimationDuration
 
-    property color hoverColor: Settings.colors.fgMain
-    property real hoverOpacity: Settings.colors.hoverOpacity
+    property color hoverColor: Settings.colors.background.highlight
+    property real hoverOpacity: Settings.colors.background.hoverOpacity
 
     property real paddingOffset: 0
     property real defaultPadding: 10

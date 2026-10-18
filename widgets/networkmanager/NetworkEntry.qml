@@ -9,6 +9,8 @@ import qs.core as Core
 
 Controls.Pane {
     id: root
+
+    readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: root }
     required property var model
     // Raised when an action hands the user off to another window, so the host
     // popup can get out of the way instead of lingering behind it.
@@ -35,8 +37,8 @@ Controls.Pane {
     implicitHeight: mainContent.implicitHeight + root.topPadding + root.bottomPadding
     clip: true
 
-    background: Rectangle {
-        color: Settings.colors.bgTint2
+    background: BackgroundRectangle {
+        color: Settings.colors.background.tint2
     }
 
     contentItem: RowLayout {
@@ -72,7 +74,7 @@ Controls.Pane {
 
                     text: root.model.name
                     elide: Text.ElideRight
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
                     font.family: Settings.labelFontFamily
                     font.pixelSize: WidgetConfiguration.entryRowTitleFontSz
                 }
@@ -86,7 +88,7 @@ Controls.Pane {
                         ? Configuration.nwDisconnectIcon
                         : Configuration.nwConnectIcon
                     glyphSize: WidgetConfiguration.entryRowSecondaryIconSz
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
 
                     onLeftClicked: root.runConnectionAction()
                 }
@@ -97,7 +99,7 @@ Controls.Pane {
                     visible: root.model.canEdit
                     glyph: Configuration.nwEditConnectionIcon
                     glyphSize: WidgetConfiguration.entryRowSecondaryIconSz
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
 
                     onLeftClicked: {
                         Core.Network.editConnection(root.model.entryId)
@@ -111,7 +113,7 @@ Controls.Pane {
                     rotation: root.bottomShown ? 180 : 0
                     glyph: Configuration.nwExpandIcon
                     glyphSize: WidgetConfiguration.entryRowSecondaryIconSz
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
 
                     onLeftClicked: {
                         const wasOpen = root.bottomShown
@@ -134,13 +136,12 @@ Controls.Pane {
                 RowLayout {
                     Layout.fillWidth: true
                     visible: !root.askingPassword
-                    opacity: Settings.colors.dimOpacity
                     spacing: WidgetConfiguration.entryExtendedRowHSpacing
 
                     Text {
                         text: NetworkActions.connectionTypeText(root.model)
 
-                        color: Settings.colors.fgMain
+                        color: Settings.colors.foreground.muted
                         font.family: Settings.labelFontFamily
                         font.pixelSize: WidgetConfiguration.entryRowDefaultFontSz
                     }
@@ -148,13 +149,13 @@ Controls.Pane {
                     Circle {
                         Layout.alignment: Qt.AlignCenter
                         diameter: Settings.separatorDotSize
-                        color: Settings.colors.fgMain
+                        color: Settings.colors.foreground.muted
                     }
 
                     Text {
                         text: root.model.signalStrength + "%"
 
-                        color: Settings.colors.fgMain
+                        color: Settings.colors.foreground.muted
                         font.family: Settings.labelFontFamily
                         font.pixelSize: WidgetConfiguration.entryRowDefaultFontSz
                     }
@@ -166,15 +167,18 @@ Controls.Pane {
 
                     visible: root.askingPassword
 
+                    placeholderTextColor: Settings.colors.foreground.muted
+                    selectionColor: Settings.colors.foreground.accent
+                    selectedTextColor: Settings.colors.foreground.contrast
                     placeholderText: "password"
                     echoMode: TextInput.Password
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
                     font.family: Settings.labelFontFamily
                     font.pixelSize: WidgetConfiguration.entryRowDefaultFontSz
 
-                    background: Rectangle {
-                        color: Settings.colors.bgTint1
-                        border.color: Settings.colors.bgTint4
+                    background: BackgroundRectangle {
+                        color: Settings.colors.background.tint1
+                        border.color: Settings.colors.background.tint4
                         border.width: 1
                     }
 
@@ -186,14 +190,14 @@ Controls.Pane {
                     id: connectBtn
                     Layout.fillHeight: true
                     borderWidth: 1
-                    borderColor: Settings.colors.bgTint4
+                    borderColor: Settings.colors.background.tint4
 
                     visible: root.askingPassword
                     enabled: root.model.canSubmitPassword && passwordField.text.length > 0
 
                     glyph: Configuration.nwSendIcon
                     glyphSize: WidgetConfiguration.entryRowSecondaryIconSz
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
                     opacity: connectBtn.enabled ? 1 : 0.7
 
                     onLeftClicked: root.joinNetwork()
@@ -210,7 +214,7 @@ Controls.Pane {
 
                     glyph: Configuration.nwDismissIcon
                     glyphSize: WidgetConfiguration.entryRowSecondaryIconSz
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
 
                     onLeftClicked: Core.Network.clearEntryError(root.model.entryId)
 
@@ -227,8 +231,7 @@ Controls.Pane {
                 text: root.statusText
                 wrapMode: Text.Wrap
                 color: root.hasError
-                    ? Settings.colors.accentError : Settings.colors.fgMain
-                opacity: root.hasError ? 1 : 0.7
+                    ? Settings.colors.foreground.error : Settings.colors.foreground.muted
                 font.family: Settings.labelFontFamily
                 font.pixelSize: WidgetConfiguration.widgetMsgFieldFontSz
             }

@@ -11,11 +11,13 @@ import "networkmanager" as NetworkUI
 Pane {
     id: root
 
+    readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: root }
+
     // Raised when an action hands the user off to another window, so the host
     // popup can get out of the way instead of lingering behind it.
     signal dismissRequested()
 
-    readonly property string panelBackgroundColor: Settings.colors.bgMain
+    readonly property string panelBackgroundColor: Settings.colors.background.main
 
     padding: WidgetConfiguration.dropDownWindowPadding
     // Entry heights already contain the transition. The shared host keeps
@@ -48,7 +50,7 @@ Pane {
                     Glyph {
                         icon: NetworkUI.Configuration.nwWifiIcon
                         iconSize: WidgetConfiguration.widgetMainIconSz
-                        iconColor: Settings.colors.fgMain
+                        iconColor: Settings.colors.foreground.main
                     }
 
                     HexagonSwitch {
@@ -72,7 +74,7 @@ Pane {
                     glyph: NetworkUI.Configuration.nmConnectionRefreshIcon
                     glyphSize: WidgetConfiguration.widgetMainIconSz
                     useMetrics: true
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
 
                     onLeftClicked: Network.forceWifiScan()
 
@@ -92,7 +94,7 @@ Pane {
                     glyph: NetworkUI.Configuration.nmConnectionEditorIcon
                     glyphSize: WidgetConfiguration.widgetMainIconSz
                     useMetrics: true
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
 
                     onLeftClicked: {
                         Network.openSettings()
@@ -106,7 +108,7 @@ Pane {
                 Layout.fillWidth: true
                 Layout.topMargin: 1
                 Layout.bottomMargin: WidgetConfiguration.mainRowVMargin
-                color: Settings.colors.bgTint4
+                color: Settings.colors.background.tint4
             }
         }
 
@@ -116,7 +118,7 @@ Pane {
             visible: Network.wifiErrorMessage.length > 0
             text: Network.wifiErrorMessage
             wrapMode: Text.WordWrap
-            color: Settings.colors.accentError
+            color: Settings.colors.foreground.error
             font.family: Settings.labelFontFamily
             font.pixelSize: WidgetConfiguration.widgetMsgFieldFontSz
         }
@@ -124,6 +126,8 @@ Pane {
         // ────── Connections ──────
         Flickable {
             id: scroll
+
+            readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: scroll }
             Layout.fillWidth: true
             Layout.preferredHeight: implicitHeight
             implicitWidth: NetworkUI.Configuration.contentWidth
@@ -147,7 +151,7 @@ Pane {
 
                     Text {
                         text: "ACTIVE CONNECTIONS"
-                        color: Settings.colors.fgMain
+                        color: Settings.colors.foreground.main
                         font.family: Settings.labelFontFamily
                         font.bold: true
                         font.pixelSize: WidgetConfiguration.sectionRowLabelFontSz
@@ -171,7 +175,7 @@ Pane {
 
                     Text {
                         text: "AVAILABLE CONNECTIONS"
-                        color: Settings.colors.fgMain
+                        color: Settings.colors.foreground.main
                         font.family: Settings.labelFontFamily
                         font.bold: true
                         font.pixelSize: WidgetConfiguration.sectionRowLabelFontSz
@@ -195,8 +199,8 @@ Pane {
                             : Network.activeConnections.count > 0
                                 ? "No other connections available"
                                 : "No connections available"
-                        color: Settings.colors.fgMain
-                        opacity: Settings.colors.dimOpacity
+                        color: Settings.colors.foreground.muted
+
                         font.family: Settings.labelFontFamily
                         font.pixelSize: WidgetConfiguration.widgetMsgFieldFontSz
                     }
@@ -204,7 +208,7 @@ Pane {
                     Text {
                         visible: Network.scanErrorMessage.length > 0
                         text: Network.scanErrorMessage
-                        color: Settings.colors.accentError
+                        color: Settings.colors.foreground.error
                         font.family: Settings.labelFontFamily
                         font.pixelSize: WidgetConfiguration.widgetMsgFieldFontSz
                     }

@@ -14,8 +14,8 @@ ChevronButton {
     leftCap: Core.ChevronGeometry.Cap.Notch
     rightCap: Core.ChevronGeometry.Cap.Point
 
-    bgFill: Settings.colors.bgTint3
-    hoverOpacity: Settings.colors.hoverOpacityStrong
+    bgFill: Settings.colors.background.tint3
+    hoverOpacity: Settings.colors.background.hoverOpacityStrong
 
     onLeftClicked: Core.Actions.notificationMenu()
 
@@ -23,7 +23,7 @@ ChevronButton {
         icon: Settings.notificationIcon
         NotificationDot {
             visible: !notificationCenter.isOpen && Core.Notifications.count > 0
-            dotColor: Settings.colors.accentAlert
+            dotColor: Settings.colors.foreground.alert
             dotBgColor: root.bgFill
         }
     }

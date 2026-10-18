@@ -7,9 +7,11 @@ import qs
 import qs.components
 import "powermenu" as PowerMenuUI
 
-// Loaded only while open; one surface dims and blocks the desktop behind the menu.
+// Loaded only while open. Keep desktop dimming off the menu's blurred surface.
 PanelWindow {
     id: root
+
+    readonly property Item backgroundTarget: menuBackground.paintTarget
 
     property real verticalPosition: PowerMenuUI.Configuration.powerMenuEdgeVerticalPos
     property real dimOpacity: PowerMenuUI.Configuration.powerMenuDimOpacity
@@ -26,6 +28,20 @@ PanelWindow {
     anchors { top: true; bottom: true; left: true; right: true }
     exclusionMode: ExclusionMode.Ignore
     color: "transparent"
+
+    PanelWindow {
+        id: dimmerWindow
+
+        screen: root.screen
+        visible: root.visible && root.dimOpacity > 0
+        WlrLayershell.namespace: "hyprbar-powermenu-dimmer"
+        WlrLayershell.layer: WlrLayer.Overlay
+        WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+        anchors { top: true; bottom: true; left: true; right: true }
+        exclusionMode: ExclusionMode.Ignore
+        mask: Region {}
+        color: Qt.rgba(0, 0, 0, root.dimOpacity * root.reveal)
+    }
 
     Component.onCompleted: root.reveal = 1
     Behavior on reveal {
@@ -81,20 +97,20 @@ PanelWindow {
             event.accepted = true
         }
 
-        Rectangle {
+        MouseArea {
             anchors.fill: parent
-            color: "black"
-            opacity: root.dimOpacity * root.reveal
-
-            MouseArea {
-                anchors.fill: parent
-                acceptedButtons: Qt.AllButtons
-                onClicked: root.dismissOrCancel()
-            }
+            acceptedButtons: Qt.AllButtons
+            onClicked: root.dismissOrCancel()
         }
 
         Item {
             id: panel
+
+            BackgroundSurface {
+                id: menuBackground
+                anchors.fill: parent
+                z: -1
+            }
 
             width: menuEntries.implicitWidth + 2 * PowerMenuUI.Configuration.powerMenuPadding
             height: menuEntries.implicitHeight + 2 * PowerMenuUI.Configuration.powerMenuPadding

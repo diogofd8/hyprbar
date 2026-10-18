@@ -18,8 +18,8 @@ Row {
         leftCap: Core.ChevronGeometry.Cap.Notch
         rightCap: Core.ChevronGeometry.Cap.Point
 
-        bgFill: Settings.colors.bgTint4
-        hoverOpacity: Settings.colors.hoverOpacityStrong
+        bgFill: Settings.colors.background.tint4
+        hoverOpacity: Settings.colors.background.hoverOpacityStrong
 
         onLeftClicked: root.weatherRequested()
 

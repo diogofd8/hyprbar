@@ -28,7 +28,7 @@ Item {
     implicitWidth: root.orientation === Qt.Vertical ? root.thickness : 0
     implicitHeight: root.orientation === Qt.Horizontal ? root.thickness : 0
 
-    Rectangle {
+    BackgroundRectangle {
         x: root.orientation === Qt.Vertical ? root.alignedOffset : 0
         y: root.orientation === Qt.Horizontal ? root.alignedOffset : 0
         width: root.orientation === Qt.Vertical ? root.devicePixels / root.dpr : parent.width

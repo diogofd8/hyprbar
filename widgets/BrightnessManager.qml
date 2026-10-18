@@ -11,7 +11,9 @@ import "brightnessmanager" as BrightnessUI
 Pane {
     id: root
 
-    readonly property string panelBackgroundColor: Settings.colors.bgMain
+    readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: root }
+
+    readonly property string panelBackgroundColor: Settings.colors.background.main
 
     padding: WidgetConfiguration.dropDownWindowPadding
     implicitHeight: panelContent.implicitHeight + root.topPadding + root.bottomPadding
@@ -42,7 +44,7 @@ Pane {
                     Glyph {
                         icon: BrightnessUI.Configuration.nightModeIcon
                         iconSize: WidgetConfiguration.widgetMainIconSz
-                        iconColor: Settings.colors.fgMain
+                        iconColor: Settings.colors.foreground.main
                     }
 
                     HexagonSwitch {
@@ -59,7 +61,7 @@ Pane {
 
                 Text {
                     text: "TEMPERATURE:"
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
                     font.family: Settings.labelFontFamily
                     font.pixelSize: WidgetConfiguration.widgetMainFontSz
                 }
@@ -67,8 +69,9 @@ Pane {
                 Temperature {
                     value: BrightnessUI.BrightnessActions.nightTemperatureText(Core.Backlight.nightLightEnabled, Core.Backlight.nightTemperature)
                     visible: Core.Backlight.nightLightLoaded
-                    opacity: Settings.colors.dimOpacity
-                    color: Core.Backlight.nightLightEnabled ? Settings.colors.accentAlert : Settings.colors.fgMain
+                    color: Core.Backlight.nightLightEnabled
+                        ? Qt.tint(Settings.colors.background.main, Qt.alpha(Settings.colors.foreground.alert, Settings.colors.foreground.dimOpacity))
+                        : Settings.colors.foreground.muted
                     unit: "K"
                     verticalOffset: 0
                     fontFamily: Settings.labelFontFamily
@@ -81,7 +84,7 @@ Pane {
                 Layout.fillWidth: true
                 Layout.topMargin: 1
                 Layout.bottomMargin: WidgetConfiguration.mainRowVMargin
-                color: Settings.colors.bgTint4
+                color: Settings.colors.background.tint4
             }
         }
 
@@ -91,7 +94,7 @@ Pane {
             visible: Core.Backlight.nightLightError.length > 0
             text: Core.Backlight.nightLightError
             wrapMode: Text.WordWrap
-            color: Settings.colors.accentError
+            color: Settings.colors.foreground.error
             font.family: Settings.labelFontFamily
             font.pixelSize: WidgetConfiguration.widgetMsgFieldFontSz
         }
@@ -99,6 +102,8 @@ Pane {
         // ────── Brightness Entries ──────
         Flickable {
             id: scroll
+
+            readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: scroll }
             Layout.fillWidth: true
             Layout.preferredHeight: implicitHeight
             implicitWidth: BrightnessUI.Configuration.contentWidth
@@ -119,7 +124,7 @@ Pane {
 
                     Text {
                         text: "SCREEN BRIGHTNESS"
-                        color: Settings.colors.fgMain
+                        color: Settings.colors.foreground.main
                         font.family: Settings.labelFontFamily
                         font.bold: true
                         font.pixelSize: WidgetConfiguration.sectionRowLabelFontSz
@@ -137,7 +142,7 @@ Pane {
                         visible: Core.Backlight.screenError.length > 0
                         text: Core.Backlight.screenError
                         wrapMode: Text.WordWrap
-                        color: Settings.colors.accentError
+                        color: Settings.colors.foreground.error
                         font.family: Settings.labelFontFamily
                         font.pixelSize: WidgetConfiguration.widgetMsgFieldFontSz
                     }
@@ -149,7 +154,7 @@ Pane {
 
                     Text {
                         text: "KEYBOARD BRIGHTNESS"
-                        color: Settings.colors.fgMain
+                        color: Settings.colors.foreground.main
                         font.family: Settings.labelFontFamily
                         font.bold: true
                         font.pixelSize: WidgetConfiguration.sectionRowLabelFontSz
@@ -169,7 +174,7 @@ Pane {
                         text: Core.Backlight.keyboardError
                             || "Keyboard backlight unavailable."
                         wrapMode: Text.WordWrap
-                        color: Settings.colors.accentError
+                        color: Settings.colors.foreground.error
                         font.family: Settings.labelFontFamily
                         font.pixelSize: WidgetConfiguration.widgetMsgFieldFontSz
                     }

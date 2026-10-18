@@ -95,14 +95,14 @@ Item {
                         leftCap: Core.ChevronGeometry.Cap.Flat
                         rightCap: Core.ChevronGeometry.Cap.Point
 
-                        bgFill: Settings.colors.bgTint2
+                        bgFill: Settings.colors.background.tint2
 
                         onLeftClicked: root.togglePlayerMenu()
 
                         Glyph {
                             icon: Configuration.mprisActionBtn.source
                             iconSize: Configuration.mprisPrevNextBtnSz
-                            iconColor: Settings.colors.fgMain
+                            iconColor: Settings.colors.foreground.main
                             verticalOffset: 0
                         }
                     }
@@ -133,7 +133,13 @@ Item {
                         width: Configuration.mprisArtImgSz
                         height: width
                         radius: width / 2
-                        color: Settings.colors.fgMain
+                        color: "transparent"
+
+                        BackgroundRectangle {
+                            anchors.fill: parent
+                            radius: width / 2
+                            color: Settings.colors.background.imagePlaceholder
+                        }
 
                         Image {
                             id: albumArt
@@ -150,7 +156,7 @@ Item {
                             visible: albumArt.status !== Image.Ready
                             icon: Configuration.mprisActionBtn.source
                             iconSize: Configuration.mprisArtImgSz / 2
-                            iconColor: Settings.colors.fgDark
+                            iconColor: Settings.colors.foreground.contrast
                             verticalOffset: 0
                         }
                     }
@@ -163,7 +169,7 @@ Item {
                 ChevronButton {
                     id: closeBtn
                     enabled: !!root.player?.canQuit
-                    opacity: enabled ? 1 : Settings.colors.dimOpacity
+                    opacity: enabled ? 1 : Settings.colors.foreground.dimOpacity
                     Layout.alignment: Qt.AlignTop
                     Layout.topMargin: Configuration.mprisHMargin
                     Layout.rightMargin: Configuration.mprisHMargin
@@ -173,14 +179,14 @@ Item {
                     leftCap: Core.ChevronGeometry.Cap.Point
                     rightCap: Core.ChevronGeometry.Cap.Flat
 
-                    bgFill: Settings.colors.bgTint2
+                    bgFill: Settings.colors.background.tint2
 
                     onLeftClicked: Core.Media.quit()
 
                     Glyph {
                         icon: Configuration.mprisActionBtn.close
                         iconSize: Configuration.mprisPrevNextBtnSz
-                        iconColor: enabled && closeBtn.hovered ? Settings.colors.accentMain : Settings.colors.fgMain
+                        iconColor: enabled && closeBtn.hovered ? Settings.colors.foreground.accent : Settings.colors.foreground.main
                         verticalOffset: 0
                     }
                 }
@@ -206,7 +212,7 @@ Item {
                     font.family: Settings.labelFontFamily
                     font.pixelSize: Configuration.mprisMetadataFontSz
                     font.weight: Font.Bold
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
                 }
 
                 Item {
@@ -232,7 +238,7 @@ Item {
                             elide: Text.ElideRight
                             font.family: Settings.labelFontFamily
                             font.pixelSize: Configuration.mprisMetadataFontSz
-                            color: Settings.colors.accentMain
+                            color: Settings.colors.foreground.accent
                         }
 
                         Circle {
@@ -240,8 +246,7 @@ Item {
                             visible: mprisArtist.text.length > 0 && mprisAlbum.text.length > 0
                             anchors.verticalCenter: parent.verticalCenter
                             diameter: Settings.separatorDotSize
-                            color: Settings.colors.fgMain
-                            opacity: Settings.colors.dimOpacity
+                            color: Settings.colors.foreground.muted
                         }
 
                         Text {
@@ -252,7 +257,7 @@ Item {
                             elide: Text.ElideRight
                             font.family: Settings.labelFontFamily
                             font.pixelSize: Configuration.mprisMetadataFontSz
-                            color: Settings.colors.fgMain
+                            color: Settings.colors.foreground.main
                         }
                     }
                 }
@@ -267,21 +272,21 @@ Item {
             ChevronButton {
                 id: mprisPrev
                 enabled: !!root.player?.canControl && root.player.canGoPrevious
-                opacity: enabled ? 1 : Settings.colors.dimOpacity
+                opacity: enabled ? 1 : Settings.colors.foreground.dimOpacity
                 contentLeftPadding: Configuration.mprisButtonsPadding
                 contentRightPadding: Configuration.mprisButtonsPadding
 
                 leftCap: Core.ChevronGeometry.Cap.Point
                 rightCap: Core.ChevronGeometry.Cap.Notch
 
-                bgFill: Settings.colors.bgTint3
+                bgFill: Settings.colors.background.tint3
 
                 onLeftClicked: Core.Media.previous()
 
                 Glyph {
                     icon: Configuration.mprisPlayerBtn.prev
                     iconSize: Configuration.mprisPrevNextBtnSz
-                    iconColor: Settings.colors.fgMain
+                    iconColor: Settings.colors.foreground.main
                     verticalOffset: 0
                 }
             }
@@ -289,21 +294,21 @@ Item {
             ChevronButton {
                 id: mprisPlayPause
                 enabled: !!root.player?.canControl && root.player.canTogglePlaying
-                opacity: enabled ? 1 : Settings.colors.dimOpacity
+                opacity: enabled ? 1 : Settings.colors.foreground.dimOpacity
                 contentLeftPadding: Configuration.mprisButtonsPadding
                 contentRightPadding: Configuration.mprisButtonsPadding
 
                 leftCap: Core.ChevronGeometry.Cap.Point
                 rightCap: Core.ChevronGeometry.Cap.Point
 
-                bgFill: Settings.colors.accentMain
+                bgFill: Settings.colors.background.accent
 
                 onLeftClicked: Core.Media.togglePlaying()
 
                 Glyph {
                     icon: root.playPauseIcon()
                     iconSize: Configuration.mprisPlayPauseBtnSz
-                    iconColor: Settings.colors.fgDark
+                    iconColor: Settings.colors.foreground.contrast
                     verticalOffset: 0
                 }
             }
@@ -311,21 +316,21 @@ Item {
             ChevronButton {
                 id: mprisNext
                 enabled: !!root.player?.canControl && root.player.canGoNext
-                opacity: enabled ? 1 : Settings.colors.dimOpacity
+                opacity: enabled ? 1 : Settings.colors.foreground.dimOpacity
                 contentLeftPadding: Configuration.mprisButtonsPadding
                 contentRightPadding: Configuration.mprisButtonsPadding
 
                 leftCap: Core.ChevronGeometry.Cap.Notch
                 rightCap: Core.ChevronGeometry.Cap.Point
 
-                bgFill: Settings.colors.bgTint3
+                bgFill: Settings.colors.background.tint3
 
                 onLeftClicked: Core.Media.next()
 
                 Glyph {
                     icon: Configuration.mprisPlayerBtn.next
                     iconSize: Configuration.mprisPrevNextBtnSz
-                    iconColor: Settings.colors.fgMain
+                    iconColor: Settings.colors.foreground.main
                     verticalOffset: 0
                 }
             }
@@ -350,7 +355,7 @@ Item {
                 from: 0
                 to: root.trackLength > 0 ? root.trackLength : 1
                 actionable: root.seekable
-                bgFill: Settings.colors.bgTint2
+                bgFill: Settings.colors.background.tint2
 
                 Binding {
                     target: seekSlider
@@ -369,7 +374,7 @@ Item {
                     text: root.elapsedTimeText()
                     font.family: Settings.labelFontFamily
                     font.pixelSize: Configuration.mprisMetadataFontSz
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
                 }
 
                 Item {
@@ -380,7 +385,7 @@ Item {
                     text: root.durationText()
                     font.family: Settings.labelFontFamily
                     font.pixelSize: Configuration.mprisMetadataFontSz
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
                 }
             }
         }

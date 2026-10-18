@@ -9,7 +9,7 @@ Text {
     property real verticalOffset: -Settings.inducedVerticalOffset
     property alias icon: root.text
     property int iconSize: Settings.iconFontSize
-    property color iconColor: Settings.colors.fgMain
+    property color iconColor: Settings.colors.foreground.main
 
     readonly property real inkCentre:
         lineMetrics.ascent

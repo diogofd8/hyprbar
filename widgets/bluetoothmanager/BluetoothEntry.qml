@@ -9,6 +9,8 @@ import qs.core as Core
 
 Controls.Pane {
     id: root
+
+    readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: root }
     required property var model
 
     property bool expanded: false
@@ -28,8 +30,8 @@ Controls.Pane {
     implicitHeight: mainContent.implicitHeight + root.topPadding + root.bottomPadding
     clip: true
 
-    background: Rectangle {
-        color: Settings.colors.bgTint2
+    background: BackgroundRectangle {
+        color: Settings.colors.background.tint2
     }
 
     contentItem: RowLayout {
@@ -66,7 +68,7 @@ Controls.Pane {
 
                     text: root.model.name
                     elide: Text.ElideRight
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
                     font.family: Settings.labelFontFamily
                     font.pixelSize: WidgetConfiguration.entryRowTitleFontSz
                 }
@@ -78,7 +80,7 @@ Controls.Pane {
 
                     glyph: Configuration.btPairIcon
                     glyphSize: WidgetConfiguration.entryRowSecondaryIconSz
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
 
                     onLeftClicked: Core.Bluetooth.pair(root.model.address)
                 }
@@ -90,7 +92,7 @@ Controls.Pane {
 
                     glyph: Configuration.btCancelIcon
                     glyphSize: WidgetConfiguration.entryRowSecondaryIconSz
-                    color: Settings.colors.accentAlert
+                    color: Settings.colors.foreground.alert
 
                     onLeftClicked: Core.Bluetooth.cancelOperation(root.model.address)
                 }
@@ -104,7 +106,7 @@ Controls.Pane {
                         ? Configuration.btDisconnectIcon
                         : Configuration.btConnectIcon
                     glyphSize: WidgetConfiguration.entryRowSecondaryIconSz
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
 
                     onLeftClicked: root.runConnectionAction()
                 }
@@ -116,7 +118,7 @@ Controls.Pane {
 
                     glyph: Configuration.btForgetIcon
                     glyphSize: WidgetConfiguration.entryRowSecondaryIconSz
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
 
                     onLeftClicked: Core.Bluetooth.forget(root.model.address)
                 }
@@ -128,7 +130,7 @@ Controls.Pane {
                     rotation: root.bottomShown ? 180 : 0
                     glyph: Configuration.btExpandIcon
                     glyphSize: WidgetConfiguration.entryRowSecondaryIconSz
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
 
                     onLeftClicked: {
                         const wasOpen = root.bottomShown
@@ -153,13 +155,12 @@ Controls.Pane {
                 RowLayout {
                     Layout.fillWidth: true
                     visible: root.canExpand
-                    opacity: Settings.colors.dimOpacity
                     spacing: WidgetConfiguration.entryExtendedRowHSpacing
 
                     Text {
                         text: root.model.address
 
-                        color: Settings.colors.fgMain
+                        color: Settings.colors.foreground.muted
                         font.family: Settings.labelFontFamily
                         font.pixelSize: WidgetConfiguration.entryRowDefaultFontSz
                     }
@@ -169,14 +170,14 @@ Controls.Pane {
 
                         visible: model.batteryAvailable
                         diameter: Settings.separatorDotSize
-                        color: Settings.colors.fgMain
+                        color: Settings.colors.foreground.muted
                     }
 
                     Text {
                         visible: model.batteryAvailable
                         text: BluetoothActions.batteryText(root.model)
 
-                        color: Settings.colors.fgMain
+                        color: Settings.colors.foreground.muted
                         font.family: Settings.labelFontFamily
                         font.pixelSize: WidgetConfiguration.entryRowDefaultFontSz
                     }
@@ -199,8 +200,7 @@ Controls.Pane {
 
                     text: root.statusText
                     wrapMode: Text.Wrap
-                    color: root.hasError ? Settings.colors.accentError : Settings.colors.fgMain
-                    opacity: root.hasError ? 1 : 0.7
+                    color: root.hasError ? Settings.colors.foreground.error : Settings.colors.foreground.muted
                     font.family: Settings.labelFontFamily
                     font.pixelSize: WidgetConfiguration.widgetMsgFieldFontSz
                 }
@@ -212,7 +212,7 @@ Controls.Pane {
 
                     glyph: Configuration.btDismissIcon
                     glyphSize: WidgetConfiguration.entryRowSecondaryIconSz
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
 
                     onLeftClicked: Core.Bluetooth.clearEntryError(root.model.address)
                 }

@@ -13,7 +13,7 @@ Chevron {
     leftCap: Core.ChevronGeometry.Cap.Flat
     rightCap: Core.ChevronGeometry.Cap.Notch
 
-    bgFill: Settings.colors.bgTint1
+    bgFill: Settings.colors.background.tint1
 
     Row {
         Row {
@@ -27,7 +27,7 @@ Chevron {
                 leftCap: Core.ChevronGeometry.Cap.Point
                 rightCap: Core.ChevronGeometry.Cap.Point
 
-                bgFill: Settings.colors.bgTint2
+                bgFill: Settings.colors.background.tint2
 
                 onLeftClicked: powerManager.toggle()
 
@@ -37,8 +37,8 @@ Chevron {
 
                     NotificationDot {
                         visible: Core.PowerSupply.internal.active
-                        dotColor: Settings.colors.internalBatteryColor
-                        dotBgColor: Settings.colors.bgTint2
+                        dotColor: Settings.colors.foreground.internalBattery
+                        dotBgColor: Settings.colors.background.tint2
                     }
                 }
             }
@@ -51,7 +51,7 @@ Chevron {
                 leftCap: Core.ChevronGeometry.Cap.Notch
                 rightCap: Core.ChevronGeometry.Cap.Point
 
-                bgFill: Settings.colors.bgTint3
+                bgFill: Settings.colors.background.tint3
 
                 onLeftClicked: powerManager.toggle()
 
@@ -61,8 +61,8 @@ Chevron {
 
                     NotificationDot {
                         visible: Core.PowerSupply.external.active
-                        dotColor: Settings.colors.externalBatteryColor
-                        dotBgColor: Settings.colors.bgTint3
+                        dotColor: Settings.colors.foreground.externalBattery
+                        dotBgColor: Settings.colors.background.tint3
                     }
                 }
             }
@@ -76,7 +76,7 @@ Chevron {
             leftCap: Core.ChevronGeometry.Cap.Flat
             rightCap: Core.ChevronGeometry.Cap.Flat
 
-            bgFill: Settings.colors.bgTint1
+            bgFill: Settings.colors.background.tint1
 
             Percentage {
                 height: root.height

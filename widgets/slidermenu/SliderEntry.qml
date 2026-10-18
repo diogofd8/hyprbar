@@ -9,6 +9,7 @@ Controls.Slider {
     id: root
 
     required property color parentBg
+    readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: root }
     required property string icon
     property bool available: true
     property bool selected: false
@@ -50,6 +51,7 @@ Controls.Slider {
     // ────── Track ──────
     background: Item {
         id: track
+        readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: track }
 
         implicitWidth: Configuration.sliderEntryTrackWidth
         implicitHeight: Configuration.sliderEntryTrackHeight
@@ -61,6 +63,8 @@ Controls.Slider {
         // Clip two copies of the same chevron so their angled edges match.
         Item {
             id: unfilledTrack
+
+            readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: unfilledTrack }
 
             width: parent.width
             height: parent.height * root.visualPosition
@@ -74,12 +78,14 @@ Controls.Slider {
                 rotation: 90
                 leftCap: Core.ChevronGeometry.Cap.Point
                 rightCap: Core.ChevronGeometry.Cap.Point
-                bgFill: Settings.colors.bgTint2
+                bgFill: Settings.colors.background.tint2
             }
         }
 
         Item {
             id: filledTrack
+
+            readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: filledTrack }
 
             y: unfilledTrack.height
             width: parent.width
@@ -94,7 +100,7 @@ Controls.Slider {
                 rotation: 90
                 leftCap: Core.ChevronGeometry.Cap.Point
                 rightCap: Core.ChevronGeometry.Cap.Point
-                bgFill: Settings.colors.accentMain
+                bgFill: Settings.colors.background.accent
             }
         }
     }
@@ -102,6 +108,7 @@ Controls.Slider {
     // ────── Thumb ──────
     handle: Controls.Pane {
         id: thumb
+        readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: thumb }
 
         // Let Slider own pointer input; this pane only paints and pads the thumb.
         enabled: false
@@ -123,11 +130,12 @@ Controls.Slider {
 
             Hexagon {
                 id: thumbFace
+                z: 1
                 anchors.fill: parent
-                fillColor: Settings.colors.accentMain
+                fillColor: Settings.colors.background.accent
                 hovered: root.selected || root.hovered || root.pressed
-                hoverColor: Settings.colors.fgMain
-                hoverOpacity: Settings.colors.hoverOpacity
+                hoverColor: Settings.colors.background.highlight
+                hoverOpacity: Settings.colors.background.hoverOpacity
             }
         }
 
@@ -140,7 +148,7 @@ Controls.Slider {
                 x: (parent.width - width) / 2 + root.iconOffsetX()
                 icon: root.valueVisible ? Math.round(root.value) : root.icon
                 iconSize: root.valueVisible ? Configuration.sliderEntryFontSz : Configuration.sliderEntryIconSz
-                iconColor: Settings.colors.fgDark
+                iconColor: Settings.colors.foreground.contrast
                 font.family: root.valueVisible ? Settings.labelFontFamily : Settings.iconFontFamily
                 font.bold: true
                 useMetrics: false

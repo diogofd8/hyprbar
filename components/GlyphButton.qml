@@ -5,6 +5,8 @@ import qs
 Item {
     id: root
 
+    property Item backgroundTarget: null
+
     // ────── Glyph Passthrough ──────
     // Mirrors Glyph's own API, so a display Glyph can be swapped for an
     // interactive one without changing anything else at the call site.
@@ -18,8 +20,8 @@ Item {
     property alias font: glyph.font
     property alias iconRotation: glyph.rotation
 
-    property color hoverColor: Settings.colors.fgMain
-    property real hoverOpacity: Settings.colors.hoverOpacity
+    property color hoverColor: Settings.colors.background.highlight
+    property real hoverOpacity: Settings.colors.background.hoverOpacity
 
     property real contentLeftPadding: 0
     property real contentRightPadding: 0
@@ -47,7 +49,7 @@ Item {
 
     // Hover tint, drawn under the glyph so it composites over whatever the
     // button itself sits on rather than over a colour assumed here.
-    Rectangle {
+    BackgroundRectangle {
         anchors.fill: parent
 
         color: root.hoverColor

@@ -11,6 +11,8 @@ import qs
 PanelWindow {
     id: root
 
+    readonly property Item backgroundTarget: panelBackground.paintTarget
+
     required property PanelWindow bar
     property DropDown current: null
     property int interactionSerial: 0
@@ -268,6 +270,8 @@ PanelWindow {
         id: slotLoader
 
         required property PopoutHost host
+        readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: slotLoader }
+
         required property DropDown owner
         readonly property bool shown: host.displayedSlot === slotLoader
 
@@ -330,6 +334,8 @@ PanelWindow {
         // laid out, so the clip does not change any widget's own geometry.
         Item {
             id: revealClip
+
+            readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: revealClip }
             width: parent.width
             height: parent.height * root.reveal
             clip: true
@@ -337,20 +343,20 @@ PanelWindow {
             // One background for every widget. It follows the panel geometry,
             // so a switch morphs a single surface instead of crossfading two
             // translucent ones.
-            Item {
+            BackgroundSurface {
                 id: panelBackground
                 width: parent.width
                 height: panel.height
                 readonly property real edgeWidth: 1 / root.devicePixelRatio
                 readonly property color edgeColor:
-                    Qt.alpha(Settings.colors.fgMain, Settings.colors.hoverOpacity)
+                    Settings.colors.background.border
 
                 // Open top edge; the three border strips meet at both lower corners.
                 Rectangle {
                     x: panelBackground.edgeWidth
                     width: Math.max(0, panelBackground.width - 2 * panelBackground.edgeWidth)
                     height: Math.max(0, panelBackground.height - panelBackground.edgeWidth)
-                    color: Qt.alpha(Settings.colors.bgMain, Settings.colors.bgOpacity)
+                    color: Settings.colors.background.main
                 }
 
                 Rectangle {

@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Widgets
 
 import qs
+import qs.components
 
 Item {
     id: root
@@ -26,11 +27,11 @@ Item {
         backer.sourceSize: Qt.size(2 * Settings.iconFontSize, 2 * Settings.iconFontSize)
     }
 
-    Rectangle {
+    BackgroundRectangle {
         anchors.fill: parent
 
-        color: Settings.colors.fgMain
-        opacity: mouseArea.containsMouse ? Settings.colors.hoverOpacity : 0
+        color: Settings.colors.background.highlight
+        opacity: mouseArea.containsMouse ? Settings.colors.background.hoverOpacity : 0
     }
 
     MouseArea {

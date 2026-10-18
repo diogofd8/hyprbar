@@ -12,6 +12,8 @@ import "notificationmanager" as NotificationUI
 Controls.Pane {
     id: root
 
+    readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: root }
+
     property var service: Core.Notifications
     property bool expanded: false
     property var expandedGroups: ({})
@@ -52,7 +54,7 @@ Controls.Pane {
                     Glyph {
                         icon: root.doNotDisturbIcon()
                         iconSize: WidgetConfiguration.widgetMainIconSz
-                        iconColor: Settings.colors.fgMain
+                        iconColor: Settings.colors.foreground.main
                         useMetrics: true
                     }
 
@@ -61,7 +63,7 @@ Controls.Pane {
                         checked: root.service.doNotDisturb
                         onClicked: root.service.doNotDisturb = !root.service.doNotDisturb
 
-                        bgFill: Settings.colors.bgMain
+                        bgFill: Settings.colors.background.main
                     }
                 }
 
@@ -84,7 +86,7 @@ Controls.Pane {
                     useMetrics: true
 
                     enabled: list.contentHeight > NotificationUI.Configuration.notificationCompactHeight
-                    opacity: enabled ? 1 : Settings.colors.disabledOpacity
+                    opacity: enabled ? 1 : Settings.colors.foreground.disabledOpacity
 
                     glyphRotation: root.expanded ? 180 : 0
                     onLeftClicked: root.expanded = !root.expanded
@@ -97,7 +99,7 @@ Controls.Pane {
                     glyphSize: WidgetConfiguration.widgetMainIconSz
 
                     enabled: root.service.count > 0
-                    opacity: enabled ? 1 : Settings.colors.disabledOpacity
+                    opacity: enabled ? 1 : Settings.colors.foreground.disabledOpacity
 
                     onLeftClicked: root.clearAll()
                 }
@@ -107,13 +109,15 @@ Controls.Pane {
                 Layout.fillWidth: true
                 Layout.topMargin: 1
                 Layout.bottomMargin: WidgetConfiguration.mainRowVMargin
-                color: Settings.colors.bgTint4
+                color: Settings.colors.background.tint4
             }
         }
 
         // ────── Notifications ──────
         ListView {
             id: list
+
+            readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: list }
 
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -126,7 +130,7 @@ Controls.Pane {
             model: root.service.groups
             boundsBehavior: Flickable.StopAtBounds
 
-            Controls.ScrollBar.vertical: Controls.ScrollBar {
+            Controls.ScrollBar.vertical: BackgroundScrollBar {
                 policy: Controls.ScrollBar.AsNeeded
             }
 
@@ -150,15 +154,15 @@ Controls.Pane {
                     useMetrics: false
                     icon: NotificationUI.Configuration.nfReadIcon
                     iconSize: WidgetConfiguration.widgetMainIconSz
-                    opacity: Settings.colors.dimOpacity
+                    iconColor: Settings.colors.foreground.muted
                 }
 
                 Text {
                     text: "No notifications"
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.muted
                     font.family: Settings.labelFontFamily
                     font.pixelSize: WidgetConfiguration.widgetMsgFieldFontSz
-                    opacity: Settings.colors.dimOpacity
+
                 }
             }
         }
@@ -169,7 +173,7 @@ Controls.Pane {
 
         Text {
             text: "Do Not Disturb"
-            color: Settings.colors.accentMain
+            color: Settings.colors.foreground.accent
             font.family: Settings.labelFontFamily
             font.pixelSize: WidgetConfiguration.sectionRowLabelFontSz
         }
@@ -181,7 +185,7 @@ Controls.Pane {
         Text {
             visible: root.service.count > 0
             text: root.notificationCountText()
-            color: Settings.colors.fgMain
+            color: Settings.colors.foreground.main
             font.family: Settings.labelFontFamily
             font.pixelSize: WidgetConfiguration.sectionRowLabelFontSz
         }

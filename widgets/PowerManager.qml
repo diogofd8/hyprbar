@@ -11,7 +11,9 @@ import "powermanager" as PowerUI
 Pane {
     id: root
 
-    readonly property string panelBackgroundColor: Settings.colors.bgMain
+    readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: root }
+
+    readonly property string panelBackgroundColor: Settings.colors.background.main
     property string requestedPowerMode: ""
     readonly property bool usingPowerProfiles:
         PowerUI.Configuration.powerProfileBackend === "power-profiles-daemon"
@@ -61,13 +63,15 @@ Pane {
 
                 Item {
                     id: powerModeControl
+                    readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: powerModeControl }
                     Layout.topMargin: WidgetConfiguration.hexBtnVPadding
                     Layout.bottomMargin: WidgetConfiguration.hexBtnVPadding
                     implicitWidth: powerModeToggles.implicitWidth
                     implicitHeight: powerModeToggles.implicitHeight
 
-                    Rectangle {
+                    BackgroundRectangle {
                         id: powerModeBg
+                        z: -1
 
                         anchors {
                             top: parent.top
@@ -78,7 +82,7 @@ Pane {
                             rightMargin: performanceButton.width / 2
                         }
 
-                        color: Settings.colors.bgTint2
+                        color: Settings.colors.background.tint2
                     }
 
                     RowLayout {
@@ -91,12 +95,12 @@ Pane {
 
                             enabled: root.powerModesAvailable
                             bgFill: root.activePowerMode === "power-saver"
-                                ? Settings.colors.accentMain : Settings.colors.bgTint3
+                                ? Settings.colors.background.accent : Settings.colors.background.tint3
                             glyph: PowerUI.Configuration.powerMode["power-saver"]
                             glyphSize: WidgetConfiguration.widgetEmbeddedIconSz
                             glyphColor: root.activePowerMode === "power-saver"
-                                ? Settings.colors.fgDark
-                                : Settings.colors.fgMain
+                                ? Settings.colors.foreground.contrast
+                                : Settings.colors.foreground.main
 
                             onLeftClicked: root.setPowerMode("power-saver")
                         }
@@ -106,12 +110,12 @@ Pane {
 
                             enabled: root.powerModesAvailable
                             bgFill: root.activePowerMode === "balanced"
-                                ? Settings.colors.accentMain : Settings.colors.bgTint3
+                                ? Settings.colors.background.accent : Settings.colors.background.tint3
                             glyph: PowerUI.Configuration.powerMode["balanced"]
                             glyphSize: WidgetConfiguration.widgetEmbeddedIconSz
                             glyphColor: root.activePowerMode === "balanced"
-                                ? Settings.colors.fgDark
-                                : Settings.colors.fgMain
+                                ? Settings.colors.foreground.contrast
+                                : Settings.colors.foreground.main
                             glyphHorizontalOffset: -1
 
                             onLeftClicked: root.setPowerMode("balanced")
@@ -124,13 +128,13 @@ Pane {
                                 && (!root.usingPowerProfiles
                                     || Core.PowerProfiles.hasPerformanceProfile)
                             bgFill: root.activePowerMode === "performance"
-                                ? Settings.colors.accentMain : Settings.colors.bgTint3
+                                ? Settings.colors.background.accent : Settings.colors.background.tint3
                             glyph: PowerUI.Configuration.powerMode["performance"]
                             glyphSize: WidgetConfiguration.widgetEmbeddedIconSz - 3
                             paddingOffset: 3
                             glyphColor: root.activePowerMode === "performance"
-                                ? Settings.colors.fgDark
-                                : Settings.colors.fgMain
+                                ? Settings.colors.foreground.contrast
+                                : Settings.colors.foreground.main
 
                             onLeftClicked: root.setPowerMode("performance")
                         }
@@ -145,12 +149,12 @@ Pane {
                     id: restoreTlpButton
 
                     enabled: root.hasManuallyEnforcedPowerMode && !PowerUI.PowerActions.resettingTlpProfile
-                    opacity: root.hasManuallyEnforcedPowerMode ? 1 : Settings.colors.disabledOpacity
+                    opacity: root.hasManuallyEnforcedPowerMode ? 1 : Settings.colors.foreground.disabledOpacity
 
                     glyph: PowerUI.Configuration.restoreTlpButton
                     glyphSize: WidgetConfiguration.widgetMainIconSz
                     useMetrics: false
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
 
                     onLeftClicked: root.setPowerMode("auto")
 
@@ -168,7 +172,7 @@ Pane {
                 Text {
                     text: "MODE:"
                     elide: Text.ElideRight
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
                     font.family: Settings.labelFontFamily
                     font.pixelSize: WidgetConfiguration.widgetMainFontSz
                 }
@@ -176,7 +180,7 @@ Pane {
                 Text {
                     text: root.powerModeLabel(root.activePowerMode)
                     elide: Text.ElideRight
-                    color: Settings.colors.accentMain
+                    color: Settings.colors.foreground.accent
                     font.family: Settings.labelFontFamily
                     font.pixelSize: WidgetConfiguration.widgetMainFontSz
                 }
@@ -187,13 +191,15 @@ Pane {
                 Layout.fillWidth: true
                 Layout.topMargin: 1
                 Layout.bottomMargin: WidgetConfiguration.mainRowVMargin
-                color: Settings.colors.bgTint4
+                color: Settings.colors.background.tint4
             }
         }
 
         // ────── Battery Entries ──────
         Flickable {
             id: scroll
+
+            readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: scroll }
             Layout.fillWidth: true
             Layout.preferredHeight: implicitHeight
             implicitWidth: PowerUI.Configuration.contentWidth
@@ -218,7 +224,7 @@ Pane {
                     RowLayout {
                         Text {
                             text: "BATTERY"
-                            color: Settings.colors.fgMain
+                            color: Settings.colors.foreground.main
                             font.family: Settings.labelFontFamily
                             font.bold: true
                             font.pixelSize: WidgetConfiguration.sectionRowLabelFontSz
@@ -226,7 +232,7 @@ Pane {
 
                         Text {
                             text: "-"
-                            color: Settings.colors.fgMain
+                            color: Settings.colors.foreground.main
                             font.family: Settings.labelFontFamily
                             font.bold: true
                             font.pixelSize: WidgetConfiguration.sectionRowLabelFontSz
@@ -249,8 +255,8 @@ Pane {
                     Text {
                         visible: Core.PowerSupply.batteryEntryModel.count === 0
                         text: "No batteries available"
-                        color: Settings.colors.fgMain
-                        opacity: Settings.colors.dimOpacity
+                        color: Settings.colors.foreground.muted
+
                         font.family: Settings.labelFontFamily
                         font.pixelSize: WidgetConfiguration.widgetMsgFieldFontSz
                     }
@@ -265,7 +271,7 @@ Pane {
 
                     Text {
                         text: "CONNECTED DEVICES"
-                        color: Settings.colors.fgMain
+                        color: Settings.colors.foreground.main
                         font.family: Settings.labelFontFamily
                         font.bold: true
                         font.pixelSize: WidgetConfiguration.sectionRowLabelFontSz
@@ -288,7 +294,7 @@ Pane {
 
             Text {
                 text: "CAFFEINE MODE"
-                color: Settings.colors.fgMain
+                color: Settings.colors.foreground.main
                 font.family: Settings.labelFontFamily
                 font.bold: true
                 font.pixelSize: WidgetConfiguration.sectionRowLabelFontSz

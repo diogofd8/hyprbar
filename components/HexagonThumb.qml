@@ -6,6 +6,8 @@ import QtQuick.Shapes
 Item {
     id: root
 
+    property Item backgroundTarget: null
+
     property real separation: 2
     property color separationColor: "transparent"
     property color fillColor: "transparent"
@@ -56,34 +58,38 @@ Item {
         ]
     }
 
-    Shape {
-        anchors.fill: parent
-        preferredRendererType: Shape.CurveRenderer
+    readonly property BackgroundScope backgroundScope: BackgroundScope {
+        sourceItem: root
+        Shape {
+            z: -1
+            anchors.fill: parent
+            preferredRendererType: Shape.CurveRenderer
 
-        ShapePath {
-            fillColor: root.separationColor
-            strokeWidth: -1
+            ShapePath {
+                fillColor: root.separationColor
+                strokeWidth: -1
 
-            PathPolyline {
-                path: root.polygon(root.height)
+                PathPolyline {
+                    path: root.polygon(root.height)
+                }
             }
-        }
 
-        ShapePath {
-            fillColor: root.fillColor
-            strokeWidth: -1
+            ShapePath {
+                fillColor: root.fillColor
+                strokeWidth: -1
 
-            PathPolyline {
-                path: root.polygon(root.innerHeight)
+                PathPolyline {
+                    path: root.polygon(root.innerHeight)
+                }
             }
-        }
 
-        ShapePath {
-            fillColor: root.hoverOverlayColor
-            strokeWidth: -1
+            ShapePath {
+                fillColor: root.hoverOverlayColor
+                strokeWidth: -1
 
-            PathPolyline {
-                path: root.polygon(root.innerHeight)
+                PathPolyline {
+                    path: root.polygon(root.innerHeight)
+                }
             }
         }
     }

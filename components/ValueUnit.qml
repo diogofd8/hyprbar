@@ -14,7 +14,7 @@ RowLayout {
     property string unknownText: "N/A"
     property string fontFamily: Settings.labelFontFamily
     property real fontSize: Settings.labelFontSize
-    property color color: Settings.colors.fgMain
+    property color color: Settings.colors.foreground.main
 
     spacing: root.fontSize * root.unitSpacingRatio
 

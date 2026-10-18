@@ -6,6 +6,8 @@ import qs.core as Core
 Item {
     id: root
 
+    property Item backgroundTarget: null
+
     // ────── Appearance ──────
     required property int leftCap
     required property int rightCap
@@ -44,28 +46,32 @@ Item {
     }
 
     // ────── Geometry ──────
-    Shape {
-        id: shape
+    readonly property BackgroundScope backgroundScope: BackgroundScope {
+        sourceItem: root
+        Shape {
+            id: shape
 
-        anchors.fill: parent
-        preferredRendererType: Shape.CurveRenderer
-        containsMode: Shape.FillContains
+            z: -1
+            anchors.fill: parent
+            preferredRendererType: Shape.CurveRenderer
+            containsMode: Shape.FillContains
 
-        ShapePath {
-            fillColor: root.bgFill
-            strokeColor: root.outlineColor
-            strokeWidth: root.outlineWidth // -1 disables stroking entirely
-            joinStyle: ShapePath.MiterJoin
+            ShapePath {
+                fillColor: root.bgFill
+                strokeColor: root.outlineColor
+                strokeWidth: root.outlineWidth // -1 disables stroking entirely
+                joinStyle: ShapePath.MiterJoin
 
-            PathPolyline {
-                path: Core.ChevronGeometry.polygon(
-                    root.width,
-                    root.height,
-                    root.leftCap,
-                    root.rightCap,
-                    root.leftCapProgress,
-                    root.rightCapProgress
-                )
+                PathPolyline {
+                    path: Core.ChevronGeometry.polygon(
+                        root.width,
+                        root.height,
+                        root.leftCap,
+                        root.rightCap,
+                        root.leftCapProgress,
+                        root.rightCapProgress
+                    )
+                }
             }
         }
     }

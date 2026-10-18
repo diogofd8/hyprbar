@@ -121,6 +121,49 @@ hl.on("hyprland.start", function()
 end)
 ```
 
+Add these layer rules to the same file for blur and power-menu stacking:
+
+```lua
+-- Background opacity is composed by QML; Hyprland blurs the painted surfaces.
+hl.layer_rule({
+    name = "hyprbar-blur",
+    match = { namespace = "hyprbar" },
+    blur = true, ignore_alpha = 0.01, no_anim = true
+})
+hl.layer_rule({
+    name = "hyprbar-slidermenu-blur",
+    match = { namespace = "hyprbar-slidermenu" },
+    blur = true, ignore_alpha = 0.01, no_anim = true
+})
+-- Keep the unblurred desktop dimmer above other overlays and below the menu.
+hl.layer_rule({
+    name = "hyprbar-powermenu-dimmer",
+    match = { namespace = "hyprbar-powermenu-dimmer" },
+    blur = false, order = -1, no_anim = true
+})
+hl.layer_rule({
+    name = "hyprbar-powermenu-blur",
+    match = { namespace = "hyprbar-powermenu" },
+    blur = true, ignore_alpha = 0.01, order = -2, no_anim = true
+})
+-- The shared popout host also owns native tray menus.
+hl.layer_rule({
+    name = "hyprbar-popout",
+    match = { namespace = "hyprbar-popout" },
+    blur = true, blur_popups = true, ignore_alpha = 0.01, no_anim = true
+})
+hl.layer_rule({
+    name = "hyprbar-notifications",
+    match = { namespace = "hyprbar-notifications" },
+    blur = true, blur_popups = true, ignore_alpha = 0.01, no_anim = true
+})
+hl.layer_rule({
+    name = "hyprbar-applicationlauncher",
+    match = { namespace = "hyprbar-applicationlauncher" },
+    blur = true, blur_popups = true, ignore_alpha = 0.01, no_anim = true
+})
+```
+
 ### 4. Floating popups
 
 The vitals, weather and calendar actions open Alacritty windows with specific titles.
@@ -145,7 +188,7 @@ I intend to replace these with proper drop-down QML modules so I didn't bother m
 
 ## Configuration
 
-Everything user-facing lives in three files at the repository root:
+Global configuration lives in three files at the repository root:
 
 - **`Settings.qml`** — glyphs, fonts and sizes, bar dimensions and padding, module
   spacing, polling intervals, scroll step sizes, and the threshold tables that map a
@@ -154,6 +197,11 @@ Everything user-facing lives in three files at the repository root:
 - **`Theme.qml`** — the light and dark colour palettes.
 - **`WeatherConfig.qml`** — location and units. **Change this before first run**; it
   ships with my coordinates (Porto, PT).
+
+Each widget also has a singleton `Configuration.qml` under `widgets/<widget>/`
+for adjusting its icons, sizes and spacing. The application launcher uses
+`widgets/applicationlauncher/Configurations.qml`. Shared widget settings live in
+`widgets/WidgetConfiguration.qml`.
 
 Threshold tables and icon arrays are indexed together, so if you add a state you must
 add the icon that goes with it.

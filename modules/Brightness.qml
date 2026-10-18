@@ -17,8 +17,8 @@ Row {
         leftCap: Core.ChevronGeometry.Cap.Notch
         rightCap: Core.ChevronGeometry.Cap.Point
 
-        bgFill: Settings.colors.bgTint3
-        hoverOpacity: Settings.colors.hoverOpacityStrong
+        bgFill: Settings.colors.background.tint3
+        hoverOpacity: Settings.colors.background.hoverOpacityStrong
 
         onScrolled: steps => Core.Backlight.stepBrightness(steps)
         onLeftClicked: brightnessManager.toggle()
@@ -38,7 +38,7 @@ Row {
         leftCap: Core.ChevronGeometry.Cap.Notch
         rightCap: Core.ChevronGeometry.Cap.Point
 
-        bgFill: Settings.colors.bgTint2
+        bgFill: Settings.colors.background.tint2
 
         Percentage {
             height: root.height

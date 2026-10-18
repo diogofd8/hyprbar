@@ -12,7 +12,7 @@ Chevron {
     leftCap: Core.ChevronGeometry.Cap.Point
     rightCap: Core.ChevronGeometry.Cap.Point
 
-    bgFill: Settings.colors.bgTint1
+    bgFill: Settings.colors.background.tint1
 
     Repeater {
         model: Core.WorkspaceModel.slots
@@ -27,10 +27,10 @@ Chevron {
             height: root.height
             implicitWidth: icon.implicitWidth + Settings.workspaceSpacing
 
-            Rectangle {
+            BackgroundRectangle {
                 anchors.fill: parent
 
-                color: Settings.colors.fgMain
+                color: Settings.colors.background.highlight
                 opacity: Settings.workspaceHoverOpacity
                 visible: mouse.containsMouse && !pip.active
             }
@@ -55,11 +55,11 @@ Chevron {
                 color: {
                     switch (pip.slotState) {
                         case Core.WorkspaceModel.State.Active:
-                            return Settings.colors.accentMain;
+                            return Settings.colors.foreground.accent;
                         case Core.WorkspaceModel.State.Urgent:
-                            return Settings.colors.accentAlert;
+                            return Settings.colors.foreground.alert;
                         default:
-                            return Settings.colors.fgMain;
+                            return Settings.colors.foreground.main;
                     }
                 }
 

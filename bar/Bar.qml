@@ -10,6 +10,8 @@ import qs.widgets.centerpiece as CenterPieceUI
 
 PanelWindow {
     id: root
+
+    readonly property Item backgroundTarget: barBackground.paintTarget
     WlrLayershell.namespace: Settings.wlrLayerShellNamespace
 
     // The shared host is a sibling window, supplied by shell.qml. DropDown
@@ -56,7 +58,13 @@ PanelWindow {
     // ────── Bar Dimensions ──────
     implicitHeight: Settings.barHeight
 
-    color: Settings.colors.bgMain
+    color: "transparent"
+
+    BackgroundSurface {
+        id: barBackground
+        anchors.fill: parent
+        Rectangle { anchors.fill: parent; color: Settings.colors.background.main }
+    }
 
     // ────── Caffeine Mode ──────
     // The Wayland protocol attaches an inhibitor to a surface,

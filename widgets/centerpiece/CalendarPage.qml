@@ -164,7 +164,7 @@ Pane {
                     Layout.fillWidth: true
                     text: calendarModel.month + 1
                     horizontalAlignment: Text.AlignHCenter
-                    color: Settings.colors.fgMain
+                    color: Settings.colors.foreground.main
                     font.family: Settings.labelFontFamily
                     font.pixelSize: Configuration.mainTextFontSz
                     font.bold: true
@@ -174,8 +174,8 @@ Pane {
                     Layout.fillWidth: true
                     text: calendarModel.year
                     horizontalAlignment: Text.AlignHCenter
-                    color: Settings.colors.fgMain
-                    opacity: Settings.colors.dimOpacity
+                    color: Settings.colors.foreground.muted
+
                     font.family: Settings.labelFontFamily
                     font.pixelSize: Configuration.subTextFontSz
                 }

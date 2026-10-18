@@ -15,7 +15,7 @@ Chevron {
     leftCap: Core.ChevronGeometry.Cap.Notch
     rightCap: Core.ChevronGeometry.Cap.Point
 
-    bgFill: Settings.colors.bgTint3
+    bgFill: Settings.colors.background.tint3
 
     Row {
         spacing: 3
@@ -39,11 +39,11 @@ Chevron {
             iconColor: {
                 switch (Core.SystemUpdate.state) {
                 case "available":
-                    return Settings.colors.accentAlert
+                    return Settings.colors.foreground.alert
                 case "error":
-                    return Settings.colors.accentError
+                    return Settings.colors.foreground.error
                 default:
-                    return Settings.colors.fgMain
+                    return Settings.colors.foreground.main
                 }
             }
             useMetrics: true

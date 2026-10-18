@@ -148,7 +148,7 @@ Singleton {
 
     function weatherGlyphColor(icon: string, isDay: bool): color {
         const palette = isDay ? weatherGlyphColorDay : weatherGlyphColorNight
-        return palette[weatherGlyphCategory[icon]] ?? Settings.colors.fgMain
+        return palette[weatherGlyphCategory[icon]] ?? Settings.colors.foreground.main
     }
 
     // ────── System Page ──────

@@ -15,6 +15,8 @@ import "applicationlauncher" as LauncherUI
 PanelWindow {
     id: root
 
+    readonly property Item backgroundTarget: panelBackground.paintTarget
+
     property alias searchText: inputField.text
     property bool focusGrabEnabled: true
     property bool closing: false
@@ -88,6 +90,8 @@ PanelWindow {
     Controls.Pane {
         id: panel
 
+        readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: panel }
+
         width: parent.width
         height: root.panelHeight()
         y: root.panelY()
@@ -107,17 +111,17 @@ PanelWindow {
             }
         }
 
-        background: Item {
+        background: BackgroundSurface {
             id: panelBackground
             readonly property real edgeWidth: 1 / root.devicePixelRatio
-            readonly property color edgeColor: Qt.alpha(Settings.colors.fgMain, Settings.colors.hoverOpacity)
+            readonly property color edgeColor: Settings.colors.background.border
 
             Rectangle {
                 x: panelBackground.edgeWidth
                 y: panelBackground.edgeWidth
                 width: Math.max(0, parent.width - 2 * panelBackground.edgeWidth)
                 height: Math.max(0, parent.height - panelBackground.edgeWidth)
-                color: Qt.alpha(Settings.colors.bgMain, Settings.colors.bgOpacity)
+                color: Settings.colors.background.main
             }
 
             Rectangle {
@@ -162,6 +166,8 @@ PanelWindow {
 
                     ListView {
                         id: applicationView
+
+                        readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: applicationView }
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         Layout.minimumHeight: 0
@@ -201,7 +207,7 @@ PanelWindow {
                                 cursorShape: Qt.PointingHandCursor
                             }
 
-                            background: Rectangle {
+                            background: BackgroundRectangle {
                                 color: root.entryBackgroundColor(entry)
                             }
 
@@ -231,7 +237,7 @@ PanelWindow {
                                         elide: Text.ElideRight
                                         font.family: LauncherUI.Configurations.listEntryFont
                                         font.pixelSize: LauncherUI.Configurations.listEntryFontSz
-                                        color: Settings.colors.fgMain
+                                        color: Settings.colors.foreground.main
                                     }
 
                                     Text {
@@ -243,8 +249,7 @@ PanelWindow {
                                         elide: Text.ElideRight
                                         font.family: LauncherUI.Configurations.listEntryFont
                                         font.pixelSize: LauncherUI.Configurations.listEntryDescriptionFontSz
-                                        color: Settings.colors.fgMain
-                                        opacity: Settings.colors.dimOpacity
+                                        color: Settings.colors.foreground.muted
                                     }
                                 }
                             }
@@ -258,8 +263,7 @@ PanelWindow {
                         text: "No applications found"
                         font.family: LauncherUI.Configurations.listEntryFont
                         font.pixelSize: LauncherUI.Configurations.listEntryFontSz
-                        color: Settings.colors.fgMain
-                        opacity: Settings.colors.dimOpacity
+                        color: Settings.colors.foreground.muted
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                     }
@@ -283,7 +287,7 @@ PanelWindow {
                         enabled: !applicationView.atYBeginning
                         focusPolicy: Qt.NoFocus
                         padding: 0
-                        opacity: enabled ? Settings.colors.dimOpacity : 1
+                        opacity: enabled ? Settings.colors.background.dimOpacity : 1
                         onClicked: applicationScrollBar.decrease()
 
                         HoverHandler { cursorShape: Qt.PointingHandCursor }
@@ -291,7 +295,7 @@ PanelWindow {
                         background: null
                         contentItem: LauncherUI.ScrollChevron {
                             pointUp: true
-                            bgFill: Settings.colors.bgTint3
+                            bgFill: Settings.colors.background.tint3
                         }
                     }
 
@@ -314,8 +318,8 @@ PanelWindow {
                         contentItem: LauncherUI.ScrollChevron {
                             leftCap: Core.ChevronGeometry.Cap.Point
                             opacity: applicationScrollBar.active
-                                ? Settings.colors.hoverOpacity + Settings.colors.dimOpacity
-                                : Settings.colors.dimOpacity
+                                ? Settings.colors.background.hoverOpacity + Settings.colors.background.dimOpacity
+                                : Settings.colors.background.dimOpacity
                         }
 
                         background: null
@@ -331,14 +335,14 @@ PanelWindow {
                         enabled: !applicationView.atYEnd
                         focusPolicy: Qt.NoFocus
                         padding: 0
-                        opacity: enabled ? Settings.colors.dimOpacity : 1
+                        opacity: enabled ? Settings.colors.background.dimOpacity : 1
                         onClicked: applicationScrollBar.increase()
 
                         HoverHandler { cursorShape: Qt.PointingHandCursor }
 
                         background: null
                         contentItem: LauncherUI.ScrollChevron {
-                            bgFill: Settings.colors.bgTint3
+                            bgFill: Settings.colors.background.tint3
                         }
                     }
                 }
@@ -354,7 +358,7 @@ PanelWindow {
                     Layout.fillHeight: true
                     leftCap: Core.ChevronGeometry.Cap.Flat
                     rightCap: Core.ChevronGeometry.Cap.Point
-                    bgFill: Settings.colors.bgTint1
+                    bgFill: Settings.colors.background.tint1
                     contentLeftPadding: LauncherUI.Configurations.inputFieldIconMarginL
                     contentRightPadding: LauncherUI.Configurations.inputFieldIconMarginS
 
@@ -378,10 +382,10 @@ PanelWindow {
                     placeholderText: root.inputPlaceholder()
                     font.family: root.inputFont()
                     font.pixelSize: root.inputFontSz()
-                    color: Settings.colors.fgMain
-                    placeholderTextColor: Qt.alpha(Settings.colors.fgMain, Settings.colors.dimOpacity)
-                    selectionColor: Qt.alpha(Settings.colors.accentMain, Settings.colors.dimOpacity)
-                    selectedTextColor: Settings.colors.fgDark
+                    color: Settings.colors.foreground.main
+                    placeholderTextColor: Settings.colors.foreground.muted
+                    selectionColor: Settings.colors.foreground.accent
+                    selectedTextColor: Settings.colors.foreground.contrast
                     selectByMouse: true
 
                     background: Chevron {
@@ -391,7 +395,7 @@ PanelWindow {
                         leftCap: Core.ChevronGeometry.Cap.Notch
                         rightCap: Core.ChevronGeometry.Cap.Notch
                         rightCapProgress: root.clearReveal
-                        bgFill: Settings.colors.bgTint1
+                        bgFill: Settings.colors.background.tint1
                     }
 
                     onAccepted: root.launchCurrent()
@@ -414,7 +418,7 @@ PanelWindow {
                     leftCap: Core.ChevronGeometry.Cap.Point
                     rightCap: Core.ChevronGeometry.Cap.Flat
                     leftCapProgress: root.clearReveal
-                    bgFill: Settings.colors.bgTint1
+                    bgFill: Settings.colors.background.tint1
                     contentLeftPadding: LauncherUI.Configurations.inputFieldIconMarginS
                     contentRightPadding: LauncherUI.Configurations.inputFieldIconMarginL
 
@@ -497,11 +501,11 @@ PanelWindow {
 
     function entryBackgroundColor(entry): color {
         if (entry.highlighted)
-            return Settings.colors.bgTint1
+            return Settings.colors.background.tint1
         if (entry.down || entry.hovered)
-            return Settings.colors.bgTint1
+            return Settings.colors.background.tint1
         const alpha = entry.index % 2 === 0 ? LauncherUI.Configurations.listEntryOddAlpha : 1
-        return Qt.alpha(Settings.colors.bgMain, alpha)
+        return Qt.tint(Settings.colors.background.tint1, Qt.alpha(Settings.colors.background.main, alpha))
     }
 
     function inputIcon(): string {

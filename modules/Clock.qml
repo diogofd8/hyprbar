@@ -16,6 +16,7 @@ ChevronButton {
     rightCap: Core.ChevronGeometry.Cap.Point
 
     bgFill: Settings.colors.background.accent
+    paintInForeground: true
 
     onLeftClicked: root.systemRequested()
 

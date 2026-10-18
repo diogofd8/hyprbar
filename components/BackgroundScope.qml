@@ -9,6 +9,7 @@ QtObject {
     required property Item sourceItem
     // Targets come from BackgroundSurface.paintTarget or another scope.
     property BackgroundTarget target: root.findTarget(root.sourceItem)
+    property real paintZOffset: 0
     property bool disposing: false
     readonly property point origin: root.mapOrigin()
     default property alias paint: projectedPaint.data
@@ -62,7 +63,7 @@ QtObject {
 
     function paintZ(): real {
         if (!root.target || !root.sourceItem)
-            return root.sourceItem?.z ?? 0
+            return (root.sourceItem?.z ?? 0) + root.paintZOffset
         const order = root.target.paintOrder
         const index = order.indexOf(projectedPaint)
         const branch = root.target.sourcePath(root.sourceItem)[0]

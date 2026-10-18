@@ -12,6 +12,7 @@ Item {
     required property int leftCap
     required property int rightCap
     required property color bgFill
+    property bool paintInForeground: false
     // Zero flattens the cap; one draws its full point or notch.
     property real leftCapProgress: 1
     property real rightCapProgress: 1
@@ -47,7 +48,14 @@ Item {
 
     // ────── Geometry ──────
     readonly property BackgroundScope backgroundScope: BackgroundScope {
+        id: paintScope
+
         sourceItem: root
+        // A null target keeps the projected shape in the normal item tree,
+        // above the separately composited background surface.
+        target: root.paintInForeground ? null : paintScope.findTarget(root)
+        paintZOffset: root.paintInForeground ? -1 : 0
+
         Shape {
             id: shape
 

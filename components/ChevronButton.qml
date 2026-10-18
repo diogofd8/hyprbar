@@ -14,6 +14,7 @@ Item {
     required property int leftCap
     required property int rightCap
     required property color bgFill
+    property bool paintInForeground: false
     property real leftCapProgress: 1
     property real rightCapProgress: 1
     property color hoverColor: Settings.colors.background.highlight
@@ -61,6 +62,7 @@ Item {
         leftCapProgress: root.leftCapProgress
         rightCapProgress: root.rightCapProgress
         bgFill: root.bgFill
+        paintInForeground: root.paintInForeground
 
         contentLeftPadding: root.contentLeftPadding
         contentRightPadding: root.contentRightPadding

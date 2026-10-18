@@ -8,8 +8,8 @@ Singleton {
     readonly property real sliderMenuVerticalPos: 0.5
     readonly property real sliderMenuEdgeMargin: 8
     readonly property real sliderMenuPaddingX: 8
-    readonly property real sliderMenuPaddingY: 4
-    readonly property real sliderMenuVSpacing: -8
+    readonly property real sliderMenuPaddingY: 20
+    readonly property real sliderMenuVSpacing: 4
 
     readonly property real sliderEntryIconSz: 18
     readonly property real sliderEntryFontSz: 12

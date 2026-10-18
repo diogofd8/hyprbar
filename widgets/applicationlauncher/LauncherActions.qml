@@ -25,7 +25,7 @@ Singleton {
             name: "System Monitor",
             description: "Open btop in a terminal",
             icon: "utilities-system-monitor",
-            command: ["alacritty", "-e", "btop"]
+            command: root.terminalCommand.concat(["btop"])
         }
     ]
 
@@ -86,7 +86,9 @@ Singleton {
                 application.execute()
             }
         } else if (entry.shellCommand) {
-            Quickshell.execDetached(["sh", "-c", entry.shellCommand])
+            Quickshell.execDetached(root.terminalCommand.concat([
+                "zsh", "-ic", `${entry.shellCommand}; exec zsh -i`
+            ]))
         } else if (entry.command?.length > 0) {
             Quickshell.execDetached(entry.command)
         }

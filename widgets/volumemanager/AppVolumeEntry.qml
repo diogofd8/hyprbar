@@ -35,8 +35,8 @@ Controls.Pane {
 
         Item {
             Layout.alignment: Qt.AlignVCenter
-            Layout.leftMargin: WidgetConfiguration.entryIconHPadding
-            Layout.rightMargin: WidgetConfiguration.entryIconHPadding
+            Layout.leftMargin: WidgetConfiguration.entryIconHPadding + WidgetConfiguration.entryImageMarginX
+            Layout.rightMargin: WidgetConfiguration.entryIconHPadding + WidgetConfiguration.entryImageMarginX
 
             IconImage {
                 id: volEntryIcon

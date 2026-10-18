@@ -28,6 +28,7 @@ Singleton {
     readonly property real entryHPadding: 6
     readonly property real entryVPadding: 2
     readonly property real entryIconHPadding: 4
+    readonly property real entryImageMarginX: 6
 
     readonly property real entryRowVSpacing: 1
     readonly property real entryTitleRowHSpacing: 2

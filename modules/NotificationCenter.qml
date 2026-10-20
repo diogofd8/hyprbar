@@ -33,6 +33,8 @@ ChevronButton {
         anchorItem: root
         Widgets.NotificationManager {
             anchors.fill: parent
+
+            onDismissRequested: notificationCenter.close()
         }
     }
 

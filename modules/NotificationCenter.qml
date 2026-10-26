@@ -18,6 +18,7 @@ ChevronButton {
     hoverOpacity: Settings.colors.background.hoverOpacityStrong
 
     onLeftClicked: Core.Actions.notificationMenu()
+    onRightClicked: Core.Notifications.clearAll()
 
     Glyph {
         icon: Settings.notificationIcon

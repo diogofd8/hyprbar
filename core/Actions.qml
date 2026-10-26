@@ -69,11 +69,11 @@ Singleton {
     }
 
     function terminal(title: string, command: string): void {
-        run(["alacritty", "--title", title, "-e", "sh", "-c", command]);
+        run(["kitty", "--title", title, "-e", "sh", "-c", command]);
     }
 
     function clipse(): void {
-        run(["alacritty", "--class", "clipse", "-e", "clipse"]);
+        run(["kitty", "--class", "clipse", "-e", "clipse"]);
     }
 
     function sysUpdateCheck(): void {

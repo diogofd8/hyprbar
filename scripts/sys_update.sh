@@ -218,8 +218,12 @@ mode_update() {
     _cmd="$SELF run-update"
 
     _term="${TERMINAL:-}"
+    # Ignore a $TERMINAL that isn't a runnable command (e.g. a $TERM value)
+    if [ -n "$_term" ] && ! command -v "$_term" >/dev/null 2>&1; then
+        _term=''
+    fi
     if [ -z "$_term" ]; then
-        for _t in alacritty ghostty kitty foot wezterm konsole gnome-terminal xterm; do
+        for _t in kitty alacritty ghostty foot wezterm konsole gnome-terminal xterm; do
             command -v "$_t" >/dev/null 2>&1 && { _term="$_t"; break; }
         done
     fi

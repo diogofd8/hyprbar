@@ -20,7 +20,7 @@ fi
 CMD="$@"
 
 # Try to find the process
-PID=$(pgrep -f "alacritty.*-t $WIN_TITLE")
+PID=$(pgrep -f "kitty.*--title $WIN_TITLE")
 
 if [ -n "$PID" ]; then
     # Process exists → kill it
@@ -29,8 +29,8 @@ else
     # Process doesn't exist → open it
     if [ "$KEEP_ALIVE" = true ]; then
         # Wrap the command in an keep alive shell
-        alacritty -t "$WIN_TITLE" -e sh -c "$CMD; read -n1 -s" &
+        kitty --title "$WIN_TITLE" -e sh -c "$CMD; read -n1 -s" &
     else
-        alacritty -t "$WIN_TITLE" -e $CMD &
+        kitty --title "$WIN_TITLE" -e $CMD &
     fi
 fi

@@ -73,7 +73,7 @@ These support optional click actions and modules. Install only the parts you use
 | Package | Used for |
 | --- | --- |
 | `hyprlock` | locking the session from the power menu |
-| `alacritty` | floating terminal popups |
+| `kitty` | floating terminal popups |
 | `clipse` (AUR) | clipboard manager |
 | `btop` | vitals popup |
 | `curl` | weather popup (`wttr.in`) |
@@ -166,20 +166,21 @@ hl.layer_rule({
 
 ### 4. Floating popups
 
-The vitals, weather and calendar actions open Alacritty windows with specific titles.
+The vitals, weather and calendar actions open Kitty windows with specific titles.
 They only float if you have rules for them:
 
 ```lua
 hl.window_rule({
     name = "hyprbar-vitals",
-    match = { class = "Alacritty", title = "^(waybar-vitals)$" },
-    float = true, move = "150 35",
+    match = { class = "kitty", title = "^(waybar-vitals)$" },
+    float = true, move = "150 35", size = "800 600",
 })
 ```
 
 ```ini
-windowrule = float, class:Alacritty, title:^(waybar-vitals)$
-windowrule = move 150 35, class:Alacritty, title:^(waybar-vitals)$
+windowrule = float, class:kitty, title:^(waybar-vitals)$
+windowrule = move 150 35, class:kitty, title:^(waybar-vitals)$
+windowrule = size 800 600, class:kitty, title:^(waybar-vitals)$
 ```
 
 The titles used are `waybar-vitals`, `waybar-weather`, `waybar-calendar` and

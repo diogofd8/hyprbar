@@ -174,6 +174,11 @@ hl.layer_rule({
     match = { namespace = "hyprbar-applicationlauncher" },
     blur = true, blur_popups = true, ignore_alpha = 0.01, no_anim = true
 })
+hl.layer_rule({
+    name = "hyprbar-hyprcheatsheet",
+    match = { namespace = "hyprbar-hyprcheatsheet" },
+    blur = true, ignore_alpha = 0.01, no_anim = true
+})
 ```
 
 ### 4. Floating popups

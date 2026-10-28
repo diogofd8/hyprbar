@@ -15,6 +15,7 @@ ShellRoot {
 
     function togglePowerMenu(): void {
         popoutHost.dismiss()
+        hyprCheatSheet.active = false
         if (applicationLauncher.active)
             applicationLauncher.item.close()
         powerMenu.active = !powerMenu.active
@@ -22,6 +23,7 @@ ShellRoot {
 
     function toggleApplicationLauncher(): void {
         popoutHost.dismiss()
+        hyprCheatSheet.active = false
         powerMenu.active = false
         if (!applicationLauncher.active)
             applicationLauncher.active = true
@@ -29,6 +31,14 @@ ShellRoot {
             applicationLauncher.item.open()
         else
             applicationLauncher.item.close()
+    }
+
+    function toggleHyprCheatSheet(): void {
+        popoutHost.dismiss()
+        powerMenu.active = false
+        if (applicationLauncher.active)
+            applicationLauncher.item.close()
+        hyprCheatSheet.active = !hyprCheatSheet.active
     }
 
     Connections {
@@ -40,6 +50,26 @@ ShellRoot {
 
         function onApplicationLauncherRequested(): void {
             shell.toggleApplicationLauncher()
+        }
+
+        function onHyprCheatSheetRequested(): void {
+            shell.toggleHyprCheatSheet()
+        }
+    }
+
+    LazyLoader {
+        id: hyprCheatSheet
+
+        Widgets.HyprCheatSheet {
+            screen: bar.screen
+            onDismissed: hyprCheatSheet.active = false
+        }
+    }
+
+    IpcHandler {
+        target: "hyprcheatsheet"
+        function toggle(): void {
+            shell.toggleHyprCheatSheet()
         }
     }
 

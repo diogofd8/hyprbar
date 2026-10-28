@@ -10,6 +10,7 @@ Singleton {
 
     signal powerMenuRequested()
     signal applicationLauncherRequested()
+    signal hyprCheatSheetRequested()
 
     function run(argv): void {
         Quickshell.execDetached(argv);
@@ -41,6 +42,10 @@ Singleton {
 
     function launcher(): void {
         root.applicationLauncherRequested();
+    }
+
+    function hyprCheatSheet(): void {
+        root.hyprCheatSheetRequested();
     }
 
     function powerMenu(): void {

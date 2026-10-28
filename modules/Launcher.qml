@@ -13,6 +13,7 @@ ChevronButton {
 
     bgFill: "transparent"
     onLeftClicked: Core.Actions.launcher()
+    onRightClicked: Core.Actions.hyprCheatSheet()
 
     Glyph {
         icon: Settings.launcherIcon

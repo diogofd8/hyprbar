@@ -21,6 +21,7 @@ Singleton {
     readonly property real usedBytes: _usedBytes
     readonly property real availableBytes: _availableBytes
     readonly property real totalBytes: _totalBytes
+    readonly property real swapPercentage: _swapPercentage
 
     property real _overallValue: 0
     property string _overallState: "low"
@@ -28,6 +29,7 @@ Singleton {
     property real _usedBytes: 0
     property real _availableBytes: 0
     property real _totalBytes: 0
+    property real _swapPercentage: 0
 
     FileView {
         id: meminfoFile
@@ -43,9 +45,7 @@ Singleton {
         meminfoFile.reload()
     }
 
-    function process() {
-        const text = meminfoFile.text()
-
+    function process(text = meminfoFile.text()) {
         if (!text)
             return
 
@@ -57,10 +57,10 @@ Singleton {
             if (match)
                 fields[match[1]] = Number(match[2]) * 1024
 
-            // Both come within the first three lines; nothing reads the
-            // other ~55 yet. Without MemAvailable this reads on, for the
-            // fallback below.
-            if (fields.MemTotal !== undefined && fields.MemAvailable !== undefined)
+            // RAM and swap share this read. Stop once all four figures are
+            // found; older kernels without MemAvailable use the fallback below.
+            if (fields.MemTotal !== undefined && fields.MemAvailable !== undefined
+                && fields.SwapTotal !== undefined && fields.SwapFree !== undefined)
                 break
         }
 
@@ -82,6 +82,11 @@ Singleton {
         root._totalBytes = total
         root._availableBytes = available
         root._usedBytes = total - available
+
+        const swapTotal = fields.SwapTotal ?? 0
+        const swapFree = fields.SwapFree ?? swapTotal
+        root._swapPercentage = swapTotal > 0
+            ? Math.max(0, Math.min(100, (swapTotal - swapFree) / swapTotal * 100)) : 0
 
         root._overallValue = (root._usedBytes / total) * 100
         root._overallState = resolveState(

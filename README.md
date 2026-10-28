@@ -85,6 +85,18 @@ These support optional click actions and modules. Install only the parts you use
 | `spotify-bin` | Spotify desktop player for the Spotify module |
 | `gtk3` | `gtk-launch`, used by the Spotify module |
 | `cava` | audio spectrum around the MPRIS player's album art |
+| `intel-gpu-tools` | Intel i915 GPU utilization in VitalsViewer |
+
+Intel GPU utilization uses `intel_gpu_top` while VitalsViewer is open, at
+`Settings.systemStatsPollingIntervalMs`. Grant its performance-counter capability
+once after installing `intel-gpu-tools`:
+
+```sh
+sudo setcap cap_perfmon=ep /usr/bin/intel_gpu_top
+```
+
+Package upgrades can remove this capability; reapply it if the iGPU reading shows
+`—`. Only `intel_gpu_top` needs this capability, not Quickshell.
 
 ## Installation
 

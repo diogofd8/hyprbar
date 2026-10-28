@@ -130,6 +130,8 @@ Singleton {
 
     // ────── System Statistics API Configuration ──────
     readonly property int systemStatsPollingIntervalMs: 3000
+    readonly property int storageUsagePollingIntervalMs: 30000
+    readonly property string storageUsagePath: "/"
     readonly property var cpuStressThresholds: [
         {state: "idle", threshold: 0},
         {state: "low", threshold: 10},

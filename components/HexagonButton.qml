@@ -20,6 +20,7 @@ Item {
 
     property color hoverColor: Settings.colors.background.highlight
     property real hoverOpacity: Settings.colors.background.hoverOpacity
+    property bool paintInForeground: false
 
     property real paddingOffset: 0
     property real defaultPadding: 10
@@ -55,6 +56,7 @@ Item {
         hovered: root.hovered
         hoverColor: root.hoverColor
         hoverOpacity: root.hoverOpacity
+        backgroundScope.target: root.paintInForeground ? null : hexagon.backgroundScope.findTarget(hexagon)
     }
 
     Glyph {

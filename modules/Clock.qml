@@ -17,6 +17,7 @@ ChevronButton {
 
     bgFill: Settings.colors.background.accent
     paintInForeground: true
+    hoverInForeground: true
 
     onLeftClicked: root.mprisRequested()
 

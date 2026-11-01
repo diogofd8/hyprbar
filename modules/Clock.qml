@@ -20,6 +20,7 @@ ChevronButton {
     hoverInForeground: true
 
     onLeftClicked: root.mprisRequested()
+    onRightClicked: Core.Actions.themeManager()
 
     SystemClock {
         id: clock

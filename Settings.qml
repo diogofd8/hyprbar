@@ -3,6 +3,8 @@ pragma Singleton
 import Quickshell
 import QtQuick
 
+import qs.core as Core
+
 Singleton {
     // ────── Debug Tools ──────
     readonly property bool bDebugTrace: false
@@ -13,9 +15,13 @@ Singleton {
         property string theme: "dark"
     }
 
-    readonly property string theme: persist.theme
+    readonly property string theme: Core.SystemPalette.mode || persist.theme
+    readonly property QtObject fixedColors: Theme.fixed
     readonly property QtObject colors: {
-        switch (persist.theme) {
+        if (Core.SystemPalette.source === "matugen")
+            return Theme.matugen;
+
+        switch (theme) {
             case "light": return Theme.light;
             case "dark": // passthrough
             default: return Theme.dark;
@@ -23,7 +29,8 @@ Singleton {
     }
 
     function setTheme(value: string): void {
-        persist.theme = value;
+        if (!Core.SystemPalette.available)
+            persist.theme = value;
     }
 
     // ────── Wlr Layer Shell ──────

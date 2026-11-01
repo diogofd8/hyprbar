@@ -37,7 +37,7 @@ Chevron {
 
                     NotificationDot {
                         visible: Core.PowerSupply.internal.active
-                        dotColor: Settings.colors.foreground.internalBattery
+                        dotColor: Settings.fixedColors.internalBattery
                         dotBgColor: Settings.colors.background.tint2
                     }
                 }
@@ -61,7 +61,7 @@ Chevron {
 
                     NotificationDot {
                         visible: Core.PowerSupply.external.active
-                        dotColor: Settings.colors.foreground.externalBattery
+                        dotColor: Settings.fixedColors.externalBattery
                         dotBgColor: Settings.colors.background.tint3
                     }
                 }

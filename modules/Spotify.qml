@@ -16,9 +16,8 @@ Chevron {
     bgFill: root.brandColor
 
     // ────── Brand ──────
-    // Spotify green is the player's colour, not a role in the palette, so it
-    // lives with the module and follows the theme on its own.
-    readonly property color brandColor: Settings.colors.background.spotify
+    // Spotify green comes from the shared fixed colours, independent of the theme.
+    readonly property color brandColor: Settings.fixedColors.spotify
 
     // ────── State ──────
     // Read-only: the player owns all of this now, so the view cannot drift

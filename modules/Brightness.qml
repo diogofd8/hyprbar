@@ -22,7 +22,7 @@ Row {
 
         onScrolled: steps => Core.Backlight.stepBrightness(steps)
         onLeftClicked: brightnessManager.toggle()
-        onRightClicked: Core.Actions.toggleDarkMode()
+        onRightClicked: Core.ThemeControl.toggleMode()
 
         Glyph {
             icon: Core.Backlight.icon

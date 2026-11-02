@@ -78,7 +78,29 @@ Singleton {
     ListModel { id: slotModel }
 
     onSlotSnapshotsChanged: Core.Helpers.syncModel(slotModel, root.slotSnapshots, "slotId")
-    Component.onCompleted: Core.Helpers.syncModel(slotModel, root.slotSnapshots, "slotId")
+    Component.onCompleted: {
+        Core.Helpers.syncModel(slotModel, root.slotSnapshots, "slotId");
+        // The native service survives QML reloads. Repair associations missed
+        // before this model started listening as well.
+        Hyprland.refreshToplevels();
+    }
+
+    Connections {
+        target: Hyprland
+
+        function onRawEvent(event): void {
+            if (event.name !== "openwindow")
+                return;
+
+            // Hyprland 0.57 sends an address here (e.g. "2"), while
+            // Quickshell 0.3.2 looks it up as a display name ("browser").
+            // Recover missed associations through the native client snapshot.
+            const address = event.parse(4)[0];
+            const toplevel = Hyprland.toplevels.values.find(t => t.address === address);
+            if (!toplevel?.workspace)
+                Hyprland.refreshToplevels();
+        }
+    }
 
     // Focus a slot by its workspace id.
     function activate(slotId: int): void {

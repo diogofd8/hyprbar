@@ -22,6 +22,7 @@ Singleton {
 
     // ────── Angles ──────
     readonly property real squaredButtonPressAngle: -45
+    readonly property real themeAddColorHoverAngle: 90
 
     // ────── Distances ──────
     readonly property real popoutOffset: 8          // slide of the open/close reveal

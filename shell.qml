@@ -15,6 +15,7 @@ ShellRoot {
 
     function togglePowerMenu(): void {
         popoutHost.dismiss()
+        themeManager.active = false
         if (applicationLauncher.active)
             applicationLauncher.item.close()
         powerMenu.active = !powerMenu.active
@@ -22,6 +23,7 @@ ShellRoot {
 
     function toggleApplicationLauncher(): void {
         popoutHost.dismiss()
+        themeManager.active = false
         powerMenu.active = false
         if (!applicationLauncher.active)
             applicationLauncher.active = true
@@ -29,6 +31,14 @@ ShellRoot {
             applicationLauncher.item.open()
         else
             applicationLauncher.item.close()
+    }
+
+    function toggleThemeManager(): void {
+        popoutHost.dismiss()
+        powerMenu.active = false
+        if (applicationLauncher.active)
+            applicationLauncher.item.close()
+        themeManager.active = !themeManager.active
     }
 
     Connections {
@@ -40,6 +50,26 @@ ShellRoot {
 
         function onApplicationLauncherRequested(): void {
             shell.toggleApplicationLauncher()
+        }
+
+        function onThemeManagerRequested(): void {
+            shell.toggleThemeManager()
+        }
+    }
+
+    LazyLoader {
+        id: themeManager
+
+        Widgets.ThemeManager {
+            screen: bar.screen
+            onDismissed: themeManager.active = false
+        }
+    }
+
+    IpcHandler {
+        target: "thememanager"
+        function toggle(): void {
+            shell.toggleThemeManager()
         }
     }
 

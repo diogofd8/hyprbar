@@ -3,6 +3,7 @@ import QtQuick
 import qs
 import qs.components
 import qs.core as Core
+import qs.widgets as Widgets
 
 Row {
     id: root
@@ -19,7 +20,8 @@ Row {
         bgFill: Settings.colors.background.tint1
         hoverOpacity: 0
 
-        onLeftClicked: Core.Actions.vitalsPopUp()
+        onLeftClicked: vitalsViewer.toggle()
+        onRightClicked: Core.Actions.vitalsPopUp()
 
         Row {
             spacing: 6
@@ -47,7 +49,8 @@ Row {
         bgFill: Settings.colors.background.tint2
         hoverOpacity: 0
 
-        onLeftClicked: Core.Actions.vitalsPopUp()
+        onLeftClicked: vitalsViewer.toggle()
+        onRightClicked: Core.Actions.vitalsPopUp()
 
         Row {
             spacing: 0
@@ -75,7 +78,8 @@ Row {
         bgFill: Settings.colors.background.tint3
         hoverOpacity: 0
 
-        onLeftClicked: Core.Actions.vitalsPopUp()
+        onLeftClicked: vitalsViewer.toggle()
+        onRightClicked: Core.Actions.vitalsPopUp()
 
         Row {
             spacing: 6
@@ -87,6 +91,15 @@ Row {
             Temperature {
                 value: Math.round(Core.SystemStats.cpuTemperature.overall.value)
             }
+        }
+    }
+
+    DropDown {
+        id: vitalsViewer
+        anchorItem: root
+
+        Widgets.VitalsViewer {
+            anchors.fill: parent
         }
     }
 }

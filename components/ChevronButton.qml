@@ -19,6 +19,7 @@ Item {
     property real rightCapProgress: 1
     property color hoverColor: Settings.colors.background.highlight
     property real hoverOpacity: Settings.colors.background.hoverOpacity
+    property bool hoverInForeground: false
 
     property real contentLeftPadding: 0
     property real contentRightPadding: 0
@@ -80,6 +81,7 @@ Item {
         rightCapProgress: root.rightCapProgress
 
         bgFill: root.hoverColor
+        paintInForeground: root.hoverInForeground
         opacity: root.hoverOpacity
         visible: root.hovered
     }

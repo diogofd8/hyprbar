@@ -7,7 +7,7 @@ import qs.modules
 RowLayout {
     id: root
 
-    signal systemRequested()
+    signal mprisRequested()
 
     // Centre modules
     RowLayout {
@@ -15,7 +15,7 @@ RowLayout {
 
         Clock {
             Layout.fillHeight: true
-            onSystemRequested: root.systemRequested()
+            onMprisRequested: root.mprisRequested()
         }
     }
 }

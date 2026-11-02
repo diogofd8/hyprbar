@@ -20,6 +20,7 @@ Item {
 
     property color hoverColor: Settings.colors.background.highlight
     property real hoverOpacity: Settings.colors.background.hoverOpacity
+    property bool paintInForeground: false
 
     property real paddingOffset: 0
     property real defaultPadding: 10
@@ -35,6 +36,7 @@ Item {
     signal leftClicked()
     signal rightClicked()
     signal scrolled(int steps)
+    property bool scrollEnabled: true
 
     readonly property bool hovered:
         root.enabled
@@ -55,6 +57,7 @@ Item {
         hovered: root.hovered
         hoverColor: root.hoverColor
         hoverOpacity: root.hoverOpacity
+        backgroundScope.target: root.paintInForeground ? null : hexagon.backgroundScope.findTarget(hexagon)
     }
 
     Glyph {
@@ -109,7 +112,7 @@ Item {
         }
 
         onWheel: wheel => {
-            if (!hexagon.containsPoint(wheel.x, wheel.y)) {
+            if (!root.scrollEnabled || !hexagon.containsPoint(wheel.x, wheel.y)) {
                 wheel.accepted = false
                 return
             }

@@ -7,7 +7,7 @@ import qs.core as Core
 
 ChevronButton {
     id: root
-    signal systemRequested()
+    signal mprisRequested()
 
     contentLeftPadding: 0
     contentRightPadding: 0
@@ -17,8 +17,10 @@ ChevronButton {
 
     bgFill: Settings.colors.background.accent
     paintInForeground: true
+    hoverInForeground: true
 
-    onLeftClicked: root.systemRequested()
+    onLeftClicked: root.mprisRequested()
+    onRightClicked: Core.Actions.themeManager()
 
     SystemClock {
         id: clock

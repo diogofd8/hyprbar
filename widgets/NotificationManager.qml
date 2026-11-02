@@ -11,6 +11,7 @@ import "notificationmanager" as NotificationUI
 
 Controls.Pane {
     id: root
+    signal dismissRequested()
 
     readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: root }
 
@@ -101,7 +102,10 @@ Controls.Pane {
                     enabled: root.service.count > 0
                     opacity: enabled ? 1 : Settings.colors.foreground.disabledOpacity
 
-                    onLeftClicked: root.clearAll()
+                    onLeftClicked: {
+                        root.clearAll()
+                        root.dismissRequested()
+                    }
                 }
             }
 

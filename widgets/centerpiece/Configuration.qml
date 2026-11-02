@@ -21,7 +21,7 @@ Singleton {
     // ────── Center Piece Tabs ──────
     readonly property var tabs: [
         {key: "calendar", label: "Calendar", icon: "", source: Qt.resolvedUrl("CalendarPage.qml")},
-        {key: "system", label: "System", icon: "", source: Qt.resolvedUrl("SystemPage.qml")},
+        {key: "mpris", label: "Player", icon: "", source: Qt.resolvedUrl("MprisPlayer.qml")},
         {key: "weather", label: "Weather", icon: "", source: Qt.resolvedUrl("WeatherPage.qml")},
     ]
 
@@ -151,42 +151,7 @@ Singleton {
         return palette[weatherGlyphCategory[icon]] ?? Settings.colors.foreground.main
     }
 
-    // ────── System Page ──────
-    readonly property real sysInfoRowHSpacing: 3
-    readonly property real sysCompositeItemHSpacing: 4
-    readonly property real sysProfileImgSz: 32
-    readonly property real sysEntryFontSz: 13
-    readonly property real sysEntryIconSz: 16
-
-    readonly property var sysClockIcon: ""
-    readonly property var sysDistroIcon: ({
-        // Add the entries you need from: nf-linux-*
-        arch: "",
-        ubuntu: "",
-        fedora: "",
-        tux: ""
-    })
-
-    readonly property var sysDesktopIcon: ({
-        hyprland: "",
-        kde: "",
-        gnome: "",
-        default_shell: ""
-    })
-
-    function desktopIcon(desktopName) {
-        const desktops = desktopName.toLowerCase().split(":");
-
-        for (const desktop of desktops) {
-            if (sysDesktopIcon[desktop])
-                return sysDesktopIcon[desktop];
-        }
-
-        return sysDesktopIcon.default_shell;
-    }
-
     // ────── MPRIS Player ──────
-    readonly property real mprisVSpacing: 6
     readonly property real mprisArtPaddingY: 8
     readonly property real mprisHMargin: 10
 
@@ -204,8 +169,8 @@ Singleton {
     readonly property real mprisMetadataFontSz: 12
     readonly property real mprisArtistMaxWidthRatio: 0.7
 
-    readonly property real mprisMetadataVSpacing: -1
-    readonly property real mprisMetadataHSpacing: 4
+    readonly property real mprisInfoVSpacing: 2
+    readonly property real mprisInfoHSpacing: 4
     readonly property real mprisButtonsPadding: 2
     readonly property real mprisPlayPausePadding: 10
     readonly property real mprisPlayPauseBtnSz: 29

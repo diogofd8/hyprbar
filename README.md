@@ -26,6 +26,38 @@ toggled with `qs ipc -c hyprbar call powermenu toggle`.
 Volume and display-brightness keys also show a temporary slider menu on the left.
 Use `qs ipc -c hyprbar call slidermenu open volume` (or `brightness`) to preview it.
 
+Right-click the clock to open the centered theme panel, or run
+`qs ipc -c hyprbar call thememanager toggle`. Escape or a click outside closes it.
+The panel opens on the applied source. Its Oxidye/Matugen buttons navigate between
+pages without applying anything; the body and window height slide together.
+The Matugen page is empty for now. Select an image theme externally with Oxidye.
+
+`MODE:` beside the page buttons names the applied source. The LIGHT/DARK switch,
+whose middle chevron shows the active mode, switches the applied source's mode immediately.
+Brightness right-click performs the same action, including while the panel is
+closed. A pending accent draft is never included in a mode toggle.
+
+On the Oxidye page, drag the hue, saturation and value (HSV) sliders to preview
+locally. The **APPLY** chevron above them, led by a colour sample, converts the
+colour to an opaque OKLCH seed and applies it through Oxidye's fixed workflow. It can also
+return from an active Matugen theme to fixed mode. An untouched seed is applied
+unchanged, even one outside sRGB; the sliders then show its displayed colour.
+Greys keep their hue as seed metadata, so raising saturation restores it.
+Hyprbar's fixed-mode accent is the seed's sRGB display colour, so very dark or
+pale picks can be hard to read in the bar, while application fills use Oxidye's
+independently derived, contrast-checked tones.
+
+Saved-colour hexagons restore full OKLCH seeds for editing; right-click one to
+remove it. The **+** saves the current spectrum without applying it. When the row
+overflows, the mouse wheel scrolls it. Optional built-in seeds go in the widget
+configuration's `savedSpectra` array and cannot be removed; UI saves retain the existing
+`Quickshell.statePath("theme-spectra.json")` file under hyprbar's XDG state directory.
+
+Drafts survive page and appearance changes. Closing discards unapplied edits;
+externally changed fixed seeds reset the draft. Accepted operations finish after
+the panel closes. Errors are retained for the next opening. The width, executable
+path and icons live in `widgets/thememanager/Configuration.qml`.
+
 Use `qs ipc -c hyprbar call applicationlauncher toggle` to
 toggle it. Type to filter applications, use Up/Down to select, Enter to launch, and
 Escape to close. Prefix the search with `>` to list commands from
@@ -58,6 +90,7 @@ desktop, but the matching module will sit empty if one is missing.
 | Package | Used for |
 | --- | --- |
 | `quickshell` | the shell itself |
+| `oxidye` | fixed/image theme state and theme-manager actions; install separately |
 | `hyprland` | compositor, workspace state |
 | `ttf-jetbrains-mono` | label font |
 | `ttf-iosevkaterm-nerd` | icon font (Nerd Font glyphs) |
@@ -73,7 +106,7 @@ These support optional click actions and modules. Install only the parts you use
 | Package | Used for |
 | --- | --- |
 | `hyprlock` | locking the session from the power menu |
-| `alacritty` | floating terminal popups |
+| `kitty` | floating terminal popups |
 | `clipse` (AUR) | clipboard manager |
 | `btop` | vitals popup |
 | `curl` | weather popup (`wttr.in`) |
@@ -85,6 +118,18 @@ These support optional click actions and modules. Install only the parts you use
 | `spotify-bin` | Spotify desktop player for the Spotify module |
 | `gtk3` | `gtk-launch`, used by the Spotify module |
 | `cava` | audio spectrum around the MPRIS player's album art |
+| `intel-gpu-tools` | Intel i915 GPU utilization in VitalsViewer |
+
+Intel GPU utilization uses `intel_gpu_top` while VitalsViewer is open, at
+`Settings.systemStatsPollingIntervalMs`. Grant its performance-counter capability
+once after installing `intel-gpu-tools`:
+
+```sh
+sudo setcap cap_perfmon=ep /usr/bin/intel_gpu_top
+```
+
+Package upgrades can remove this capability; reapply it if the iGPU reading shows
+`—`. Only `intel_gpu_top` needs this capability, not Quickshell.
 
 ## Installation
 
@@ -162,39 +207,39 @@ hl.layer_rule({
     match = { namespace = "hyprbar-applicationlauncher" },
     blur = true, blur_popups = true, ignore_alpha = 0.01, no_anim = true
 })
+hl.layer_rule({
+    name = "hyprbar-thememanager",
+    match = { namespace = "hyprbar-thememanager" },
+    blur = true, ignore_alpha = 0.01, no_anim = true
+})
 ```
 
 ### 4. Floating popups
 
-The vitals, weather and calendar actions open Alacritty windows with specific titles.
+The vitals, weather and calendar actions open Kitty windows with specific titles.
 They only float if you have rules for them:
 
 ```lua
 hl.window_rule({
     name = "hyprbar-vitals",
-    match = { class = "Alacritty", title = "^(waybar-vitals)$" },
-    float = true, move = "150 35",
+    match = { class = "kitty", title = "^(waybar-vitals)$" },
+    float = true, move = "150 35", size = "800 600",
 })
 ```
 
 ```ini
-windowrule = float, class:Alacritty, title:^(waybar-vitals)$
-windowrule = move 150 35, class:Alacritty, title:^(waybar-vitals)$
+windowrule = float, class:kitty, title:^(waybar-vitals)$
+windowrule = move 150 35, class:kitty, title:^(waybar-vitals)$
+windowrule = size 800 600, class:kitty, title:^(waybar-vitals)$
 ```
-
-The titles used are `waybar-vitals`, `waybar-weather`, `waybar-calendar` and
-`waybar-calendar-full` — historical names, kept from my Waybar setup this replaced.
-I intend to replace these with proper drop-down QML modules so I didn't bother much here.
 
 ## Configuration
 
 Global configuration lives in three files at the repository root:
 
-- **`Settings.qml`** — glyphs, fonts and sizes, bar dimensions and padding, module
-  spacing, polling intervals, scroll step sizes, and the threshold tables that map a
-  value onto a state (`cpuStressThresholds`, `batteryLevelThresholds`,
+- **`Settings.qml`** — glyphs, fonts and sizes, bar dimensions and padding, module spacing, polling intervals, scroll step sizes, and the threshold tables that map a value onto a state (`cpuStressThresholds`, `batteryLevelThresholds`,
   `volumeLevelThresholds`, `brightnessLevelThresholds`, …).
-- **`Theme.qml`** — the light and dark colour palettes.
+- **`Theme.qml`** — standalone light/dark palettes and active system-palette mappings.
 - **`WeatherConfig.qml`** — location and units. **Change this before first run**; it
   ships with my coordinates (Porto, PT).
 
@@ -203,8 +248,66 @@ for adjusting its icons, sizes and spacing. The application launcher uses
 `widgets/applicationlauncher/Configurations.qml`. Shared widget settings live in
 `widgets/WidgetConfiguration.qml`.
 
-Threshold tables and icon arrays are indexed together, so if you add a state you must
-add the icon that goes with it.
+Threshold tables and icon arrays are indexed together, so if you add a state you must add the icon that goes with it.
+
+`Settings.colors` provides the selected theme's background and foreground roles. `Settings.fixedColors` references `Theme.fixed` for Spotify and the two battery marker colours, shared by every theme.
+
+### Active system palette
+
+Oxidye owns generation, installation and application reloads. Hyprbar only reads
+its committed state and invokes the installed command for explicit actions. It
+runs no startup command, wallpaper query, polling loop or resident theme helper.
+
+Install Oxidye and its toolkit dependencies first. Its command defaults to
+`~/.local/bin/oxidye`; change `oxidyeExecutable` in the theme-manager configuration
+for another installation. Matugen is Oxidye's optional image-generation dependency;
+switching an already-rendered image theme requires neither Matugen nor its image.
+
+Hyprbar watches `${XDG_CONFIG_HOME:-$HOME/.config}/oxidye/applied.json` for the
+confirmed `mode`, `source` (`fixed` or `matugen`) and opaque OKLCH `seed`.
+The configured accent file in `oxidye/config.json` supplies the separate stored
+fixed seed. An applied fixed seed takes precedence over that source file until
+Oxidye commits a new application.
+
+With `source: fixed`, `Settings.colors` selects `Theme.dark` or `Theme.light`.
+Hyprbar retains its authored backgrounds, text, semantic colours and opacities.
+Both appearances use the confirmed seed's display colour as their accent.
+Out-of-gamut chroma reduction affects only the local display copy, not the submitted
+seed. Without valid applied state, the original standalone colours remain available.
+
+With `source: matugen`, `Settings.colors` selects `Theme.matugen`. The reader loads
+`oxidye/matugen/gtk/applied.json`, checks that its mode and seed match the commit
+marker, and publishes the required RGB/alpha roles together:
+
+| Hyprbar role | Oxidye Matugen role |
+| --- | --- |
+| `background.highlight`, `background.imagePlaceholder` | `scrollbar` |
+| `background.main`, `foreground.contrast` | `window_bg` |
+| `background.tint1` | `surface_low` |
+| `background.tint2` | `surface` |
+| `background.tint3` | `surface_high` |
+| `background.tint4` | `surface_highest` |
+| `foreground.main` | `scrollbar` |
+| `background.accent`, `foreground.accent` | `accent_bg` |
+
+Error, alert, charging, battery and Spotify colours retain their definitions in
+`Theme.qml`. The matching standalone palette supplies opacity values; border and
+muted colours are derived from the active colours. Missing or malformed updates
+preserve the last complete valid palette. Hyprbar never writes Oxidye's state.
+
+Equivalent external commands:
+
+```sh
+oxidye theme --mode light --format json
+oxidye theme --accent 'oklch(0.397103719 0.120772653 260)' --format json
+oxidye matugen --image "$HOME/Pictures/wallpaper.jpg" --mode dark --format json
+oxidye matugen --mode light --format json
+```
+
+`theme` selects the fixed workflow; `matugen` selects the image workflow. Omitting
+an option preserves its configured value. Fixed and image-derived selections are
+independent. Reopen GTK/Qt applications for complete styling and icon updates;
+VS Code settings normally update live. The bar never restarts applications.
 
 ### Before it works on your machine
 
@@ -243,8 +346,6 @@ I plan to add:
 - Drop-down menus for vitals (with a `btop`-inspired look), battery (KDE-inspired),
   and volume (with MPRIS), among other nice functionality I might remember in the
   meantime
-- Theme support, including a theme engine that pulls accent colours from the current
-  wallpaper
 
 ## License
 

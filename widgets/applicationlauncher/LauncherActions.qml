@@ -6,20 +6,20 @@ Singleton {
     id: root
 
     // Prefix used for desktop entries with Terminal=true.
-    readonly property var terminalCommand: ["alacritty", "-e"]
+    readonly property var terminalCommand: ["kitty", "-e"]
 
     readonly property var actions: [
         {
             name: "Terminal",
             description: "Open a terminal",
             icon: "utilities-terminal",
-            command: ["alacritty"]
+            command: ["kitty"]
         },
         {
             name: "Clipboard",
             description: "Open the clipboard manager",
             icon: "edit-paste",
-            command: ["alacritty", "--class", "clipse", "-e", "clipse"]
+            command: ["kitty", "--class", "clipse", "-e", "clipse"]
         },
         {
             name: "System Monitor",

@@ -36,6 +36,7 @@ Item {
     signal leftClicked()
     signal rightClicked()
     signal scrolled(int steps)
+    property bool scrollEnabled: true
 
     readonly property bool hovered:
         root.enabled
@@ -111,7 +112,7 @@ Item {
         }
 
         onWheel: wheel => {
-            if (!hexagon.containsPoint(wheel.x, wheel.y)) {
+            if (!root.scrollEnabled || !hexagon.containsPoint(wheel.x, wheel.y)) {
                 wheel.accepted = false
                 return
             }

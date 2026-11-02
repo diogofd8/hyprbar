@@ -32,8 +32,8 @@ The panel opens on the applied source. Its Oxidye/Matugen buttons navigate betwe
 pages without applying anything; the body and window height slide together.
 The Matugen page is empty for now. Select an image theme externally with Oxidye.
 
-`MODE:` beside the page buttons names the applied source. The sun/moon pair
-switches the applied source's light/dark mode immediately.
+`MODE:` beside the page buttons names the applied source. The LIGHT/DARK switch,
+whose middle chevron shows the active mode, switches the applied source's mode immediately.
 Brightness right-click performs the same action, including while the panel is
 closed. A pending accent draft is never included in a mode toggle.
 
@@ -47,9 +47,10 @@ Hyprbar's fixed-mode accent is the seed's sRGB display colour, so very dark or
 pale picks can be hard to read in the bar, while application fills use Oxidye's
 independently derived, contrast-checked tones.
 
-Saved-colour hexagons restore full OKLCH seeds for editing. The **+** saves the
-current spectrum without applying it. Optional built-in seeds go in the widget
-configuration's `savedSpectra` array; UI saves retain the existing
+Saved-colour hexagons restore full OKLCH seeds for editing; right-click one to
+remove it. The **+** saves the current spectrum without applying it. When the row
+overflows, the mouse wheel scrolls it. Optional built-in seeds go in the widget
+configuration's `savedSpectra` array and cannot be removed; UI saves retain the existing
 `Quickshell.statePath("theme-spectra.json")` file under hyprbar's XDG state directory.
 
 Drafts survive page and appearance changes. Closing discards unapplied edits;

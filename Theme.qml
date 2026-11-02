@@ -11,6 +11,14 @@ Singleton {
     readonly property QtObject fixed: QtObject {
         id: fixedColors
 
+        readonly property color defaultAccent: "#7B2424"
+        readonly property color defaultAccentLight: Qt.hsla(
+            defaultAccent.hslHue,
+            Math.max(0, defaultAccent.hslSaturation - 0.05),
+            Math.min(1, defaultAccent.hslLightness + 0.05),
+            defaultAccent.a
+        )
+
         readonly property color spotify: "#1DB954"
         readonly property color internalBattery: "#DAA250"
         readonly property color externalBattery: "#5088DA"
@@ -47,7 +55,7 @@ Singleton {
             readonly property real disabledOpacity: 0.4
             readonly property color muted: Qt.tint(darkTheme.background.main, Qt.alpha(main, dimOpacity))
 
-            readonly property color accent: Core.SystemPalette.seedColor("#7B2424")
+            readonly property color accent: Core.SystemPalette.seedColor(fixedColors.defaultAccent)
             readonly property color error: "#B12F3B"
             readonly property color alert: "#B2AB7E"
             readonly property color charging: "#85B27E"
@@ -85,7 +93,7 @@ Singleton {
             readonly property real disabledOpacity: 0.4
             readonly property color muted: Qt.tint(lightTheme.background.main, Qt.alpha(main, dimOpacity))
 
-            readonly property color accent: Core.SystemPalette.seedColor("#8F3030")
+            readonly property color accent: Core.SystemPalette.seedColor(fixedColors.defaultAccentLight)
             readonly property color error: "#A62D38"
             readonly property color alert: "#918A4F"
             readonly property color charging: "#5F8F58"

@@ -14,10 +14,10 @@ Slider {
     property Gradient trackGradient: null
     property color thumbColor: "transparent"
 
-    property real trackWidth: 300
+    property real trackWidth: 240
     property real trackHeight: 8
-    property real thumbHeight: 16
-    property real thumbGap: 2
+    property real thumbHeight: 14
+    property real thumbGap: 1.5
     readonly property real thumbWidth: root.thumbHeight * 2 / Math.sqrt(3)
     readonly property real trackLength: Math.max(0, root.availableWidth - root.thumbWidth)
 
@@ -45,6 +45,11 @@ Slider {
             layer.effect: MultiEffect {
                 maskEnabled: true
                 maskInverted: true
+                // The defaults treat any partly covered mask pixel as fully
+                // covered: an aliased hole that drifts off-centre by up to a
+                // pixel. A half-coverage threshold keeps the antialiased edge.
+                maskThresholdMin: 0.5
+                maskSpreadAtMin: 1
                 maskSource: gap
             }
         }
@@ -69,7 +74,7 @@ Slider {
                 preferredRendererType: Shape.CurveRenderer
 
                 ShapePath {
-                    fillColor: "#FFFFFF"
+                    fillColor: "#FFF"
                     strokeWidth: -1
                     PathPolyline {
                         path: {
@@ -95,11 +100,13 @@ Slider {
             backgroundScope.target: null
             // Keyboard focus outlines the sample; the cut-out is the usual border.
             separation: root.visualFocus ? 1.5 : 0
-            separationColor: Settings.colors.foreground.main
+            // Identical antialiased polygons still blend at their edges when
+            // separation is zero; keep the backing transparent without focus.
+            separationColor: root.visualFocus ? Settings.colors.foreground.main : "transparent"
             fillColor: root.thumbColor
             hovered: root.hovered || root.pressed
             hoverColor: "#FFFFFF"
-            hoverOpacity: 0.08
+            hoverOpacity: Settings.colors.background.hoverOpacity
         }
 
         HoverHandler { cursorShape: Qt.PointingHandCursor }

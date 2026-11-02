@@ -12,8 +12,6 @@ Item {
     readonly property BackgroundScope backgroundScope: BackgroundScope { sourceItem: root }
     default property alias buttons: row.data
 
-    Layout.topMargin: WidgetConfiguration.hexBtnVPadding
-    Layout.bottomMargin: WidgetConfiguration.hexBtnVPadding
     implicitWidth: row.implicitWidth
     implicitHeight: row.implicitHeight
 
@@ -24,6 +22,7 @@ Item {
         anchors.rightMargin: row.children.length ? row.children[row.children.length - 1].width / 2 : 0
         color: Settings.colors.background.tint2
     }
+
     RowLayout {
         id: row
         anchors.fill: parent

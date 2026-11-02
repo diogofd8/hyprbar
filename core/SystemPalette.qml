@@ -14,6 +14,7 @@ Singleton {
     readonly property bool available: snapshot !== null
     readonly property string mode: snapshot ? snapshot.mode : ""
     readonly property string source: snapshot ? snapshot.source : ""
+    readonly property string image: snapshot ? snapshot.image || "" : ""
     readonly property string accentSeed: snapshot ? snapshot.seed : ""
     // Fixed and image themes have independent seeds. An applied fixed seed wins
     // over the source file, which Oxidye writes before committing applied.json.
@@ -69,7 +70,7 @@ Singleton {
             // A first installation can create the directory between the two
             // initial reads. Its commit is also a chance to recover that config.
             if (configError) configFile.reload()
-            pendingApplied = {mode: data.mode, source: data.source, seed: Core.Oklch.format(seed, seed.hue)}
+            pendingApplied = {mode: data.mode, source: data.source, seed: Core.Oklch.format(seed, seed.hue), image: typeof data.image === "string" ? data.image : ""}
             if (data.source === "fixed") {
                 snapshot = {mode: data.mode, source: data.source, seed: pendingApplied.seed, colors: {}}
                 appliedError = ""
@@ -101,7 +102,7 @@ Singleton {
                     throw new Error("invalid or missing colour: " + role)
                 colors[role] = Qt.rgba(value.rgb[0] / 255, value.rgb[1] / 255, value.rgb[2] / 255, value.alpha)
             }
-            snapshot = {mode: pendingApplied.mode, source: "matugen", seed: pendingApplied.seed, colors: colors}
+            snapshot = {mode: pendingApplied.mode, source: "matugen", seed: pendingApplied.seed, image: pendingApplied.image, colors: colors}
             appliedError = ""
         } catch (error) { appliedError = "Could not load Oxidye Matugen palette: " + error }
     }

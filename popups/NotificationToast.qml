@@ -14,7 +14,9 @@ NotificationSurface {
     required property var entry
     readonly property string receivedTime: root.formattedTime()
     readonly property bool hasActions: (root.entry?.actions.length ?? 0) > 0
-    readonly property bool hasImage: (root.entry?.image.length ?? 0) > 0
+    // Quickshell resolves themed image hints through its icon provider.
+    readonly property bool imageIsIcon: (root.entry?.image ?? "").startsWith("image://icon/")
+    readonly property bool hasImage: !root.imageIsIcon && (root.entry?.image.length ?? 0) > 0
 
     Connections {
         target: root.entry
@@ -67,7 +69,7 @@ NotificationSurface {
 
             NotificationAppIcon {
                 iconSize: PopupConfiguration.notificationPopupAppIconSize
-                source: root.entry?.appIcon ?? ""
+                source: root.imageIsIcon ? root.entry.image : root.entry?.appIcon ?? ""
                 desktopEntry: root.entry?.desktopEntry ?? ""
                 appName: root.entry?.appName ?? ""
             }
@@ -175,20 +177,19 @@ NotificationSurface {
         RowLayout {
             Layout.fillWidth: true
             Layout.topMargin: PopupConfiguration.notificationPopupVSpacing
-            visible: root.hasActions || root.hasImage
+            visible: root.hasActions || (root.hasImage && image.status !== Image.Error)
             spacing: PopupConfiguration.notificationPopupAttentionHSpacing
 
             Flow {
                 id: actions
                 Layout.fillWidth: true
                 Layout.minimumWidth: 0
-                layoutDirection: Qt.RightToLeft
                 spacing: PopupConfiguration.notificationPopupAttentionHSpacing
                 visible: root.hasActions
 
                 Repeater {
                     id: actionButtons
-                    model: root.entry?.actions?.slice().reverse() ?? []
+                    model: root.entry?.actions ?? []
 
                     Controls.Button {
                         id: actionButton
@@ -223,9 +224,10 @@ NotificationSurface {
                 Layout.minimumWidth: 0
                 Layout.maximumWidth: root.hasActions ? root.availableWidth / 2 : root.availableWidth
                 Layout.preferredHeight: PopupConfiguration.notificationPopupImageHeight
-                visible: root.hasImage
-                source: visible ? root.entry.image : ""
+                visible: root.hasImage && image.status !== Image.Error
+                source: root.hasImage ? root.entry.image : ""
                 fillMode: Image.PreserveAspectFit
+                sourceSize.width: PopupConfiguration.notificationPopupImageHeight * PopupConfiguration.notificationPopupImageSourceScale
                 sourceSize.height: PopupConfiguration.notificationPopupImageHeight * PopupConfiguration.notificationPopupImageSourceScale
             }
         }

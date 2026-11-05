@@ -19,6 +19,7 @@ Singleton {
 
     readonly property real notificationCompactHeight: 280
     readonly property real notificationImageHeight: 120
+    readonly property real notificationIconSize: 32
     readonly property real nfImageSourceScale: 2
 
     readonly property real contentWidth: 420
